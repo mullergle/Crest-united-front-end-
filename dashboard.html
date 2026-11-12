@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-<!-- html2canvas for downloading the receipt -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
@@ -86,42 +85,8 @@ button{ cursor:pointer; }
 .tx-modal-amt span { display: block; font-size: 8px; color: var(--muted); margin-top: 2px; }
 
 /* BOTTOM NAV */
-.bottom-nav{ 
-    position:fixed; 
-    left:0; 
-    right:0; 
-    bottom:0; 
-    z-index:1000; 
-    height:var(--nav-height); 
-    display:flex; 
-    align-items:center; 
-    justify-content:space-around; 
-    background: #07151b; 
-    border-top:1px solid var(--line); 
-    padding:0 6px; 
-    padding-bottom:env(safe-area-inset-bottom); 
-    box-shadow:0 -10px 40px rgba(0,0,0,.3); 
-}
-
-.bottom-nav a{ 
-    flex:1; 
-    display:flex; 
-    flex-direction:column; 
-    align-items:center; 
-    justify-content:center; 
-    gap:3px; 
-    height:100%; 
-    color:#6a7f79; 
-    font-size:8px; 
-    font-weight:700; 
-    letter-spacing:.3px; 
-    border-radius:12px; 
-    transition:color .2s, background .2s; 
-    position:relative; 
-    min-width:0; 
-    padding:4px 0; 
-}
-
+.bottom-nav{ position:fixed; left:0; right:0; bottom:0; z-index:1000; height:var(--nav-height); display:flex; align-items:center; justify-content:space-around; background: #07151b; border-top:1px solid var(--line); padding:0 6px; padding-bottom:env(safe-area-inset-bottom); box-shadow:0 -10px 40px rgba(0,0,0,.3); }
+.bottom-nav a{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; height:100%; color:#6a7f79; font-size:8px; font-weight:700; letter-spacing:.3px; border-radius:12px; transition:color .2s, background .2s; position:relative; min-width:0; padding:4px 0; }
 .bottom-nav a svg{ width:20px; height:20px; flex-shrink:0; transition:transform .2s; }
 .bottom-nav a.active{ color:var(--mint); }
 .bottom-nav a.active svg{ transform:translateY(-1px); }
@@ -284,7 +249,7 @@ button{ cursor:pointer; }
 <!-- TOPBAR -->
 <header class="topbar">
     <div class="profile-section">
-        <button class="avatar" id="topAvatar" type="button" aria-label="Profile">PO</button>
+        <button class="avatar" id="topAvatar" type="button" aria-label="Profile">--</button>
     </div>
     <div class="topbar-right">
         <button class="icon-button" id="openNotificationsBtn" aria-label="Notifications">
@@ -298,7 +263,7 @@ button{ cursor:pointer; }
 <section class="welcome">
 <div>
     <div class="welcome-kicker">Personal Banking</div>
-    <h1 id="welcomeName">Good morning, Prince.</h1>
+    <h1 id="welcomeName">Welcome.</h1>
     <p>Here's your financial overview.</p>
 </div>
 </section>
@@ -316,7 +281,10 @@ button{ cursor:pointer; }
     <span>net this month</span>
 </div>
 <div class="balance-actions">
-<button class="action-btn" type="button" data-action="transfer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>Send Money</button>
+<button class="action-btn" type="button" data-action="transfer" onclick="window.location.href='dashboard-transfer.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>
+    Send Money
+</button>
 <button class="action-btn" type="button" data-action="payments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>Add Money</button>
 </div>
 </div>
@@ -362,21 +330,21 @@ button{ cursor:pointer; }
 <div class="card-chip"></div>
 <div class="card-number" id="cardNumber">•••• •••• •••• ••••</div>
 <div class="card-details">
-<div><small>Cardholder</small><strong id="cardholderName">Prince</strong></div>
-<div><small>Expires</small><strong id="cardExpiry">12/28</strong></div>
-<div><small>Type</small><strong id="cardType">DEBIT</strong></div>
+<div><small>Cardholder</small><strong id="cardholderName">—</strong></div>
+<div><small>Expires</small><strong id="cardExpiry">—</strong></div>
+<div><small>Type</small><strong id="cardType">—</strong></div>
 </div>
 <div class="flip-hint">Tap card to flip</div>
 </div>
 <div class="card-face card-back">
 <div class="magnetic-stripe"></div>
 <div class="signature-label">Authorized Signature</div>
-<div class="signature-row"><div class="signature-panel" id="signatureName">Prince</div><div class="cvv-box" id="cardCVV">•••</div></div>
+<div class="signature-row"><div class="signature-panel" id="signatureName">—</div><div class="cvv-box" id="cardCVV">•••</div></div>
 <div class="back-info">
-<div><small>Cardholder</small><strong id="backCardholder">Prince</strong></div>
-<div><small>Card Number</small><strong id="backCardNumber">•••• 1234</strong></div>
-<div><small>Expires</small><strong id="backCardExpiry">12/28</strong></div>
-<div><small>Card Type</small><strong id="backCardType">DEBIT</strong></div>
+<div><small>Cardholder</small><strong id="backCardholder">—</strong></div>
+<div><small>Card Number</small><strong id="backCardNumber">•••• ••••</strong></div>
+<div><small>Expires</small><strong id="backCardExpiry">—</strong></div>
+<div><small>Card Type</small><strong id="backCardType">—</strong></div>
 </div>
 <div class="flip-hint">Tap card to flip back</div>
 </div>
@@ -385,13 +353,13 @@ button{ cursor:pointer; }
 </section>
 
 <section id="analytics">
-<div class="section-header"><h2>Monthly Budget</h2><span class="view-all" id="budgetMonth">September</span></div>
+<div class="section-header"><h2>Monthly Budget</h2><span class="view-all" id="budgetMonth">Month</span></div>
 <div class="spending-card">
 <div class="stat-label">Total spending</div>
 <div class="spending-total" id="budgetSpending">$0.00</div>
 <div class="progress"><span id="budgetProgress" style="width: 0%;"></span></div>
 <div class="spending-row"><span>Used</span><strong id="budgetPercent">0%</strong></div>
-<div class="spending-row"><span>Monthly limit</span><strong id="budgetLimit">$5,000.00</strong></div>
+<div class="spending-row"><span>Monthly limit</span><strong id="budgetLimit">$5,000,000.00</strong></div>
 </div>
 </section>
 </div>
@@ -412,7 +380,6 @@ button{ cursor:pointer; }
         <span>Get Card</span>
     </a>
     
-    <!-- UPDATED: Links to transfer.html -->
     <a href="transfer.html" data-page="transfer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8l7-5 7 5"/><path d="M5 16l7 5 7-5"/></svg>
         <span>Transfer</span>

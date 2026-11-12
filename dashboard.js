@@ -6,8 +6,11 @@ const API_BASE = "https://capital-crest.onrender.com";
 const ACTIVE_PAGE_KEY = "capitalCrestActivePage";
 const RETURN_MENU_KEY = "capitalCrestReturnMenu";
 
-let allTransactions = []; // <-- Added to store transactions for modal
-let globalSavingsBalance = 0; // <-- Store savings for the modal
+let allTransactions = [];
+let globalSavingsBalance = 0;
+
+/* Fixed monthly budget limit for the dashboard — $5,000,000 */
+const MONTHLY_BUDGET_LIMIT = 5000000;
 
 function saveActivePage(page){
     if(!page) return;
@@ -125,7 +128,7 @@ function escapeHTML(v){
 }
 
 /* =========================================================
-   PROFILE PHOTO (SERVER IS THE SOURCE OF TRUTH)
+   PROFILE PHOTO
 ========================================================= */
 const PROFILE_PHOTO_PREFIX = "capitalCrestProfilePhoto";
 const PROFILE_PHOTO_FALLBACK_KEY = "capitalCrestProfilePhoto_current";
@@ -155,10 +158,6 @@ function clearProfilePhotoCache(key){
         if(key) localStorage.removeItem(key);
         localStorage.removeItem(PROFILE_PHOTO_FALLBACK_KEY);
     }catch(error){}
-}
-function getCachedProfilePhoto(key){
-    const record = readProfilePhotoCache(key);
-    return record ? (record.url || null) : null;
 }
 function resolveAvatarUrl(url){
     if(!url) return null;
@@ -229,11 +228,9 @@ function updateBalance(balance){
 }
 
 function updateSavings(savings){
-    globalSavingsBalance = Number(savings) || 0; // Store it globally for the modal
+    globalSavingsBalance = Number(savings) || 0;
     const element = document.getElementById("savingsBalance");
     if(element) element.textContent = formatMoney(globalSavingsBalance);
-    
-    // Also update it in the modal so it's ready
     const modalEl = document.getElementById("modalSavingsBalance");
     if(modalEl) modalEl.textContent = formatMoney(globalSavingsBalance);
 }
@@ -245,19 +242,26 @@ function updateSpending(spending){
     if(budget) budget.textContent = formatMoney(spending);
 }
 
+/**
+ * Updates the Monthly Budget widget on the dashboard.
+ * The monthly limit is fixed at $5,000,000 (MONTHLY_BUDGET_LIMIT).
+ * The progress bar, used %, total spending, and limit text always update.
+ */
 function updateBudget(spending, limit){
     const numericSpending = Number(spending) || 0;
-    const numericLimit = Number(limit) || 0;
-    if(numericLimit <= 0) return;
+    const apiLimit = Number(limit) || 0;
+    const numericLimit = apiLimit > 0 ? apiLimit : MONTHLY_BUDGET_LIMIT;
 
     const percent = Math.min(100, Math.max(0, (numericSpending / numericLimit) * 100));
     const progress = document.getElementById("budgetProgress");
     const percentText = document.getElementById("budgetPercent");
     const limitText = document.getElementById("budgetLimit");
+    const spendingTotal = document.getElementById("budgetSpending");
 
-    if(progress) progress.style.width = `${percent}%`;
+    if(progress) progress.style.width = `${percent.toFixed(2)}%`;
     if(percentText) percentText.textContent = `${percent.toFixed(1)}%`;
     if(limitText) limitText.textContent = formatMoney(numericLimit);
+    if(spendingTotal) spendingTotal.textContent = formatMoney(numericSpending);
 }
 
 function updateNetFlow(transactions){
@@ -377,11 +381,9 @@ function renderTransactionsModal() {
         `;
     }).join("");
 
-    // Attach click handlers to open the receipt
     container.querySelectorAll(".tx-modal-item").forEach(item => {
         item.addEventListener("click", function() {
             const index = Number(this.dataset.txIndex);
-            // Sort again to match the order displayed
             const sortedList = [...allTransactions].sort((a,b) => new Date(getTransactionDate(b) || 0).getTime() - new Date(getTransactionDate(a) || 0).getTime());
             const tx = sortedList[index];
             if (tx) {
@@ -391,15 +393,14 @@ function renderTransactionsModal() {
     });
 }
 
-// Listen to "View all" button to populate the modal
 document.getElementById("openTransactionsBtn")?.addEventListener("click", () => {
     renderTransactionsModal();
 });
 
 /* =========================================================
-   NEW: SAVINGS PIN & MODAL LOGIC
+   SAVINGS PIN & MODAL LOGIC
 ========================================================= */
-const SAVINGS_PIN = "1234"; // <-- Change this to your desired PIN
+const SAVINGS_PIN = "1234";
 
 function setupSavingsModal() {
     const savingsCard = document.getElementById("savingsCard");
@@ -413,26 +414,22 @@ function setupSavingsModal() {
     const detailsModal = document.getElementById("savingsDetailsModal");
     const closeDetailsBtn = document.getElementById("closeSavingsDetailsBtn");
 
-    // Open PIN Modal
     if(savingsCard) {
         savingsCard.addEventListener("click", () => {
             pinModal.classList.add("show");
             pinBackdrop.classList.add("show");
             document.body.style.overflow = "hidden";
             
-            // Clear previous inputs & errors
             pinInputs.forEach(input => {
                 input.value = "";
                 input.style.borderColor = "rgba(184,224,202,.2)";
             });
             pinError.textContent = "";
             
-            // Focus first input
             setTimeout(() => pinInputs[0].focus(), 300);
         });
     }
 
-    // Close PIN Modal
     function closePinModal() {
         pinModal.classList.remove("show");
         pinBackdrop.classList.remove("show");
@@ -441,17 +438,14 @@ function setupSavingsModal() {
     if(closePinBtn) closePinBtn.addEventListener("click", closePinModal);
     if(pinBackdrop) pinBackdrop.addEventListener("click", closePinModal);
 
-    // Auto-advance PIN inputs
     pinInputs.forEach((input, index) => {
         input.addEventListener("input", (e) => {
-            // Only allow numbers
             input.value = input.value.replace(/[^0-9]/g, "");
             
             if (input.value !== "" && index < pinInputs.length - 1) {
                 pinInputs[index + 1].focus();
             }
 
-            // Check if all inputs are filled to auto-verify
             const pinString = Array.from(pinInputs).map(i => i.value).join("");
             if(pinString.length === 4) {
                 verifyPinBtn.click();
@@ -465,7 +459,6 @@ function setupSavingsModal() {
         });
     });
 
-    // Verify PIN
     if(verifyPinBtn) {
         verifyPinBtn.addEventListener("click", () => {
             const enteredPin = Array.from(pinInputs).map(i => i.value).join("");
@@ -476,7 +469,6 @@ function setupSavingsModal() {
             }
 
             if(enteredPin === SAVINGS_PIN) {
-                // Success! Close Pin modal, open Details modal
                 closePinModal();
                 
                 setTimeout(() => {
@@ -484,11 +476,10 @@ function setupSavingsModal() {
                     document.body.style.overflow = "hidden";
                 }, 300);
             } else {
-                // Error
                 pinError.textContent = "Incorrect PIN. Please try again.";
                 pinInputs.forEach(input => {
                     input.value = "";
-                    input.style.borderColor = "#d98b8b"; // Red border
+                    input.style.borderColor = "#d98b8b";
                 });
                 setTimeout(() => {
                     pinInputs.forEach(input => input.style.borderColor = "rgba(184,224,202,.2)");
@@ -498,7 +489,6 @@ function setupSavingsModal() {
         });
     }
 
-    // Close Details Modal
     if(closeDetailsBtn) {
         closeDetailsBtn.addEventListener("click", () => {
             detailsModal.classList.remove("show");
@@ -696,40 +686,69 @@ function findAccount(accounts, type){
     return accounts.find(a => String(a.account_type || a.type || "").toLowerCase().includes(String(type).toLowerCase())) || null;
 }
 
-function updateCard(card, profile){
+   function updateCard(card, profile){
     if(!card) return;
-    const holder = card.cardholder || card.holder_name || `${profile?.first_name || ""} ${profile?.surname || ""}`.trim();
-    const rawNumber = card.card_number || "";
-    let last4 = card.last4 || card.last_four || (rawNumber ? String(rawNumber).replace(/\D/g,"").slice(-4) : "");
-    const expiry = card.expiry || (card.expiry_month && card.expiry_year ? `${String(card.expiry_month).padStart(2,"0")}/${String(card.expiry_year).slice(-2)}` : "—");
-    const type = card.card_type || card.brand || "CARD";
+    
+    // Get cardholder name
+    const holder = card.cardholder || card.holder_name || `${profile?.first_name || ""} ${profile?.surname || ""}`.trim() || "CARDHOLDER";
+    
+    // Get last 4 digits (NO fake 0000 fallback)
+    let last4 = "••••";
+    if (card.last_four) last4 = card.last_four;
+    else if (card.last4) last4 = card.last4;
+    else if (card.card_number) last4 = String(card.card_number).slice(-4);
+
+    // Get Expiry (NO fake 12/28 fallback)
+    let expiry = "—";
+    if (card.expiry_month && card.expiry_year) {
+        expiry = `${String(card.expiry_month).padStart(2,"0")}/${String(card.expiry_year).slice(-2)}`;
+    } else if (card.expiry) {
+        expiry = card.expiry;
+    }
+
+    const type = card.card_type || card.brand || "DEBIT";
+    // Get CVV (NO fake 123 fallback)
+    const cvv = card.cvv || "•••";
 
     const setText = (id, text) => { const el = document.getElementById(id); if(el) el.textContent = text; };
 
-    setText("cardholderName", String(holder || "—").toUpperCase());
-    setText("signatureName", String(holder || "—").toUpperCase());
-    setText("backCardholder", String(holder || "—").toUpperCase());
+    setText("cardholderName", String(holder).toUpperCase());
+    setText("signatureName", String(holder).toUpperCase());
+    setText("backCardholder", String(holder).toUpperCase());
     setText("cardNumber", `•••• •••• •••• ${last4}`);
     setText("backCardNumber", `•••• ${last4}`);
     setText("cardExpiry", expiry);
     setText("backCardExpiry", expiry);
     setText("cardType", String(type).toUpperCase());
     setText("backCardType", `${String(type).toUpperCase()} DEBIT`);
-    setText("cardCVV", "•••");
+    setText("cardCVV", cvv);
 }
 
-async function loadCards(me){
+
+ async function loadCards(me){
     try{
         const response = await apiRequest("/api/cards");
-        const cards = Array.isArray(response) ? response : (response?.cards || []);
-        if(cards.length) updateCard(cards[0], me?.profile || {});
+        let cards = Array.isArray(response) ? response : (response?.cards || []);
+        
+        // Fallback to /api/auth/me data if /api/cards is empty
+        if (cards.length === 0 && me?.cards && me.cards.length > 0) {
+            cards = me.cards;
+        }
+
+        if(cards.length) {
+            updateCard(cards[0], me?.profile || {});
+        }
         return cards;
     }catch(error){
         const cards = Array.isArray(me?.cards) ? me.cards : [];
-        if(cards.length) updateCard(cards[0], me?.profile || {});
+        if(cards.length) {
+            updateCard(cards[0], me?.profile || {});
+        }
         return cards;
     }
 }
+
+
 
 async function loadTransactions(){
     const loadingEl = document.getElementById("transactionsLoading");
@@ -757,7 +776,29 @@ async function loadTransactions(){
 async function loadDashboardSummary(){
     try{
         const summary = await apiRequest("/api/dashboard/summary");
-        const spending = Number(summary?.spending?.this_month) || 0;
+        let spending = Number(summary?.spending?.this_month) || 0;
+
+        // FALLBACK: If API returns 0, calculate manually from loaded transactions
+        if (spending === 0 && Array.isArray(allTransactions) && allTransactions.length > 0) {
+            const now = new Date();
+            spending = allTransactions.reduce((total, t) => {
+                const d = new Date(t.created_at || t.createdAt || t.date || Date.now());
+                if (d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) {
+                    const amt = Math.abs(Number(t.amount) || 0);
+                    const type = String(t.type || "").toLowerCase();
+                    const direction = String(t.direction || "").toLowerCase();
+                    
+                    const isExpense = direction === "out" || direction === "debit" || 
+                                      type.includes("withdraw") || type.includes("transfer") || 
+                                      type.includes("card") || type.includes("purchase") || 
+                                      (!type.includes("deposit") && !type.includes("in") && direction !== "in");
+                    
+                    if (isExpense) return total + amt;
+                }
+                return total;
+            }, 0);
+        }
+
         updateSpending(spending);
 
         const spendingChange = document.getElementById("spendingChange");
@@ -769,13 +810,14 @@ async function loadDashboardSummary(){
             spendingChange.classList.toggle("positive", pct < 0);
         }
 
-        const limit = Number(summary?.budget?.monthly_limit) || 0;
-        updateBudget(spending, limit);
+        // Update the budget widget (Limit is fixed at 5M)
+        updateBudget(spending, MONTHLY_BUDGET_LIMIT);
 
         const monthEl = document.getElementById("budgetMonth");
         if(monthEl && summary?.period?.month_label) monthEl.textContent = summary.period.month_label;
     }catch(error){
         console.warn("Summary error:", error);
+        updateBudget(0, MONTHLY_BUDGET_LIMIT);
     }
 }
 
@@ -820,7 +862,11 @@ async function loadDashboard(){
         updateSavings(savingsBalance);
         updateAccountStatus(checkingAccount?.status || profile.status || "active");
 
-        await Promise.allSettled([ loadTransactions(), loadCards(me), loadDashboardSummary(), loadNotifications() ]);
+        // Load transactions FIRST so the budget calculation has data
+        await loadTransactions();
+        
+        // Then load the rest (Summary will now use the transactions if the API fails)
+        await Promise.allSettled([ loadCards(me), loadDashboardSummary(), loadNotifications() ]);
 
     }catch(error){
         if(error.status === 401 || error.status === 403){ clearAuth(); window.location.replace("login.html"); return; }
@@ -833,6 +879,8 @@ async function loadDashboard(){
         
         const loadingEl = document.getElementById("transactionsLoading");
         if(loadingEl) loadingEl.classList.remove("show");
+
+        updateBudget(0, MONTHLY_BUDGET_LIMIT);
     }
 }
 
@@ -924,15 +972,7 @@ function closeProfilePhotoModal(){
 function setupProfilePhotoButtons(){
     createProfilePhotoModal();
     const topAvatar = document.getElementById("topAvatar");
-    const sidebarAvatar = document.getElementById("sidebarAvatar");
     if(topAvatar){ topAvatar.style.cursor = "pointer"; topAvatar.addEventListener("click", openProfilePhotoModal); }
-    if(sidebarAvatar){
-        sidebarAvatar.style.cursor = "pointer";
-        sidebarAvatar.setAttribute("role", "button");
-        sidebarAvatar.setAttribute("tabindex", "0");
-        sidebarAvatar.addEventListener("click", openProfilePhotoModal);
-        sidebarAvatar.addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); openProfilePhotoModal(); } });
-    }
 }
 
 function resizeProfilePhoto(file){
@@ -1012,7 +1052,6 @@ async function uploadProfilePhoto(file){
 
         writeProfilePhotoCache(currentProfilePhotoCacheKey, { url: serverAvatar });
         applyProfilePhoto(document.getElementById("topAvatar"), serverAvatar);
-        applyProfilePhoto(document.getElementById("sidebarAvatar"), serverAvatar);
         closeProfilePhotoModal();
     }catch(error){
         alert(error?.message || "Unable to update profile photo.");
@@ -1029,16 +1068,9 @@ async function removeProfilePhoto(){
         await apiRequest("/api/profile/photo", { method:"DELETE" });
         clearProfilePhotoCache(currentProfilePhotoCacheKey);
 
-        const sidebarName = document.getElementById("sidebarName");
-        const fullName = sidebarName?.textContent?.trim() || "";
-        const nameParts = fullName.split(/\s+/);
-        const initials = getInitials(nameParts[0] || "", nameParts.length > 1 ? nameParts[nameParts.length - 1] : "");
-
         const topAvatar = document.getElementById("topAvatar");
-        const sidebarAvatar = document.getElementById("sidebarAvatar");
+        if(topAvatar) topAvatar.innerHTML = "";
 
-        if(topAvatar){ topAvatar.innerHTML = ""; topAvatar.textContent = initials; }
-        if(sidebarAvatar){ sidebarAvatar.innerHTML = ""; sidebarAvatar.textContent = initials; }
         closeProfilePhotoModal();
     }catch(error){
         alert(error?.message || "Unable to remove profile photo.");
@@ -1053,26 +1085,6 @@ function restoreSidebarAfterReturn(){
     localStorage.removeItem(RETURN_MENU_KEY);
 }
 
-document.querySelectorAll(".bottom-nav a[data-page]").forEach(link => {
-    link.addEventListener("click", function(event){
-        const page = this.dataset.page;
-        setActivePage(page);
-
-        if(page === "transfer"){
-            event.preventDefault();
-            openTransferModal();
-            return;
-        }
-
-        if(page === "dashboard"){
-            event.preventDefault();
-            const target = document.getElementById("dashboard");
-            if(target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-            return;
-        }
-    });
-});
-
 document.querySelectorAll(".action-btn[data-action]").forEach(button => {
     button.addEventListener("click", function(){
         const action = this.dataset.action;
@@ -1082,10 +1094,8 @@ document.querySelectorAll(".action-btn[data-action]").forEach(button => {
             window.location.href = "add-money.html?from=dashboard";
             return;
         }
-        if(action === "transfer"){
-            setActivePage("transfer");
-            openTransferModal();
-        }
+        // Do NOT intercept "transfer" here — the Send Money button
+        // uses its own inline onclick to go to dashboard-transfer.html.
     });
 });
 
@@ -1098,187 +1108,23 @@ const bankCard = document.getElementById("bankCard");
 if(bankCard){
     bankCard.addEventListener("click", () => {
         bankCard.classList.toggle("flipped");
-        bankCard.setAttribute("aria-label", bankCard.classList.contains("flipped") ? "Flip card to view front" : "Flip card to view back");
     });
     bankCard.addEventListener("keydown", e => {
         if(e.key === "Enter" || e.key === " "){ e.preventDefault(); bankCard.click(); }
     });
 }
 
-/* =========================================================
-   SEND MONEY MODAL & OTP
-========================================================= */
-let transferModal = null;
-let pendingTransfer = null;
-
-const TRF_INPUT = "width:100%;height:46px;margin-top:6px;padding:0 14px;border-radius:12px;border:1px solid rgba(184,224,202,.2);background:rgba(255,255,255,.05);color:#fff;font-size:16px;outline:none;";
-const TRF_LABEL = "display:block;margin-top:14px;font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.5px;text-transform:uppercase;";
-const TRF_PRIMARY = "width:100%;height:48px;margin-top:20px;border:0;border-radius:12px;background:linear-gradient(145deg,#b8e0ca,#75b79d);color:#09201d;font-weight:800;font-size:14px;";
-const TRF_GHOST = "width:100%;height:44px;margin-top:8px;border:0;border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.8);font-size:13px;";
-const TRF_ERR = "min-height:18px;margin-top:12px;font-size:12px;color:#d98b8b;";
-
-function transferModalHTML(inner){
-    return `
-    <div id="trfBackdrop" style="position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);z-index:9998;"></div>
-    <div role="dialog" aria-modal="true" style="position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92%,420px);max-height:90vh;overflow:auto;background:#0a1c30;border:1px solid rgba(184,224,202,.16);border-radius:20px;padding:26px 22px;z-index:9999;color:#fff;box-shadow:0 30px 80px rgba(0,0,0,.45);">
-        ${inner}
-    </div>`;
-}
-
-function renderTransferModal(inner){
-    if(!transferModal){
-        transferModal = document.createElement("div");
-        document.body.appendChild(transferModal);
+document.addEventListener("keydown", e => { 
+    if(e.key === "Escape") {
+        closeDashboardReceipt();
+        const notifModal = document.getElementById("notificationModal");
+        if(notifModal) notifModal.classList.remove("show");
     }
-    transferModal.innerHTML = transferModalHTML(inner);
-    document.body.style.overflow = "hidden";
-    document.getElementById("trfBackdrop").addEventListener("click", closeTransferModal);
-}
-
-function closeTransferModal(){
-    if(transferModal){ transferModal.remove(); transferModal = null; }
-    document.body.style.overflow = "";
-    pendingTransfer = null;
-}
-
-function setTrfError(msg){
-    const el = document.getElementById("trfError");
-    if(el) el.textContent = msg || "";
-}
-
-function openTransferModal(){
-    renderTransferModal(`
-        <h3 style="margin:0 0 4px;font-size:19px;">Send Money</h3>
-        <p style="margin:0;font-size:12px;color:rgba(255,255,255,.55);">Transfer to any external bank account.</p>
-
-        <label style="${TRF_LABEL}">Account Name</label>
-        <input id="trfAccountName" type="text" autocomplete="off" style="${TRF_INPUT}" placeholder="Recipient full name">
-
-        <label style="${TRF_LABEL}">Bank Name</label>
-        <input id="trfBankName" type="text" autocomplete="off" style="${TRF_INPUT}" placeholder="e.g. Chase Bank">
-
-        <label style="${TRF_LABEL}">SWIFT Code</label>
-        <input id="trfSwift" type="text" autocomplete="off" style="${TRF_INPUT};text-transform:uppercase;" placeholder="e.g. CHASUS33XXX">
-
-        <label style="${TRF_LABEL}">Routing Number</label>
-        <input id="trfRouting" inputmode="numeric" autocomplete="off" style="${TRF_INPUT}" placeholder="9-digit routing number">
-
-        <label style="${TRF_LABEL}">Account Number</label>
-        <input id="trfAccount" inputmode="numeric" autocomplete="off" style="${TRF_INPUT}" placeholder="Recipient account number">
-
-        <label style="${TRF_LABEL}">Amount (USD)</label>
-        <input id="trfAmount" inputmode="decimal" autocomplete="off" style="${TRF_INPUT}" placeholder="0.00">
-
-        <label style="${TRF_LABEL}">Description (optional)</label>
-        <input id="trfDesc" maxlength="80" style="${TRF_INPUT}" placeholder="What's this for?">
-
-        <div id="trfError" style="${TRF_ERR}"></div>
-        <button id="trfContinue" type="button" style="${TRF_PRIMARY}">Continue</button>
-        <button id="trfCancel" type="button" style="${TRF_GHOST}">Cancel</button>
-    `);
-
-    document.getElementById("trfCancel").addEventListener("click", closeTransferModal);
-    document.getElementById("trfContinue").addEventListener("click", submitTransfer);
-}
-
-async function submitTransfer(){
-    const accountName = document.getElementById("trfAccountName").value.trim();
-    const bankName = document.getElementById("trfBankName").value.trim();
-    const swift = document.getElementById("trfSwift").value.trim();
-    const routing = document.getElementById("trfRouting").value.trim();
-    const account = document.getElementById("trfAccount").value.trim();
-    const amount = Number(document.getElementById("trfAmount").value);
-    const description = document.getElementById("trfDesc").value.trim();
-    const btn = document.getElementById("trfContinue");
-
-    if(!accountName) return setTrfError("Enter the recipient's account name.");
-    if(!bankName) return setTrfError("Enter the recipient bank name.");
-    if(!swift) return setTrfError("Enter the SWIFT code.");
-    if(!routing) return setTrfError("Enter the routing number.");
-    if(!/^\d{6,20}$/.test(account)) return setTrfError("Enter a valid account number.");
-    if(!Number.isFinite(amount) || amount <= 0) return setTrfError("Enter an amount greater than zero.");
-
-    btn.disabled = true; btn.style.opacity = ".6"; setTrfError("");
-
-    try{
-        const res = await apiRequest("/api/transfers", {
-            method: "POST",
-            body: JSON.stringify({
-                recipient_name: accountName,
-                recipient_bank_name: bankName,
-                recipient_swift_code: swift,
-                recipient_routing_number: routing,
-                recipient_account_number: account,
-                amount,
-                description
-            })
-        });
-        pendingTransfer = res.transfer;
-        openOtpStep();
-    }catch(err){
-        setTrfError(err.message || "Unable to start transfer.");
-        btn.disabled = false; btn.style.opacity = "1";
-    }
-}
-
-function openOtpStep(){
-    const t = pendingTransfer;
-    renderTransferModal(`
-        <h3 style="margin:0 0 4px;font-size:19px;">Confirm transfer</h3>
-        <p style="margin:0;font-size:13px;color:rgba(255,255,255,.7);line-height:1.5;">
-            Sending <strong>${escapeHTML(formatMoney(t.amount, t.currency))}</strong> to
-            <strong>${escapeHTML(t.recipient.name)}</strong> (${escapeHTML(t.recipient.bank_name)}).
-            Enter the 6-digit code we emailed you.
-        </p>
-        <label style="${TRF_LABEL}">Verification code</label>
-        <input id="trfCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" style="${TRF_INPUT};letter-spacing:8px;text-align:center;font-size:20px;" placeholder="••••••">
-        <div id="trfError" style="${TRF_ERR}"></div>
-        <button id="trfVerify" type="button" style="${TRF_PRIMARY}">Confirm &amp; send</button>
-        <button id="trfCancel" type="button" style="${TRF_GHOST}">Cancel</button>
-    `);
-    document.getElementById("trfCancel").addEventListener("click", closeTransferModal);
-    document.getElementById("trfVerify").addEventListener("click", verifyTransfer);
-    document.getElementById("trfCode").focus();
-}
-
-async function verifyTransfer(){
-    const code = document.getElementById("trfCode").value.trim();
-    const btn = document.getElementById("trfVerify");
-    if(!/^\d{6}$/.test(code)) return setTrfError("Enter the 6-digit code.");
-    btn.disabled = true; btn.style.opacity = ".6"; setTrfError("");
-
-    try{
-        const res = await apiRequest("/api/transfers/verify", {
-            method: "POST",
-            body: JSON.stringify({ transfer_id: pendingTransfer.id, code })
-        });
-        const t = res.transfer;
-        renderTransferModal(`
-            <div style="text-align:center;">
-                <div style="width:60px;height:60px;margin:0 auto 14px;border-radius:50%;background:rgba(184,224,202,.14);display:flex;align-items:center;justify-content:center;color:#b8e0ca;font-size:28px;">✓</div>
-                <h3 style="margin:0 0 6px;font-size:19px;">Transfer complete</h3>
-                <p style="margin:0;font-size:13px;color:rgba(255,255,255,.7);">
-                    ${escapeHTML(formatMoney(t.amount, t.currency))} sent.<br>Reference: <strong>${escapeHTML(t.reference)}</strong>
-                </p>
-                <button id="trfDone" type="button" style="${TRF_PRIMARY}">Done</button>
-            </div>
-        `);
-        document.getElementById("trfDone").addEventListener("click", closeTransferModal);
-        loadDashboard();
-    }catch(err){
-        setTrfError(err.message || "Unable to verify transfer.");
-        btn.disabled = false; btn.style.opacity = "1";
-    }
-}
-
-document.addEventListener("keydown", e => { if(e.key === "Escape") closeTransferModal(); });
+});
 
 window.openTransactionInModal = function(tx) {
-    // 1. Close the transactions sheet
     document.getElementById('transactionsModal').classList.remove('show');
     document.getElementById('transactionsBackdrop').classList.remove('show');
-    
-    // 2. Open the receipt modal
     setTimeout(() => {
         if(typeof openDashboardReceipt === 'function') {
             openDashboardReceipt(encodeURIComponent(JSON.stringify(tx)));
@@ -1292,7 +1138,7 @@ window.openTransactionInModal = function(tx) {
 function startDashboard(){
     restoreSidebarAfterReturn();
     setupProfilePhotoButtons();
-    setupSavingsModal(); // <--- Initialize the Savings PIN modal
+    setupSavingsModal();
     loadDashboard();
 }
 

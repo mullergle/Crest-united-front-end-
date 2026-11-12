@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
+<title>Capital Crest | Save Money</title>
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
+      rel="stylesheet">
+<style>
+:root{
+    --ink:#07151b;
+    --deep:#0a2223;
+    --deep2:#103536;
+    --green:#1e6256;
+    --green2:#2c806c;
+    --mint:#b8e0ca;
+    --white:#fff;
+    --text:#eef5f1;
+    --muted:#8fa39d;
+    --line:rgba(255,255,255,.08);
+    --card:rgba(255,255,255,.045);
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+html{
+    background:#07151b;
+}
+body{
+    min-height:100vh;
+    min-height:100dvh;
+    font-family:"DM Sans",sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(44,128,108,.14),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #07151b,
+            #092526 55%,
+            #0b2929
+        );
+}
+/* =========================
+   PAGE
+========================= */
+.page{
+    width:min(650px,92%);
+    margin:auto;
+    padding:35px 0 60px;
+}
+/* =========================
+   HEADER
+========================= */
+.header{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:30px;
+}
+.back-button{
+    width:40px;
+    height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:
+        rgba(255,255,255,.035);
+    color:#b7c9c3;
+    text-decoration:none;
+    transition:.2s ease;
+}
+.back-button:hover{
+    color:var(--mint);
+    background:
+        rgba(184,224,202,.07);
+}
+.back-button svg{
+    width:18px;
+}
+.header-text h1{
+    font-family:"Manrope",sans-serif;
+    font-size:24px;
+    font-weight:800;
+}
+.header-text p{
+    margin-top:5px;
+    color:#718780;
+    font-size:10px;
+}
+/* =========================
+   MAIN CARD
+========================= */
+.card{
+    position:relative;
+    overflow:hidden;
+    padding:30px;
+    border:1px solid
+        rgba(184,224,202,.13);
+    border-radius:20px;
+    background:
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(184,224,202,.10),
+            transparent 35%
+        ),
+        rgba(255,255,255,.035);
+    box-shadow:
+        0 25px 70px
+        rgba(0,0,0,.22);
+}
+/* =========================
+   CARD HEADER
+========================= */
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:25px;
+}
+.card-icon{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    background:
+        rgba(184,224,202,.08);
+    color:var(--mint);
+}
+.card-icon svg{
+    width:20px;
+}
+.card-title h2{
+    font-family:"Manrope",sans-serif;
+    font-size:16px;
+}
+.card-title p{
+    margin-top:4px;
+    color:#657b74;
+    font-size:9px;
+}
+/* =========================
+   SAVINGS BALANCE
+========================= */
+.balance-box{
+    min-height:150px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:
+        rgba(0,0,0,.12);
+}
+.balance-label{
+    color:#6f8780;
+    font-size:9px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:1.2px;
+    margin-bottom:12px;
+}
+.balance{
+    color:#eef5f1;
+    font-family:"Manrope",sans-serif;
+    font-size:32px;
+    font-weight:800;
+    letter-spacing:-.8px;
+}
+.currency{
+    color:var(--mint);
+    margin-right:4px;
+    font-size:20px;
+}
+/* =========================
+   NOTICE
+========================= */
+.notice{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+    padding:14px;
+    border-radius:11px;
+    background:
+        rgba(184,224,202,.045);
+    border:1px solid
+        rgba(184,224,202,.08);
+}
+.notice svg{
+    width:16px;
+    min-width:16px;
+    color:var(--mint);
+}
+.notice p{
+    color:#78908a;
+    font-size:9px;
+    line-height:1.6;
+}
+/* =========================
+   LOADING
+========================= */
+.loading{
+    color:#78908a;
+    font-size:11px;
+    font-family:"DM Sans",sans-serif;
+}
+.error{
+    color:#e9a6a6;
+    font-size:11px;
+    font-family:"DM Sans",sans-serif;
+}
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:480px){
+    .page{
+        width:calc(100% - 28px);
+        padding:
+            22px 0 40px;
+    }
+    .header{
+        margin-bottom:22px;
+    }
+    .header-text h1{
+        font-size:21px;
+    }
+    .card{
+        padding:21px;
+        border-radius:17px;
+    }
+    .balance-box{
+        min-height:135px;
+    }
+    .balance{
+        font-size:27px;
+    }
+    .currency{
+        font-size:17px;
+    }
+}
+</style>
+</head>
+<body>
+<main class="page">
+    <!-- =========================
+         HEADER
+    ========================= -->
+    <header class="header">
+        <a href="dashboard.html?sidebar=open&active=savings"
+           class="back-button"
+           aria-label="Back to dashboard">
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.7"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+                <path d="M19 12H5"/>
+                <path d="M12 19l-7-7 7-7"/>
+            </svg>
+        </a>
+        <div class="header-text">
+            <h1>
+                Save Money
+            </h1>
+            <p>
+                Your savings balance
+            </p>
+        </div>
+    </header>
+    <!-- =========================
+         SAVINGS CARD
+    ========================= -->
+    <section class="card">
+        <div class="card-title">
+            <div class="card-icon">
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.6"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M5 7h13a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/>
+                    <path d="M7 7V5a2 2 0 0 1 2-2h7l3 4"/>
+                    <path d="M16 13h4"/>
+                    <circle cx="16"
+                            cy="13"
+                            r="1"/>
+                </svg>
+            </div>
+            <div>
+                <h2>
+                    Savings Balance
+                </h2>
+                <p>
+                    Money you have saved
+                </p>
+            </div>
+        </div>
+        <!-- =========================
+             BALANCE
+        ========================= -->
+        <div class="balance-box">
+            <div class="balance-label">
+                Total Saved
+            </div>
+            <div
+                class="balance"
+                id="savingsBalance">
+                <span class="loading">
+                    Loading...
+                </span>
+            </div>
+        </div>
+        <!-- =========================
+             NOTICE
+        ========================= -->
+        <div class="notice">
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.6"
+                 stroke-linecap="round">
+                <circle cx="12"
+                        cy="12"
+                        r="9"/>
+                <path d="M12 11v5"/>
+                <path d="M12 8h.01"/>
+            </svg>
+            <p>
+                This is the total amount currently
+                held in your savings account.
+            </p>
+        </div>
+    </section>
+</main>
+<script>
+/* =====================================================
+   CAPITAL CREST API
+===================================================== */
+const API_BASE_URL =
+    "https://capital-crest.onrender.com";
+/* =====================================================
+   ELEMENT
+===================================================== */
+const savingsBalance =
+    document.getElementById(
+        "savingsBalance"
+    );
+/* =====================================================
+   TOKEN
+===================================================== */
+function getAccessToken(){
+    const keys = [
+        "access_token",
+        "accessToken",
+        "capitalCrestToken",
+        "supabase_access_token",
+        "supabaseAccessToken",
+        "token",
+        "session"
+    ];
+    for(const key of keys){
+        const value =
+            localStorage.getItem(key);
+        if(!value) continue;
+        /*
+         * Direct JWT token
+         */
+        if(
+            typeof value === "string" &&
+            value.split(".").length === 3
+        ){
+            return value;
+        }
+        /*
+         * JSON session
+         */
+        try{
+            const parsed =
+                JSON.parse(value);
+            if(
+                parsed &&
+                typeof parsed === "object"
+            ){
+                if(parsed.access_token){
+                    return parsed.access_token;
+                }
+                if(
+                    parsed.session &&
+                    parsed.session.access_token
+                ){
+                    return parsed
+                        .session
+                        .access_token;
+                }
+                if(
+                    parsed.data &&
+                    parsed.data.session &&
+                    parsed.data.session.access_token
+                ){
+                    return parsed
+                        .data
+                        .session
+                        .access_token;
+                }
+            }
+        }catch(error){
+            /* Ignore invalid JSON */
+        }
+    }
+    return null;
+}
+/* =====================================================
+   FORMAT MONEY
+===================================================== */
+function formatMoney(amount){
+    const value =
+        Number(amount || 0);
+    return new Intl.NumberFormat(
+        "en-NG",
+        {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        }
+    ).format(value);
+}
+/* =====================================================
+   FIND SAVINGS BALANCE
+===================================================== */
+function findSavingsBalance(data){
+    /*
+     * Direct savings balance fields
+     */
+    const directValues = [
+        data?.savings_balance,
+        data?.savingsBalance,
+        data?.profile?.savings_balance,
+        data?.profile?.savingsBalance,
+        data?.balance?.savings,
+        data?.balances?.savings,
+        data?.balances?.savings_balance,
+        data?.account_balances?.savings,
+        data?.account_balances?.savings_balance,
+        data?.savings?.balance,
+        data?.savings?.amount
+    ];
+    for(const value of directValues){
+        if(
+            value !== undefined &&
+            value !== null &&
+            value !== ""
+        ){
+            return Number(value) || 0;
+        }
+    }
+    /*
+     * Search accounts
+     */
+    const accounts =
+        Array.isArray(data?.accounts)
+            ? data.accounts
+            : [];
+    const savingsAccount =
+        accounts.find(account => {
+            const type =
+                String(
+                    account?.account_type ||
+                    account?.accountType ||
+                    account?.type ||
+                    account?.name ||
+                    ""
+                ).toLowerCase();
+            return type.includes("saving");
+        });
+    if(savingsAccount){
+        return Number(
+            savingsAccount?.balance ??
+            savingsAccount?.available_balance ??
+            savingsAccount?.availableBalance ??
+            savingsAccount?.current_balance ??
+            savingsAccount?.currentBalance ??
+            0
+        ) || 0;
+    }
+    /*
+     * If the backend has no savings
+     * balance yet, display zero.
+     */
+    return 0;
+}
+/* =====================================================
+   LOAD SAVINGS
+===================================================== */
+async function loadSavings(){
+    const token =
+        getAccessToken();
+    if(!token){
+        window.location.href =
+            "login.html";
+        return;
+    }
+    try{
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/auth/me",
+                {
+                    method:"GET",
+                    headers:{
+                        "Authorization":
+                            "Bearer " + token,
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+        if(
+            response.status === 401 ||
+            response.status === 403
+        ){
+            window.location.href =
+                "login.html";
+            return;
+        }
+        if(!response.ok){
+            throw new Error(
+                "Unable to load account."
+            );
+        }
+        const data =
+            await response.json();
+        const amount =
+            findSavingsBalance(data);
+        savingsBalance.innerHTML =
+            `<span class="currency">₦</span>${formatMoney(amount)}`;
+    }catch(error){
+        console.error(
+            "Savings error:",
+            error
+        );
+        savingsBalance.innerHTML =
+            `<span class="error">
+                Unable to load
+             </span>`;
+    }
+}
+/* =====================================================
+   START
+===================================================== */
+document.addEventListener(
+    "DOMContentLoaded",
+    loadSavings
+);
+</script>
+</body>
+</html>

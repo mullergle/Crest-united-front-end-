@@ -7,7 +7,7 @@
                maximum-scale=1.0, user-scalable=no,
                viewport-fit=cover">
 
-<title>Crest United Bank | Messages</title>
+<title>Capital Crest | Messages</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,6 @@
     --white:#fff;
     --text:#eef5f1;
     --muted:#8fa39d;
-    --gold:#c9a96b;
     --line:rgba(255,255,255,.08);
     --bubble:#17463f;
     --received:#102d2e;
@@ -80,83 +79,6 @@ a{
     text-decoration:none;
 }
 
-/* =========================================================
-   FULL PAGE LOADER (matches login page)
-========================================================= */
-#pageLoader{
-    position:fixed;
-    inset:0;
-    z-index:99999;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(16,53,54,.96),
-            rgba(7,21,27,.99)
-        );
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-    transition:
-        opacity .25s ease,
-        visibility .25s ease;
-}
-#pageLoader.active{
-    opacity:1;
-    visibility:visible;
-    pointer-events:auto;
-}
-.loader-content{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-}
-.loader-ring{
-    width:58px;
-    height:58px;
-    position:relative;
-    border-radius:50%;
-    border:3px solid rgba(184,224,202,.12);
-    border-top-color:var(--mint);
-    border-right-color:rgba(184,224,202,.65);
-    animation:loaderSpin .85s linear infinite;
-    box-shadow:0 0 30px rgba(184,224,202,.10);
-}
-.loader-ring::after{
-    content:"";
-    position:absolute;
-    inset:7px;
-    border-radius:50%;
-    border:1px solid rgba(201,169,107,.28);
-    animation:loaderPulse 1.4s ease-in-out infinite;
-}
-.loader-title{
-    margin-top:20px;
-    color:#eef5f1;
-    font-family:"Manrope",sans-serif;
-    font-size:13px;
-    font-weight:700;
-    letter-spacing:.3px;
-}
-.loader-subtitle{
-    margin-top:6px;
-    color:#8fa29d;
-    font-size:9px;
-    letter-spacing:.5px;
-}
-@keyframes loaderSpin{
-    to{ transform:rotate(360deg); }
-}
-@keyframes loaderPulse{
-    0%, 100%{ transform:scale(.85); opacity:.35; }
-    50%{ transform:scale(1); opacity:1; }
-}
 
 /* =========================
    PAGE
@@ -169,8 +91,9 @@ a{
     flex-direction:column;
 }
 
+
 /* =========================
-   TOP BAR — CENTERED TITLE
+   TOP BAR
 ========================= */
 
 .topbar{
@@ -179,7 +102,8 @@ a{
 
     display:flex;
     align-items:center;
-    justify-content:center;
+
+    gap:15px;
 
     padding:0 30px;
 
@@ -191,20 +115,14 @@ a{
     -webkit-backdrop-filter:blur(18px);
 
     z-index:20;
-
-    position:relative;
 }
+
 
 /* =========================
    BACK BUTTON
 ========================= */
 
 .back-button{
-    position:absolute;
-    left:30px;
-    top:50%;
-    transform:translateY(-50%);
-
     width:39px;
     height:39px;
 
@@ -218,8 +136,6 @@ a{
     background:rgba(255,255,255,.035);
 
     color:#b8cbc5;
-
-    flex-shrink:0;
 
     transition:.2s ease;
 }
@@ -235,38 +151,34 @@ a{
 }
 
 .back-button:active{
-    transform:translateY(-50%) scale(.96);
+    transform:scale(.96);
 }
 
 .back-button svg{
     width:18px;
 }
 
-/* =========================
-   PAGE HEADING — CENTERED
-========================= */
 
-.page-heading{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-    pointer-events:none;
-}
+/* =========================
+   PAGE HEADING
+========================= */
 
 .page-heading h1{
     font-family:"Manrope",sans-serif;
+
     font-size:18px;
+
     font-weight:700;
-    letter-spacing:-0.2px;
-    color:#fff;
 }
 
 .page-heading p{
     margin-top:3px;
+
     color:#687e77;
+
     font-size:9px;
 }
+
 
 /* =========================
    CHAT LAYOUT
@@ -298,6 +210,7 @@ a{
         0 25px 70px
         rgba(0,0,0,.25);
 }
+
 
 /* =========================
    CONTACTS
@@ -455,6 +368,7 @@ a{
     text-overflow:ellipsis;
 }
 
+
 /* =========================
    CHAT AREA
 ========================= */
@@ -466,6 +380,7 @@ a{
     display:flex;
     flex-direction:column;
 }
+
 
 /* =========================
    CHAT HEADER
@@ -546,6 +461,7 @@ a{
         rgba(184,224,202,.6);
 }
 
+
 /* =========================
    MESSAGES
 ========================= */
@@ -578,6 +494,7 @@ a{
 
     font-size:7px;
 }
+
 
 /* =========================
    MESSAGE
@@ -637,6 +554,7 @@ a{
 
     font-size:7px;
 }
+
 
 /* =========================
    MESSAGE INPUT
@@ -722,6 +640,7 @@ a{
     width:17px;
 }
 
+
 /* =========================
    MOBILE
 ========================= */
@@ -736,12 +655,6 @@ a{
         height:65px;
 
         padding:0 14px;
-    }
-
-    .back-button{
-        left:14px;
-        width:36px;
-        height:36px;
     }
 
     .page-heading h1{
@@ -805,28 +718,22 @@ a{
 
 <body>
 
-<!-- =========================================================
-     FULL PAGE LOADER
-========================================================= -->
-<div id="pageLoader">
-    <div class="loader-content">
-        <div class="loader-ring"></div>
-        <div class="loader-title">
-            Loading messages
-        </div>
-        <div class="loader-subtitle">
-            Securely connecting to Crest United
-        </div>
-    </div>
-</div>
-
 <div class="page">
 
 <!-- =======================================================
-     TOP BAR — CENTERED TITLE
+     TOP BAR
 ======================================================= -->
 
 <header class="topbar">
+
+    <!--
+        Returning to dashboard with:
+        sidebar=open
+        active=chat
+
+        This makes Chat Support remain
+        highlighted when the user returns.
+    -->
 
     <a href="dashboard.html?sidebar=open&active=chat"
        class="back-button"
@@ -852,18 +759,20 @@ a{
         </h1>
 
         <p>
-            Crest United Secure Messaging
+            Capital Crest Secure Messaging
         </p>
 
     </div>
 
 </header>
 
+
 <!-- =======================================================
      CHAT
 ======================================================= -->
 
 <main class="chat-layout">
+
 
     <!-- ===================================================
          CONTACTS
@@ -886,21 +795,23 @@ a{
 
         </div>
 
+
         <div class="contact-list">
 
-            <!-- CREST UNITED SUPPORT -->
+
+            <!-- CAPITAL CREST SUPPORT -->
 
             <button class="contact active">
 
                 <div class="contact-avatar">
-                    CU
+                    CC
                 </div>
 
                 <div class="contact-info">
 
                     <div class="contact-name">
 
-                        Crest United Support
+                        Capital Crest Support
 
                         <span class="contact-time">
                             10:42
@@ -915,6 +826,7 @@ a{
                 </div>
 
             </button>
+
 
             <!-- ACCOUNT MANAGER -->
 
@@ -948,24 +860,26 @@ a{
 
     </aside>
 
+
     <!-- ===================================================
          ACTIVE CHAT
     ==================================================== -->
 
     <section class="chat">
 
+
         <!-- CHAT HEADER -->
 
         <header class="chat-header">
 
             <div class="chat-user-avatar">
-                CU
+                CC
             </div>
 
             <div class="chat-user">
 
                 <h3>
-                    Crest United Support
+                    Capital Crest Support
                 </h3>
 
                 <p>
@@ -980,6 +894,7 @@ a{
 
         </header>
 
+
         <!-- =================================================
              MESSAGES
         ================================================== -->
@@ -991,12 +906,13 @@ a{
                 Today
             </div>
 
+
             <!-- RECEIVED -->
 
             <div class="message received">
 
                 <div class="bubble">
-                    Hello James. Welcome to Crest United Support. How can we help you today?
+                    Hello James. Welcome to Capital Crest Support. How can we help you today?
                 </div>
 
                 <span class="message-time">
@@ -1004,6 +920,7 @@ a{
                 </span>
 
             </div>
+
 
             <!-- SENT -->
 
@@ -1018,6 +935,7 @@ a{
                 </span>
 
             </div>
+
 
             <!-- RECEIVED -->
 
@@ -1034,6 +952,7 @@ a{
             </div>
 
         </div>
+
 
         <!-- =================================================
              INPUT
@@ -1078,42 +997,8 @@ a{
 
 </div>
 
+
 <script>
-
-/* =========================================================
-   PAGE LOADER
-========================================================= */
-const pageLoader =
-    document.getElementById("pageLoader");
-
-function showLoader(){
-    if(pageLoader){
-        pageLoader.classList.add("active");
-    }
-}
-
-function hideLoader(){
-    if(pageLoader){
-        pageLoader.classList.remove("active");
-    }
-}
-
-/* =========================================================
-   SHOW LOADER ON PAGE OPEN
-========================================================= */
-showLoader();
-
-window.addEventListener(
-    "load",
-    function(){
-        // Allow the loader to be visible for a brief moment
-        // (matching the login page behaviour), then hide it.
-        setTimeout(
-            hideLoader,
-            350
-        );
-    }
-);
 
 /* =========================================================
    SEND MESSAGE
@@ -1127,6 +1012,7 @@ const input =
 
 const messages =
     document.getElementById("messages");
+
 
 form.addEventListener(
     "submit",
@@ -1169,6 +1055,7 @@ form.addEventListener(
     }
 );
 
+
 /* =========================================================
    ESCAPE HTML
 ========================================================= */
@@ -1184,6 +1071,7 @@ function escapeHtml(text){
     return div.innerHTML;
 }
 
+
 /* =========================================================
    SEARCH CONTACTS
 ========================================================= */
@@ -1193,6 +1081,7 @@ const searchInput =
 
 const contacts =
     document.querySelectorAll(".contact");
+
 
 searchInput.addEventListener(
     "input",
@@ -1220,6 +1109,7 @@ searchInput.addEventListener(
 
     }
 );
+
 
 /* =========================================================
    SCROLL TO LAST MESSAGE
