@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Crest United Bank | Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<!-- html2canvas for downloading the receipt -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+:root{
+    --ink:#07151b; --deep:#0a2223; --deep2:#103536; --green:#1e6256; --green2:#2c806c;
+    --mint:#b8e0ca; --cream:#f5f2e8; --white:#fff; --text:#eef5f1; --muted:#8fa39d; --gold:#c9a96b;
+    --line:rgba(255,255,255,.08); --card:rgba(255,255,255,.045); --danger:#d98b8b; --shadow:0 25px 70px rgba(0,0,0,.22);
+    --nav-height:64px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ background:#07151b; scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{ min-height:100vh; min-height:100dvh; font-family:"DM Sans",sans-serif; color:var(--text); background:radial-gradient(circle at 10% 0%, rgba(44,128,108,.13), transparent 28%), linear-gradient(135deg, #07151b, #092526 55%, #0b2929); overflow-x:hidden; -webkit-tap-highlight-color:transparent; padding-bottom:calc(var(--nav-height) + 10px); }
+a{ color:inherit; text-decoration:none; }
+button, input, select, textarea{ font-family:inherit; }
+button{ cursor:pointer; }
+
+/* FULL PAGE LOADER */
+#instantLoader{ position:fixed; inset:0; z-index:99999; display:none; align-items:center; justify-content:center; background:radial-gradient(circle at center, rgba(16,53,54,.96), rgba(7,21,27,.99)); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); opacity:0; visibility:hidden; pointer-events:none; transition:opacity .25s ease, visibility .25s ease; }
+#instantLoader.active{ display:flex; opacity:1; visibility:visible; pointer-events:auto; }
+.loader-content{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.loader-ring{ width:58px; height:58px; position:relative; border-radius:50%; border:3px solid rgba(184,224,202,.12); border-top-color:var(--mint); border-right-color:rgba(184,224,202,.65); animation:loaderSpin .85s linear infinite; box-shadow:0 0 30px rgba(184,224,202,.10); }
+.loader-ring::after{ content:""; position:absolute; inset:7px; border-radius:50%; border:1px solid rgba(201,169,107,.28); animation:loaderPulse 1.4s ease-in-out infinite; }
+.loader-title{ margin-top:20px; color:#eef5f1; font-family:"Manrope",sans-serif; font-size:13px; font-weight:700; letter-spacing:.3px; }
+.loader-subtitle{ margin-top:6px; color:#8fa29d; font-size:9px; letter-spacing:.5px; }
+@keyframes loaderSpin{ to{ transform:rotate(360deg); } }
+@keyframes loaderPulse{ 0%, 100%{ transform:scale(.85); opacity:.35; } 50%{ transform:scale(1); opacity:1; } }
+
+.dashboard{ min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; }
+
+/* TOPBAR */
+.topbar{ height:64px; position:sticky; top:0; z-index:500; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid var(--line); background:rgba(7,21,27,.85); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+.profile-section{ display:flex; align-items:center; }
+.profile-section .avatar{ width:42px; height:42px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:50%; background:linear-gradient(145deg, var(--mint), var(--green2)); color:#09201d; font-size:13px; font-weight:800; border:none; box-shadow:0 0 0 2px rgba(184,224,202,.12); transition:box-shadow .2s; }
+.profile-section .avatar:hover{ box-shadow:0 0 0 3px rgba(184,224,202,.25); }
+.topbar-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.icon-button{ width:36px; height:36px; border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,.025); color:#9aada7; display:flex; align-items:center; justify-content:center; transition:background .2s, color .2s; }
+.icon-button:hover{ background:rgba(184,224,202,.08); color:var(--mint); }
+.icon-button svg{ width:16px; }
+
+/* MODAL SHARED STYLES */
+.bottom-sheet-backdrop { position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease; }
+.bottom-sheet-backdrop.show { opacity: 1; visibility: visible; }
+.bottom-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9999; background: #0a1c30; border-radius: 24px 24px 0 0; border-top: 1px solid rgba(184,224,202,.15); box-shadow: 0 -20px 60px rgba(0,0,0,.5); transform: translateY(100%); transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1); max-height: 85vh; display: flex; flex-direction: column; }
+.bottom-sheet.show { transform: translateY(0); }
+.modal-drag-handle { width: 40px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.15); margin: 12px auto 4px; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px 16px; border-bottom: 1px solid var(--line); }
+.modal-header h2 { font-family: "Manrope", sans-serif; font-size: 16px; font-weight: 700; }
+.modal-close-btn { background: none; border: none; color: var(--muted); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+.modal-close-btn:hover { background: rgba(255,255,255,.05); color: #fff; }
+.modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; scrollbar-width: none; }
+.modal-body::-webkit-scrollbar { display: none; }
+
+/* NOTIFICATIONS ITEMS */
+.notification-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer; }
+.notification-item:last-child { border-bottom: none; padding-bottom: 30px; }
+.notification-icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; background: rgba(184,224,202,.06); color: var(--mint); display: flex; align-items: center; justify-content: center; }
+.notification-icon svg { width: 18px; height: 18px; }
+.notification-content { flex: 1; }
+.notification-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.notification-title { font-size: 12px; font-weight: 700; color: #fff; }
+.notification-time { font-size: 9px; color: var(--muted); }
+.notification-message { font-size: 11px; color: #81958f; line-height: 1.5; }
+
+/* TRANSACTION ITEMS */
+.tx-modal-item { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer; }
+.tx-modal-item:last-child { border-bottom: none; }
+.tx-modal-icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; background: rgba(184,224,202,.06); color: var(--mint); display: flex; align-items: center; justify-content: center; margin-right: 12px; }
+.tx-modal-icon svg { width: 18px; height: 18px; }
+.tx-modal-info { flex: 1; min-width: 0; }
+.tx-modal-title { font-size: 12px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx-modal-desc { font-size: 9px; color: var(--muted); margin-top: 2px; }
+.tx-modal-amt { text-align: right; margin-left: 10px; }
+.tx-modal-amt strong { font-size: 12px; font-weight: 700; }
+.tx-modal-amt span { display: block; font-size: 8px; color: var(--muted); margin-top: 2px; }
+
+/* BOTTOM NAV */
+.bottom-nav{ 
+    position:fixed; 
+    left:0; 
+    right:0; 
+    bottom:0; 
+    z-index:1000; 
+    height:var(--nav-height); 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-around; 
+    background: #07151b; 
+    border-top:1px solid var(--line); 
+    padding:0 6px; 
+    padding-bottom:env(safe-area-inset-bottom); 
+    box-shadow:0 -10px 40px rgba(0,0,0,.3); 
+}
+
+.bottom-nav a{ 
+    flex:1; 
+    display:flex; 
+    flex-direction:column; 
+    align-items:center; 
+    justify-content:center; 
+    gap:3px; 
+    height:100%; 
+    color:#6a7f79; 
+    font-size:8px; 
+    font-weight:700; 
+    letter-spacing:.3px; 
+    border-radius:12px; 
+    transition:color .2s, background .2s; 
+    position:relative; 
+    min-width:0; 
+    padding:4px 0; 
+}
+
+.bottom-nav a svg{ width:20px; height:20px; flex-shrink:0; transition:transform .2s; }
+.bottom-nav a.active{ color:var(--mint); }
+.bottom-nav a.active svg{ transform:translateY(-1px); }
+.bottom-nav a.active::before{ content:""; position:absolute; top:0; left:50%; transform:translateX(-50%); width:22px; height:3px; border-radius:0 0 4px 4px; background:var(--mint); box-shadow:0 0 10px rgba(184,224,202,.6); }
+.bottom-nav a:active{ background:rgba(184,224,202,.06); }
+
+/* CONTENT */
+.content{ width:min(1280px,94%); margin:auto; padding:26px 0 30px; }
+.welcome{ display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; }
+.welcome-kicker{ color:var(--mint); font-size:9px; font-weight:800; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; }
+.welcome h1{ font-family:"Manrope",sans-serif; font-size:clamp(25px,3vw,37px); line-height:1.1; letter-spacing:-1px; }
+.welcome p{ margin-top:7px; color:#778d87; font-size:10px; }
+
+.overview-grid{ display:grid; grid-template-columns:1.35fr .65fr; gap:16px; }
+.dashboard-grid{ display:grid; grid-template-columns:1.35fr .65fr; gap:16px; }
+
+/* BALANCE CARD */
+.balance-card{ min-height:260px; position:relative; overflow:hidden; padding:29px; border-radius:21px; border:1px solid rgba(184,224,202,.14); background:radial-gradient(circle at 90% 0%, rgba(184,224,202,.15), transparent 35%), linear-gradient(135deg, #123937, #0b2929 58%, #082020); box-shadow:var(--shadow); }
+.balance-top{ display:flex; align-items:center; justify-content:space-between; }
+.account-type{ color:#91a7a1; font-size:9px; text-transform:uppercase; letter-spacing:1.6px; }
+.status{ display:flex; align-items:center; gap:6px; padding:6px 9px; border-radius:30px; background:rgba(184,224,202,.07); color:var(--mint); font-size:8px; font-weight:700; }
+.status-dot{ width:5px; height:5px; border-radius:50%; background:var(--mint); box-shadow:0 0 10px rgba(184,224,202,.7); }
+.balance-label{ margin-top:43px; color:#829993; font-size:9px; text-transform:uppercase; letter-spacing:1.5px; }
+.balance-amount{ margin-top:6px; font-family:"Manrope",sans-serif; font-size:clamp(26px,4vw,43px); font-weight:700; letter-spacing:-1px; display:flex; align-items:baseline; flex-wrap:wrap; min-height:52px; gap:0; word-break:break-all; }
+.balance-meta{ margin-top:8px; display:flex; align-items:center; gap:8px; }
+.balance-meta span{ color:#6f8881; font-size:9px; }
+.balance-meta strong{ color:var(--mint); font-size:9px; }
+.balance-actions{ position:absolute; left:29px; bottom:25px; display:flex; gap:8px; }
+.action-btn{ display:flex; align-items:center; gap:7px; padding:10px 13px; border:1px solid rgba(255,255,255,.11); border-radius:8px; background:rgba(255,255,255,.045); color:#dbe6e2; font-size:9px; font-weight:700; }
+.action-btn svg{ width:13px; }
+
+/* QUICK STATS */
+.quick-stats{ display:grid; gap:16px; }
+.stat-card{ min-height:122px; padding:22px; border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.035); }
+.stat-head{ display:flex; justify-content:space-between; align-items:center; }
+.stat-label{ color:#718780; font-size:9px; text-transform:uppercase; letter-spacing:1.3px; }
+.stat-icon{ width:31px; height:31px; display:flex; align-items:center; justify-content:center; border-radius:9px; background:rgba(184,224,202,.06); color:var(--mint); }
+.stat-icon svg{ width:15px; }
+.stat-value{ margin-top:13px; font-family:"Manrope",sans-serif; font-size:clamp(18px,3vw,21px); font-weight:700; display:flex; align-items:baseline; min-height:26px; flex-wrap:wrap; word-break:break-all; }
+.stat-change{ margin-top:4px; color:#6e8880; font-size:8px; }
+.stat-change.positive{ color:var(--mint); }
+
+/* SECTION HEADERS */
+.section-header{ margin-top:35px; margin-bottom:15px; display:flex; align-items:center; justify-content:space-between; }
+.section-header h2{ font-family:"Manrope",sans-serif; font-size:16px; }
+.view-all{ color:var(--mint); font-size:9px; font-weight:700; background: none; border: none; cursor: pointer; }
+
+/* TRANSACTIONS */
+.transactions{ border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.032); overflow:hidden; }
+.transaction{ display:flex; align-items:center; padding:16px 19px; border-bottom:1px solid rgba(255,255,255,.055); cursor:pointer; transition:background .2s ease; }
+.transaction:hover{ background:rgba(255,255,255,.05); }
+.transaction:last-child{ border-bottom:none; }
+.transaction-icon{ width:38px; height:38px; margin-right:12px; display:flex; align-items:center; justify-content:center; border-radius:11px; background:rgba(184,224,202,.055); color:#a7cbbb; }
+.transaction-icon svg{ width:16px; }
+.transaction-main{ flex:1; min-width:0; }
+.transaction-main strong{ display:block; font-size:10px; font-weight:700; }
+.transaction-main span{ display:block; margin-top:4px; color:#637972; font-size:8px; }
+.transaction-amount{ text-align:right; }
+.transaction-amount strong{ display:block; font-size:10px; }
+.transaction-amount span{ display:block; margin-top:4px; color:#657a74; font-size:8px; }
+.income{ color:var(--mint); }
+.expense{ color:#d8e0dd; }
+
+/* SECTION-LEVEL LOADING */
+.tx-loading-state{ display:none; align-items:center; justify-content:center; gap:10px; padding:28px 19px; min-height:72px; color:var(--muted); font-size:10px; letter-spacing:.3px; }
+.tx-loading-state.show{ display:flex; }
+.tx-spinner{ width:18px; height:18px; border-radius:50%; border:2px solid rgba(184,224,202,.15); border-top-color:var(--mint); border-right-color:rgba(184,224,202,.55); animation:txSpin .8s linear infinite; flex-shrink:0; }
+@keyframes txSpin{ to{ transform:rotate(360deg); } }
+
+/* BANK CARD FLIP */
+.card-flip{ width:100%; min-height:252px; perspective:1200px; cursor:pointer; outline:none; }
+.bank-card{ width:100%; min-height:252px; position:relative; transform-style:preserve-3d; transition:transform .7s cubic-bezier(.2,.75,.25,1); border-radius:18px; box-shadow:var(--shadow); }
+.card-flip.flipped .bank-card{ transform:rotateY(180deg); }
+.card-face{ position:absolute; inset:0; width:100%; min-height:252px; border-radius:18px; overflow:hidden; backface-visibility:hidden; -webkit-backface-visibility:hidden; background:linear-gradient(145deg, #1b5e52, #103b38 58%, #092625); border:1px solid rgba(184,224,202,.15); }
+.card-front{ padding:24px; }
+.card-back{ transform:rotateY(180deg); padding:24px; }
+.bank-card-top{ display:flex; justify-content:space-between; align-items:center; }
+.card-title{ font-size:9px; letter-spacing:1.4px; text-transform:uppercase; color:#b4ccc4; }
+.contactless{ width:19px; height:19px; }
+.card-number{ margin-top:54px; font-family:"Manrope",sans-serif; font-size:17px; letter-spacing:3px; }
+.card-details{ margin-top:22px; display:flex; justify-content:space-between; }
+.card-details small{ display:block; color:#77978e; font-size:6px; text-transform:uppercase; letter-spacing:1px; }
+.card-details strong{ display:block; margin-top:4px; font-size:8px; }
+.card-chip{ width:35px; height:26px; margin-top:19px; border-radius:6px; background:linear-gradient(135deg, #d8c58e, #a98c52); }
+.magnetic-stripe{ width:calc(100% + 48px); height:48px; margin:-24px -24px 22px; background:#090f10; }
+.signature-label{ color:#77978e; font-size:6px; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px; }
+.signature-row{ display:flex; gap:8px; }
+.signature-panel{ height:29px; flex:1; display:flex; align-items:center; padding:0 10px; border-radius:3px; background:#e7e5d8; color:#34403d; font-size:8px; font-style:italic; }
+.cvv-box{ width:48px; height:29px; display:flex; align-items:center; justify-content:center; border-radius:3px; background:#f5f3e9; color:#111; font-size:9px; font-weight:800; }
+.back-info{ margin-top:15px; display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; }
+.back-info small{ display:block; color:#77978e; font-size:6px; text-transform:uppercase; letter-spacing:1px; }
+.back-info strong{ display:block; margin-top:3px; color:#dbe6e2; font-size:8px; }
+.flip-hint{ position:absolute; right:18px; bottom:14px; color:rgba(220,240,232,.5); font-size:6px; letter-spacing:.7px; text-transform:uppercase; }
+
+/* SPENDING */
+.spending-card{ padding:23px; border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.032); }
+.spending-total{ margin-top:8px; font-family:"Manrope",sans-serif; font-size:24px; font-weight:700; display:flex; align-items:baseline; min-height:29px; }
+.progress{ height:7px; margin-top:18px; border-radius:20px; overflow:hidden; background:rgba(255,255,255,.07); }
+.progress span{ display:block; width:0%; height:100%; border-radius:20px; background:linear-gradient(90deg, var(--green2), var(--mint)); transition:width .5s ease; }
+.spending-row{ margin-top:17px; display:flex; justify-content:space-between; color:#70867f; font-size:8px; }
+.spending-row strong{ color:#c5d1cd; }
+
+/* SKELETON LOADER */
+.skel{ display:inline-block; color:transparent !important; background:linear-gradient(90deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.12) 50%, rgba(255,255,255,.05) 100%); background-size:200% 100%; animation:skel 1.6s ease-in-out infinite; border-radius:6px; user-select:none; pointer-events:none; min-width:60px; }
+@keyframes skel{ 0% { background-position:200% 0; } 100% { background-position:-200% 0; } }
+.skel-name{ display:inline-block; min-width:190px; height:0.95em; border-radius:8px; background:linear-gradient(90deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.14) 50%, rgba(255,255,255,.06) 100%); background-size:200% 100%; animation:skel 1.6s ease-in-out infinite; user-select:none; pointer-events:none; vertical-align:middle; }
+.skel-balance{ display:inline-block; min-width:220px; height:0.85em; border-radius:10px; background:linear-gradient(90deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.16) 50%, rgba(255,255,255,.07) 100%); background-size:200% 100%; animation:skel 1.6s ease-in-out infinite; user-select:none; pointer-events:none; vertical-align:middle; }
+.skel-stat{ display:inline-block; min-width:110px; height:0.8em; border-radius:6px; background:linear-gradient(90deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.13) 50%, rgba(255,255,255,.06) 100%); background-size:200% 100%; animation:skel 1.6s ease-in-out infinite; user-select:none; pointer-events:none; vertical-align:middle; }
+.skel-spend{ display:inline-block; min-width:130px; height:0.8em; border-radius:6px; background:linear-gradient(90deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.13) 50%, rgba(255,255,255,.06) 100%); background-size:200% 100%; animation:skel 1.6s ease-in-out infinite; user-select:none; pointer-events:none; vertical-align:middle; }
+
+/* MODALS */
+#trfBackdrop, #receiptBackdrop { position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(8px); z-index:9998; opacity:0; visibility:hidden; transition:opacity .22s ease, visibility .22s ease; }
+#trfBackdrop.show, #receiptBackdrop.show { opacity:1; visibility:visible; }
+.trf-modal-box, .receipt-modal-box { position:fixed; left:50%; top:50%; transform:translate(-50%,-46%) scale(.97); width:min(92%,420px); max-height:90vh; overflow-y:auto; background:#0a1c30; border:1px solid rgba(184,224,202,.16); border-radius:20px; padding:26px 22px; z-index:9999; color:#fff; box-shadow:0 30px 80px rgba(0,0,0,.45); opacity:0; visibility:hidden; transition:transform .25s ease, opacity .25s ease, visibility .25s ease; }
+.trf-modal-box.show, .receipt-modal-box.show { transform:translate(-50%,-50%) scale(1); opacity:1; visibility:visible; }
+
+/* RESPONSIVE */
+@media(max-width:1050px){ .overview-grid, .dashboard-grid{ grid-template-columns:1fr; } }
+@media(max-width:760px){
+    .topbar{ height:58px; padding:0 16px; }
+    .profile-section .avatar{ width:38px; height:38px; font-size:12px; }
+    .content{ width:calc(100% - 28px); padding:22px 0 26px; }
+    .welcome{ align-items:flex-start; flex-direction:column; }
+    .welcome h1{ font-size:27px; }
+    .balance-card{ min-height:275px; padding:24px; }
+    .balance-actions{ left:24px; bottom:22px; }
+    .quick-stats{ grid-template-columns:1fr 1fr; }
+    .stat-card{ min-height:112px; padding:17px; }
+    .card-flip, .bank-card, .card-face{ min-height:240px; }
+}
+@media(max-width:480px){
+    .topbar-right .icon-button:nth-child(2){ display:none; }
+    .balance-amount{ font-size:30px; }
+    .balance-actions{ width:calc(100% - 48px); display:grid; grid-template-columns:1fr 1fr; }
+    .action-btn{ justify-content:center; }
+    .quick-stats{ gap:10px; }
+    .transaction{ padding:14px 13px; }
+    .transaction-main strong, .transaction-amount strong{ font-size:9px; }
+    .transaction-icon{ width:34px; height:34px; margin-right:9px; }
+    .card-front{ padding:21px; }
+    .card-number{ margin-top:47px; font-size:14px; letter-spacing:2px; }
+    .card-details{ margin-top:18px; }
+}
+@media(prefers-reduced-motion:reduce){ *, *::before, *::after{ transition:none!important; animation:none!important; } }
+</style>
+</head>
+<body>
+
+<!-- FULL SCREEN PAGE LOADER (Hidden by default) -->
+<div id="instantLoader">
+    <div class="loader-content">
+        <div class="loader-ring"></div>
+        <div class="loader-title">Loading settings</div>
+        <div class="loader-subtitle">Securely connecting to Crest United</div>
+    </div>
+</div>
+
+<div class="dashboard">
+
+<!-- TOPBAR -->
+<header class="topbar">
+    <div class="profile-section">
+        <button class="avatar" id="topAvatar" type="button" aria-label="Profile">PO</button>
+    </div>
+    <div class="topbar-right">
+        <button class="icon-button" id="openNotificationsBtn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 9a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+        </button>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<div class="content" id="dashboard">
+<section class="welcome">
+<div>
+    <div class="welcome-kicker">Personal Banking</div>
+    <h1 id="welcomeName">Good morning, Prince.</h1>
+    <p>Here's your financial overview.</p>
+</div>
+</section>
+
+<section class="overview-grid">
+<div class="balance-card">
+<div class="balance-top">
+    <div class="account-type">Primary Checking Account</div>
+    <div class="status" id="accountStatus"><span class="status-dot"></span><span id="accountStatusText">Active</span></div>
+</div>
+<div class="balance-label">Available balance</div>
+<div class="balance-amount" id="balance"><span class="skel-balance"></span></div>
+<div class="balance-meta">
+    <strong id="balanceChange" style="color:var(--muted);">Loading...</strong>
+    <span>net this month</span>
+</div>
+<div class="balance-actions">
+<button class="action-btn" type="button" data-action="transfer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg>Send Money</button>
+<button class="action-btn" type="button" data-action="payments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg>Add Money</button>
+</div>
+</div>
+
+<div class="quick-stats">
+<div class="stat-card" id="savingsCard" style="cursor:pointer;">
+<div class="stat-head"><span class="stat-label">Total Savings</span><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19h16"/><path d="M5 19V9"/><path d="M9 19V9"/><path d="M15 19V9"/><path d="M19 19V9"/><path d="M3 9l9-5 9 5"/></svg></div></div>
+<div class="stat-value" id="savingsBalance"><span class="skel-stat"></span></div>
+<div class="stat-change positive" id="savingsChange">Savings account</div>
+</div>
+<div class="stat-card">
+<div class="stat-head"><span class="stat-label">Monthly Spending</span><div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M7 15l4-5 3 3 5-7"/></svg></div></div>
+<div class="stat-value" id="monthlySpending"><span class="skel-stat"></span></div>
+<div class="stat-change" id="spendingChange">Calculating...</div>
+</div>
+</div>
+</section>
+
+<div class="dashboard-grid">
+<section id="transactions">
+<div class="section-header">
+    <h2>Recent Transactions</h2>
+    <button class="view-all" id="openTransactionsBtn">View all</button>
+</div>
+<div class="transactions">
+    <div class="tx-loading-state show" id="transactionsLoading">
+        <div class="tx-spinner"></div>
+        <span>Loading transactions…</span>
+    </div>
+    <div id="transactionsList" style="display: none;">
+        <!-- Rendered via dashboard.js -->
+    </div>
+</div>
+</section>
+
+<div>
+<section id="cards">
+<div class="section-header"><h2>Your Card</h2></div>
+<div class="card-flip" id="bankCard" tabindex="0" role="button" aria-label="Flip card to view the back">
+<div class="bank-card">
+<div class="card-face card-front">
+<div class="bank-card-top"><span class="card-title">Crest United</span><svg class="contactless" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 9a4 4 0 010 6"/><path d="M11 7a7 7 0 010 10"/><path d="M14 5a10 10 0 010 14"/></svg></div>
+<div class="card-chip"></div>
+<div class="card-number" id="cardNumber">•••• •••• •••• ••••</div>
+<div class="card-details">
+<div><small>Cardholder</small><strong id="cardholderName">Prince</strong></div>
+<div><small>Expires</small><strong id="cardExpiry">12/28</strong></div>
+<div><small>Type</small><strong id="cardType">DEBIT</strong></div>
+</div>
+<div class="flip-hint">Tap card to flip</div>
+</div>
+<div class="card-face card-back">
+<div class="magnetic-stripe"></div>
+<div class="signature-label">Authorized Signature</div>
+<div class="signature-row"><div class="signature-panel" id="signatureName">Prince</div><div class="cvv-box" id="cardCVV">•••</div></div>
+<div class="back-info">
+<div><small>Cardholder</small><strong id="backCardholder">Prince</strong></div>
+<div><small>Card Number</small><strong id="backCardNumber">•••• 1234</strong></div>
+<div><small>Expires</small><strong id="backCardExpiry">12/28</strong></div>
+<div><small>Card Type</small><strong id="backCardType">DEBIT</strong></div>
+</div>
+<div class="flip-hint">Tap card to flip back</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="analytics">
+<div class="section-header"><h2>Monthly Budget</h2><span class="view-all" id="budgetMonth">September</span></div>
+<div class="spending-card">
+<div class="stat-label">Total spending</div>
+<div class="spending-total" id="budgetSpending">$0.00</div>
+<div class="progress"><span id="budgetProgress" style="width: 0%;"></span></div>
+<div class="spending-row"><span>Used</span><strong id="budgetPercent">0%</strong></div>
+<div class="spending-row"><span>Monthly limit</span><strong id="budgetLimit">$5,000.00</strong></div>
+</div>
+</section>
+</div>
+</div>
+</div>
+
+<!-- =========================================================
+     BOTTOM NAVIGATION
+========================================================= -->
+<nav class="bottom-nav" aria-label="Main navigation">
+    <a href="#dashboard" class="active" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <span>Home</span>
+    </a>
+    
+    <a href="get-card.html" data-page="cards">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        <span>Get Card</span>
+    </a>
+    
+    <!-- UPDATED: Links to transfer.html -->
+    <a href="transfer.html" data-page="transfer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8l7-5 7 5"/><path d="M5 16l7 5 7-5"/></svg>
+        <span>Transfer</span>
+    </a>
+    
+    <a href="profile.html?from=dashboard" data-page="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>
+        <span>Profile</span>
+    </a>
+
+    <a href="settings.html" data-page="settings" onclick="triggerInstantLoader(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Settings</span>
+    </a>
+</nav>
+
+<!-- =========================================================
+     NOTIFICATION MODAL (BOTTOM SHEET)
+========================================================= -->
+<div class="bottom-sheet-backdrop" id="notificationBackdrop"></div>
+<div class="bottom-sheet" id="notificationModal">
+    <div class="modal-drag-handle"></div>
+    <div class="modal-header">
+        <h2>Notifications</h2>
+        <button class="modal-close-btn" id="closeNotificationBtn" aria-label="Close notifications">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <div class="modal-body" id="notificationList">
+        <div style="text-align:center;padding:40px 20px;color:#81958f;">
+            <p style="font-size:14px;">Loading notifications...</p>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     TRANSACTIONS MODAL (BOTTOM SHEET)
+========================================================= -->
+<div class="bottom-sheet-backdrop" id="transactionsBackdrop"></div>
+<div class="bottom-sheet" id="transactionsModal">
+    <div class="modal-drag-handle"></div>
+    <div class="modal-header">
+        <h2>All Transactions</h2>
+        <button class="modal-close-btn" id="closeTransactionsBtn" aria-label="Close transactions">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <div class="modal-body" id="transactionsModalList">
+        <div style="text-align:center;padding:40px 20px;color:#81958f;">
+            <p style="font-size:14px;">Loading transactions...</p>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     SAVINGS PIN MODAL (BOTTOM SHEET)
+========================================================= -->
+<div class="bottom-sheet-backdrop" id="savingsPinBackdrop"></div>
+<div class="bottom-sheet" id="savingsPinModal">
+    <div class="modal-drag-handle"></div>
+    <div class="modal-header">
+        <h2>Security Check</h2>
+        <button class="modal-close-btn" id="closeSavingsPinBtn" aria-label="Close">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <div class="modal-body" style="padding: 24px 20px 40px;">
+        <p style="font-size:13px; color:#81958f; text-align:center; margin-bottom:20px;">Enter your 4-digit PIN to access your Savings details.</p>
+        
+        <div style="display:flex; justify-content:center; gap:12px; margin-bottom:20px;">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-input" id="pin-1" style="width:52px; height:60px; border-radius:12px; border:1px solid rgba(184,224,202,.2); background:rgba(255,255,255,.05); color:#fff; font-size:24px; text-align:center; outline:none; transition:border-color .2s;">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-input" id="pin-2" style="width:52px; height:60px; border-radius:12px; border:1px solid rgba(184,224,202,.2); background:rgba(255,255,255,.05); color:#fff; font-size:24px; text-align:center; outline:none; transition:border-color .2s;">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-input" id="pin-3" style="width:52px; height:60px; border-radius:12px; border:1px solid rgba(184,224,202,.2); background:rgba(255,255,255,.05); color:#fff; font-size:24px; text-align:center; outline:none; transition:border-color .2s;">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-input" id="pin-4" style="width:52px; height:60px; border-radius:12px; border:1px solid rgba(184,224,202,.2); background:rgba(255,255,255,.05); color:#fff; font-size:24px; text-align:center; outline:none; transition:border-color .2s;">
+        </div>
+
+        <div id="pinError" style="color:#d98b8b; font-size:12px; text-align:center; min-height:18px; margin-bottom:10px;"></div>
+        
+        <button id="verifyPinBtn" style="width:100%; height:48px; border:0; border-radius:12px; background:linear-gradient(145deg,#b8e0ca,#75b79d); color:#09201d; font-weight:800; font-size:14px; cursor:pointer;">Unlock Savings</button>
+    </div>
+</div>
+
+<!-- SAVINGS DETAILS MODAL -->
+<div class="bottom-sheet" id="savingsDetailsModal" style="z-index: 10000;">
+    <div class="modal-drag-handle"></div>
+    <div class="modal-header">
+        <h2>Savings Account</h2>
+        <button class="modal-close-btn" id="closeSavingsDetailsBtn" aria-label="Close savings">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <div class="modal-body" style="padding-bottom:40px;">
+        <div style="text-align:center; padding:20px 0;">
+            <div style="font-size:11px; text-transform:uppercase; color:#81958f; letter-spacing:1px; margin-bottom:8px;">Total Available</div>
+            <div style="font-family:'Manrope',sans-serif; font-size:36px; font-weight:800; color:var(--mint);" id="modalSavingsBalance">$0.00</div>
+        </div>
+        
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
+            <button class="action-btn" style="justify-content:center; padding:16px; font-size:12px;" onclick="alert('Transfer from savings coming soon!')">Transfer to Checking</button>
+            <button class="action-btn" style="justify-content:center; padding:16px; font-size:12px;" onclick="alert('Withdraw to external bank coming soon!')">Withdraw Funds</button>
+        </div>
+    </div>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div id="receiptBackdrop"></div>
+<div id="receiptModal" class="receipt-modal-box">
+    <div id="receiptContent" style="background:#fff; color:#000; padding:24px; border-radius:12px; font-family:'DM Sans',sans-serif; width:100%; max-width:360px; margin:0 auto; box-shadow:0 10px 30px rgba(0,0,0,.2);">
+        
+        <div style="text-align:center; border-bottom:2px dashed #e5e5e5; padding-bottom:20px; margin-bottom:20px;">
+            <div style="font-size:20px; font-weight:800; color:#0a2223; letter-spacing:1px; margin-bottom:4px;">CREST UNITED</div>
+            <div style="font-size:10px; font-weight:600; color:#c9a96b; letter-spacing:3px;">BANK</div>
+            <div style="margin-top:15px; display:inline-block; background:rgba(30,98,86,.1); color:#1e6256; padding:6px 14px; border-radius:20px; font-size:11px; font-weight:700;">TRANSFER RECEIPT</div>
+        </div>
+        
+        <div style="text-align:center; margin-bottom:25px;">
+            <div style="font-size:10px; color:#666; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Amount Transferred</div>
+            <div id="receiptAmount" style="font-size:32px; font-weight:800; color:#07151b;">$0.00</div>
+            <div id="receiptStatus" style="display:inline-block; margin-top:8px; background:#e8f5e9; color:#2e7d32; padding:4px 10px; border-radius:6px; font-size:10px; font-weight:700;">Successful</div>
+        </div>
+
+        <div style="border-top:1px solid #eee; border-bottom:1px solid #eee; padding:15px 0; margin-bottom:15px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="font-size:11px; color:#666;">Date</span><span id="receiptDate" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="font-size:11px; color:#666;">Reference</span><span id="receiptRef" style="font-size:11px; font-weight:600;">—</span></div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <div style="font-size:9px; color:#999; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; font-weight:700;">Recipient Details</div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">Account Name</span><span id="receiptAccountName" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">Bank Name</span><span id="receiptBank" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">Account Number</span><span id="receiptTo" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">SWIFT Code</span><span id="receiptSwift" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">Routing Number</span><span id="receiptRouting" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="font-size:11px; color:#666;">Description</span><span id="receiptDesc" style="font-size:11px; font-weight:600;">—</span></div>
+        </div>
+
+        <div style="text-align:center; font-size:9px; color:#999; line-height:1.5;">This is an official electronic receipt for your transfer.<br>Thank you for banking with Crest United.</div>
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:20px;">
+        <button id="downloadReceiptBtn" style="flex:1; height:48px; border:0; border-radius:12px; background:linear-gradient(145deg,#b8e0ca,#75b79d); color:#09201d; font-weight:800; font-size:14px; cursor:pointer;">Download Receipt</button>
+        <button id="closeReceiptBtn" style="width:48px; height:48px; border:0; border-radius:12px; background:rgba(255,255,255,.1); color:#fff; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+</div>
+
+<script>
+    function triggerInstantLoader(event) {
+        event.preventDefault();
+        const loader = document.getElementById('instantLoader');
+        const href = event.currentTarget.getAttribute('href');
+        loader.classList.add('active');
+        setTimeout(() => { window.location.href = href; }, 100);
+    }
+
+    // =========================================================
+    // MODAL CONTROLS
+    // =========================================================
+    function setupBottomSheet(btnId, modalId, backdropId, closeBtnId) {
+        const btn = document.getElementById(btnId);
+        const modal = document.getElementById(modalId);
+        const backdrop = document.getElementById(backdropId);
+        const closeBtn = document.getElementById(closeBtnId);
+
+        function open() {
+            modal.classList.add('show');
+            backdrop.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        function close() {
+            modal.classList.remove('show');
+            backdrop.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        if(btn) btn.addEventListener('click', open);
+        if(closeBtn) closeBtn.addEventListener('click', close);
+        if(backdrop) backdrop.addEventListener('click', close);
+        
+        return { open, close };
+    }
+
+    // Initialize standard modals
+    const notifControls = setupBottomSheet('openNotificationsBtn', 'notificationModal', 'notificationBackdrop', 'closeNotificationBtn');
+    const txControls = setupBottomSheet('openTransactionsBtn', 'transactionsModal', 'transactionsBackdrop', 'closeTransactionsBtn');
+
+    // FORCE HOME TAB TO BE ACTIVE AND CLEAR OLD STATE
+    document.addEventListener('DOMContentLoaded', () => {
+        localStorage.removeItem("capitalCrestActivePage");
+        document.querySelectorAll('.bottom-nav a').forEach(link => link.classList.remove('active'));
+        const homeBtn = document.querySelector('.bottom-nav a[data-page="dashboard"]');
+        if(homeBtn) homeBtn.classList.add('active');
+    });
+</script>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Crest United Bank | Premium Cards</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --ink:#07151b; --deep:#0a2223; --deep2:#103536; --green:#1e6256; --green2:#2c806c;
+    --mint:#b8e0ca; --cream:#f5f2e8; --white:#fff; --text:#eef5f1; --muted:#8fa39d; --gold:#c9a96b;
+    --line:rgba(255,255,255,.08); --card:rgba(255,255,255,.045); --danger:#d98b8b; --shadow:0 25px 70px rgba(0,0,0,.22);
+    --nav-height:64px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ background:#07151b; scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body{ min-height:100vh; min-height:100dvh; font-family:"DM Sans",sans-serif; color:var(--text); background:radial-gradient(circle at 10% 0%, rgba(44,128,108,.13), transparent 28%), linear-gradient(135deg, #07151b, #092526 55%, #0b2929); overflow-x:hidden; -webkit-tap-highlight-color:transparent; padding-bottom:calc(var(--nav-height) + 10px); }
+a{ color:inherit; text-decoration:none; }
+button, input, select, textarea{ font-family:inherit; }
+button{ cursor:pointer; }
+
+/* TOPBAR */
+.topbar{ height:64px; position:sticky; top:0; z-index:500; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid var(--line); background:rgba(7,21,27,.85); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+.profile-section{ display:flex; align-items:center; }
+.profile-section .avatar{ width:42px; height:42px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:50%; background:linear-gradient(145deg, var(--mint), var(--green2)); color:#09201d; font-size:13px; font-weight:800; border:none; box-shadow:0 0 0 2px rgba(184,224,202,.12); transition:box-shadow .2s; }
+.profile-section .avatar:hover{ box-shadow:0 0 0 3px rgba(184,224,202,.25); }
+
+.topbar-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.icon-button{ width:36px; height:36px; border:1px solid var(--line); border-radius:10px; background:rgba(255,255,255,.025); color:#9aada7; display:flex; align-items:center; justify-content:center; transition:background .2s, color .2s; }
+.icon-button:hover{ background:rgba(184,224,202,.08); color:var(--mint); }
+.icon-button svg{ width:16px; }
+
+/* MODAL SHARED STYLES */
+.bottom-sheet-backdrop { position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease; }
+.bottom-sheet-backdrop.show { opacity: 1; visibility: visible; }
+.bottom-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9999; background: #0a1c30; border-radius: 24px 24px 0 0; border-top: 1px solid rgba(184,224,202,.15); box-shadow: 0 -20px 60px rgba(0,0,0,.5); transform: translateY(100%); transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1); max-height: 85vh; display: flex; flex-direction: column; }
+.bottom-sheet.show { transform: translateY(0); }
+.modal-drag-handle { width: 40px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.15); margin: 12px auto 4px; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px 16px; border-bottom: 1px solid var(--line); }
+.modal-header h2 { font-family: "Manrope", sans-serif; font-size: 16px; font-weight: 700; }
+.modal-close-btn { background: none; border: none; color: var(--muted); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+.modal-close-btn:hover { background: rgba(255,255,255,.05); color: #fff; }
+.modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; scrollbar-width: none; }
+.modal-body::-webkit-scrollbar { display: none; }
+
+.notification-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer; }
+.notification-item:last-child { border-bottom: none; padding-bottom: 30px; }
+.notification-icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; background: rgba(184,224,202,.06); color: var(--mint); display: flex; align-items: center; justify-content: center; }
+.notification-icon svg { width: 18px; height: 18px; }
+.notification-content { flex: 1; }
+.notification-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.notification-title { font-size: 12px; font-weight: 700; color: #fff; }
+.notification-time { font-size: 9px; color: var(--muted); }
+.notification-message { font-size: 11px; color: #81958f; line-height: 1.5; }
+
+/* =========================================================
+   BOTTOM NAVIGATION (SOLID)
+========================================================= */
+.bottom-nav{ 
+    position:fixed; 
+    left:0; 
+    right:0; 
+    bottom:0; 
+    z-index:1000; 
+    height:var(--nav-height); 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-around; 
+    background: #07151b; /* SOLID BACKGROUND */
+    border-top:1px solid var(--line); 
+    padding:0 6px; 
+    padding-bottom:env(safe-area-inset-bottom); 
+    box-shadow:0 -10px 40px rgba(0,0,0,.3); 
+}
+
+.bottom-nav a{ 
+    flex:1; 
+    display:flex; 
+    flex-direction:column; 
+    align-items:center; 
+    justify-content:center; 
+    gap:3px; 
+    height:100%; 
+    color:#6a7f79; 
+    font-size:8px; 
+    font-weight:700; 
+    letter-spacing:.3px; 
+    border-radius:12px; 
+    transition:color .2s, background .2s; 
+    position:relative; 
+    min-width:0; 
+    padding:4px 0; 
+}
+
+.bottom-nav a svg{ 
+    width:20px; 
+    height:20px; 
+    flex-shrink:0; 
+    transition:transform .2s; 
+}
+
+.bottom-nav a.active{ 
+    color:var(--mint); 
+}
+
+.bottom-nav a.active svg{ 
+    transform:translateY(-1px); 
+}
+
+.bottom-nav a.active::before{ 
+    content:""; 
+    position:absolute; 
+    top:0; 
+    left:50%; 
+    transform:translateX(-50%); 
+    width:22px; 
+    height:3px; 
+    border-radius:0 0 4px 4px; 
+    background:var(--mint); 
+    box-shadow:0 0 10px rgba(184,224,202,.6); 
+}
+
+.bottom-nav a:active{ 
+    background:rgba(184,224,202,.06); 
+}
+
+/* CONTENT */
+.content{ width:100%; padding:26px 0 30px; display: flex; flex-direction: column; align-items: center; }
+.header-text{ text-align: center; margin-bottom: 24px; padding: 0 20px; }
+.header-text h2{ font-family: "Manrope", sans-serif; font-size: 24px; margin-bottom: 8px; letter-spacing: -.5px; }
+.header-text p{ color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+/* CAROUSEL */
+.carousel-wrap{ width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; padding: 10px 0 30px; }
+.carousel-wrap::-webkit-scrollbar { display: none; }
+.carousel-inner{ display: flex; gap: 16px; padding: 0 20px; width: max-content; }
+.card-slide{ scroll-snap-align: center; width: 300px; flex-shrink: 0; }
+
+/* PREMIUM CARD DESIGNS */
+.premium-card{ width: 100%; height: 190px; border-radius: 18px; padding: 22px; position: relative; overflow: hidden; transition: transform .3s ease, box-shadow .3s ease; box-shadow: 0 10px 30px rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.1); }
+.card-slide.active .premium-card{ transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,.5); border-color: rgba(255,255,255,.3); }
+
+/* Card Themes */
+.theme-debit{ background: linear-gradient(135deg, #1b5e52, #0b2929); }
+.theme-credit{ background: linear-gradient(135deg, #4a5568, #1a202c); }
+.theme-black{ background: linear-gradient(135deg, #111, #000); border-color: rgba(201,169,107,.3); }
+.theme-diamond{ background: linear-gradient(135deg, #2b3a42, #839ca8, #2b3a42); border-color: rgba(255,255,255,.5); }
+.theme-unlimited-debit{ background: linear-gradient(135deg, #0f2b45, #081c2e); border-color: rgba(100,180,255,.3); }
+.theme-unlimited-credit{ background: linear-gradient(135deg, #2d1b3d, #160c1f); border-color: rgba(200,100,255,.3); }
+
+/* Card Inner Elements */
+.bank-card-top{ display:flex; justify-content:space-between; align-items:center; }
+.card-brand{ font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(255,255,255,.7); font-weight: 700; }
+.contactless{ width:20px; height:20px; color: rgba(255,255,255,.7); }
+.card-chip{ width:36px; height:26px; margin-top:24px; border-radius:5px; background:linear-gradient(135deg, #e6d5a7, #b89c61); }
+.theme-black .card-chip { background: linear-gradient(135deg, #fceabb, #f8b500); }
+.theme-diamond .card-chip { background: linear-gradient(135deg, #e0e0e0, #ffffff); }
+
+.card-number{ margin-top:24px; font-family:"Manrope",sans-serif; font-size:16px; letter-spacing:3px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,.5); }
+.card-bottom{ display: flex; justify-content: space-between; align-items: flex-end; margin-top: 18px; }
+.card-name{ font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,.8); }
+.card-tier-name{ position: absolute; top: 22px; right: 22px; font-size: 8px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; background: rgba(0,0,0,.3); backdrop-filter: blur(4px); }
+.theme-black .card-tier-name{ color: var(--gold); }
+.theme-diamond .card-tier-name{ color: #fff; background: rgba(0,0,0,.5); }
+
+/* DETAILS BOX */
+.details-box{ width: calc(100% - 40px); max-width: 400px; background: rgba(255,255,255,.035); border: 1px solid var(--line); padding: 24px; border-radius: 20px; margin-top: 10px; position: relative; }
+.details-header{ display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,.06); padding-bottom: 16px; }
+.details-title h3{ font-family: "Manrope", sans-serif; font-size: 20px; margin-bottom: 4px; }
+.details-title p{ font-size: 12px; color: var(--muted); }
+.details-fee{ text-align: right; }
+.details-fee span{ font-size: 10px; text-transform: uppercase; color: var(--muted); letter-spacing: 1px; }
+.details-fee strong{ display: block; font-size: 18px; color: var(--mint); font-family: "Manrope", sans-serif; margin-top: 2px; }
+
+.feature-list{ list-style: none; margin-bottom: 24px; }
+.feature-list li{ display: flex; align-items: center; gap: 10px; font-size: 13px; color: #cbd5d1; margin-bottom: 12px; }
+.feature-list svg{ width: 16px; height: 16px; color: var(--mint); flex-shrink: 0; }
+
+.form-group{ margin-bottom: 20px; }
+.form-group label{ display: block; font-size: 12px; color: #8fa39d; margin-bottom: 8px; }
+.form-group input{ width: 100%; height: 48px; border-radius: 12px; border: 1px solid rgba(184,224,202,.2); background: rgba(0,0,0,.2); color: #fff; padding: 0 16px; font-size: 16px; outline: none; transition: border-color .2s; }
+.form-group input:focus{ border-color: var(--mint); }
+
+.action-btn{ width: 100%; height: 52px; border: 0; border-radius: 14px; background: linear-gradient(145deg,#b8e0ca,#75b79d); color: #09201d; font-weight: 800; font-size: 15px; cursor: pointer; transition: opacity .2s, transform .1s; }
+.action-btn:active{ transform: scale(.98); }
+.action-btn:disabled{ opacity: .6; cursor: not-allowed; }
+
+#error-msg{ color: #d98b8b; font-size: 12px; text-align: center; margin-bottom: 12px; min-height: 16px; }
+
+/* SUCCESS STATE */
+#success-view{ display: none; text-align: center; padding: 40px 20px; width: 100%; max-width: 400px; }
+.success-icon{ width: 72px; height: 72px; background: rgba(184,224,202,.14); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--mint); font-size: 32px; box-shadow: 0 0 30px rgba(184,224,202,.2); }
+#success-view h3{ font-family: 'Manrope', sans-serif; font-size: 24px; margin-bottom: 8px; }
+#success-view p{ font-size: 14px; color: var(--muted); margin-bottom: 30px; line-height: 1.5; }
+
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+    <div class="profile-section">
+        <button class="avatar" type="button" onclick="window.location.href='dashboard.html'" aria-label="Back to Dashboard">PO</button>
+    </div>
+    <div class="topbar-right">
+        <button class="icon-button" id="openNotificationsBtn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 9a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+        </button>
+    </div>
+</header>
+
+<div class="content" id="main-content">
+    <div class="header-text">
+        <h2>Choose Your Card</h2>
+        <p>Swipe to explore our exclusive range of cards.</p>
+    </div>
+
+    <!-- CARD CAROUSEL -->
+    <div class="carousel-wrap" id="carousel">
+        <div class="carousel-inner" id="carouselInner">
+            <!-- Injected via JS -->
+        </div>
+    </div>
+
+    <!-- DYNAMIC DETAILS BOX -->
+    <div class="details-box">
+        <div class="details-header">
+            <div class="details-title">
+                <h3 id="selCardName">Debit Card</h3>
+                <p>Instant virtual issuance</p>
+            </div>
+            <div class="details-fee">
+                <span>Fee</span>
+                <strong id="selCardFee">$5.00</strong>
+            </div>
+        </div>
+
+        <ul class="feature-list" id="selCardFeatures">
+            <!-- Injected via JS -->
+        </ul>
+
+        <div class="form-group">
+            <label>Initial Deposit (Funds to load onto card)</label>
+            <input type="number" id="depositAmount" placeholder="Minimum $10.00" min="10" step="0.01">
+        </div>
+
+        <div id="error-msg"></div>
+        <button class="action-btn" id="submitBtn">Issue Card Now</button>
+    </div>
+</div>
+
+<!-- SUCCESS STATE -->
+<div id="success-view">
+    <div class="success-icon">✓</div>
+    <h3>Card Issued!</h3>
+    <p>Your new card has been created and your account balance was deducted successfully.</p>
+    <button class="action-btn" onclick="window.location.href='dashboard.html'">Return to Dashboard</button>
+</div>
+
+<!-- =========================================================
+     NOTIFICATION MODAL (BOTTOM SHEET)
+========================================================= -->
+<div class="bottom-sheet-backdrop" id="notificationBackdrop"></div>
+<div class="bottom-sheet" id="notificationModal">
+    <div class="modal-drag-handle"></div>
+    <div class="modal-header">
+        <h2>Notifications</h2>
+        <button class="modal-close-btn" id="closeNotificationBtn" aria-label="Close notifications">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <div class="modal-body" id="notificationList">
+        <div style="text-align:center;padding:40px 20px;color:#81958f;">
+            <p style="font-size:14px;">Loading notifications...</p>
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav" aria-label="Main navigation">
+    <a href="dashboard.html" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <span>Home</span>
+    </a>
+    
+    <a href="get-card.html" class="active" data-page="cards">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        <span>Get Card</span>
+    </a>
+    
+    <!-- UPDATED: Links to transfer.html -->
+    <a href="transfer.html" data-page="transfer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8l7-5 7 5"/><path d="M5 16l7 5 7-5"/></svg>
+        <span>Transfer</span>
+    </a>
+    
+    <a href="profile.html?from=dashboard" data-page="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>
+        <span>Profile</span>
+    </a>
+
+    <a href="settings.html" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Settings</span>
+    </a>
+</nav>
+
+<script>
+    const API_BASE = "https://capital-crest.onrender.com";
+
+    // CARD DATA
+    const cardTypes = [
+        { id: "debit", name: "Standard Debit", theme: "theme-debit", fee: 5.00, minDeposit: 10, features: ["Daily limit: $5,000", "No monthly maintenance fee", "Contactless payments enabled"] },
+        { id: "credit", name: "Platinum Credit", theme: "theme-credit", fee: 15.00, minDeposit: 50, features: ["Credit limit up to $5,000", "Cashback on all purchases", "Travel insurance included"] },
+        { id: "black", name: "Black Signature", theme: "theme-black", fee: 99.00, minDeposit: 500, features: ["Unlimited spending limit", "24/7 Dedicated concierge", "Airport lounge access worldwide"] },
+        { id: "diamond", name: "Diamond Elite", theme: "theme-diamond", fee: 199.00, minDeposit: 1000, features: ["Ultra-exclusive metal card", "5% Cashback on dining & travel", "Global VIP event invitations"] },
+        { id: "unlimited-debit", name: "Unlimited Debit", theme: "theme-unlimited-debit", fee: 49.00, minDeposit: 100, features: ["No daily transaction limits", "Zero foreign exchange fees", "Free global ATM withdrawals"] },
+        { id: "unlimited-credit", name: "Unlimited Credit", theme: "theme-unlimited-credit", fee: 149.00, minDeposit: 200, features: ["Adaptive credit limit", "Premium rewards program", "Comprehensive travel protection"] }
+    ];
+
+    let selectedCard = cardTypes[0];
+    let currentUserName = "YOUR NAME";
+
+    function getAccessToken(){
+        const keys = ["access_token", "accessToken", "supabase_access_token", "supabaseAccessToken", "token", "session", "capitalCrestToken"];
+        for(const key of keys){
+            const value = localStorage.getItem(key);
+            if(!value) continue;
+            try{
+                const parsed = JSON.parse(value);
+                if(parsed?.access_token) return parsed.access_token;
+                if(parsed?.session?.access_token) return parsed.session.access_token;
+                if(parsed?.data?.session?.access_token) return parsed.data.session.access_token;
+            }catch(error){ return value; }
+        }
+        return null;
+    }
+
+    async function apiRequest(endpoint, options = {}){
+        const token = getAccessToken();
+        if(!token) throw new Error("Authentication required");
+        
+        const headers = {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            ...(options.headers || {}),
+            Authorization: `Bearer ${token}`
+        };
+
+        const response = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+        const data = await response.json();
+        
+        if(!response.ok) throw new Error(data?.message || "Request failed");
+        return data;
+    }
+
+    // =========================================================
+    // NOTIFICATIONS LOGIC
+    // =========================================================
+    const READ_NOTIFS_KEY = "capitalCrestReadNotifications";
+
+    function getReadNotifications(){
+        try {
+            const saved = localStorage.getItem(READ_NOTIFS_KEY);
+            return saved ? JSON.parse(saved) : [];
+        } catch { return []; }
+    }
+
+    function markNotificationAsRead(id) {
+        const read = getReadNotifications();
+        if(!read.includes(String(id))) {
+            read.push(String(id));
+            localStorage.setItem(READ_NOTIFS_KEY, JSON.stringify(read));
+        }
+    }
+
+    function formatNotifTime(dateString) {
+        if(!dateString) return "";
+        const date = new Date(dateString);
+        if(isNaN(date.getTime())) return "";
+        const now = new Date();
+        const isToday = date.toDateString() === now.toDateString();
+        const yesterday = new Date(now);
+        yesterday.setDate(now.getDate() - 1);
+        const isYesterday = date.toDateString() === yesterday.toDateString();
+        const time = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        if(isToday) return `Today · ${time}`;
+        if(isYesterday) return `Yesterday · ${time}`;
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ` · ${time}`;
+    }
+
+    function getNotifIcon(type) {
+        const t = String(type || "").toLowerCase();
+        if(t.includes("login") || t.includes("security") || t.includes("password")) {
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>`;
+        }
+        if(t.includes("transfer") || t.includes("deposit") || t.includes("received")) {
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>`;
+        }
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 9a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>`;
+    }
+
+    function renderNotifications(notifications) {
+        const container = document.getElementById("notificationList");
+        if(!container) return;
+
+        if(!notifications || notifications.length === 0) {
+            container.innerHTML = `<div style="text-align:center;padding:40px 20px;color:#81958f;">
+                <p style="font-size:14px;">You're all caught up!</p>
+                <p style="font-size:11px;margin-top:5px;">No new notifications.</p>
+            </div>`;
+            return;
+        }
+
+        const readIds = getReadNotifications();
+
+        container.innerHTML = notifications.map(n => {
+            const isUnread = !readIds.includes(String(n.id));
+            const isSecurity = String(n.type || "").toLowerCase().includes("security");
+            
+            return `
+                <div class="notification-item" onclick="handleNotifClick(${n.id}, this)">
+                    <div class="notification-icon" style="${isSecurity ? 'color:#c9a96b;background:rgba(201,169,107,.06);' : ''}">
+                        ${getNotifIcon(n.type)}
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-top">
+                            <strong class="notification-title">${n.title || "Notification"}</strong>
+                            <span class="notification-time">${formatNotifTime(n.created_at)}</span>
+                        </div>
+                        <p class="notification-message">${n.message || n.body || ""}</p>
+                    </div>
+                    ${isUnread ? '<span class="unread-dot" style="width:6px;height:6px;border-radius:50%;background:var(--mint);flex-shrink:0;margin-top:5px;box-shadow:0 0 10px rgba(184,224,202,.65);"></span>' : ''}
+                </div>
+            `;
+        }).join("");
+    }
+
+    window.handleNotifClick = function(id, element) {
+        markNotificationAsRead(id);
+        const dot = element.querySelector('.unread-dot');
+        if(dot) dot.remove();
+    };
+
+    async function loadNotifications() {
+        try {
+            const res = await apiRequest("/api/notifications");
+            let list = [];
+            if(Array.isArray(res)) list = res;
+            else if(res?.notifications) list = res.notifications;
+            else if(res?.data) list = res.data;
+
+            list.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            renderNotifications(list);
+        } catch (err) {
+            console.warn("Could not load notifications", err);
+            renderNotifications([]);
+        }
+    }
+
+    // =========================================================
+    // CAROUSEL & CARD LOGIC
+    // =========================================================
+    async function loadUserProfile(){
+        try {
+            const me = await apiRequest("/api/auth/me");
+            const first = me.profile?.first_name || me.user?.first_name || "YOUR";
+            const last = me.profile?.surname || me.user?.last_name || "NAME";
+            currentUserName = `${first} ${last}`.toUpperCase();
+            
+            const avatarBtn = document.querySelector('.profile-section .avatar');
+            if(avatarBtn) {
+                avatarBtn.textContent = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+            }
+
+            renderCarousel(); 
+        } catch(err) {
+            console.warn("Could not load profile for preview");
+        }
+    }
+
+    function renderCarousel() {
+        const inner = document.getElementById("carouselInner");
+        inner.innerHTML = cardTypes.map((card, index) => `
+            <div class="card-slide ${index === 0 ? 'active' : ''}" data-id="${card.id}" data-index="${index}">
+                <div class="premium-card ${card.theme}">
+                    <div class="card-tier-name">${card.name}</div>
+                    <div class="bank-card-top">
+                        <span class="card-brand">Crest United</span>
+                        <svg class="contactless" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 9a4 4 0 010 6"/><path d="M11 7a7 7 0 010 10"/><path d="M14 5a10 10 0 010 14"/></svg>
+                    </div>
+                    <div class="card-chip"></div>
+                    <div class="card-number">•••• •••• •••• ••••</div>
+                    <div class="card-bottom">
+                        <span class="card-name">${currentUserName}</span>
+                    </div>
+                </div>
+            </div>
+        `).join("");
+
+        document.querySelectorAll(".card-slide").forEach(slide => {
+            slide.addEventListener("click", () => {
+                document.querySelectorAll(".card-slide").forEach(s => s.classList.remove("active"));
+                slide.classList.add("active");
+                
+                const index = Number(slide.dataset.index);
+                selectCard(cardTypes[index]);
+            });
+        });
+    }
+
+    function selectCard(card) {
+        selectedCard = card;
+        
+        document.getElementById("selCardName").textContent = card.name;
+        document.getElementById("selCardFee").textContent = "$" + card.fee.toFixed(2);
+        
+        const featureList = document.getElementById("selCardFeatures");
+        featureList.innerHTML = card.features.map(f => `
+            <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                ${f}
+            </li>
+        `).join("");
+
+        document.getElementById("depositAmount").placeholder = `Minimum $${card.minDeposit.toFixed(2)}`;
+    }
+
+    document.getElementById("submitBtn").addEventListener("click", async () => {
+        const amountInput = document.getElementById("depositAmount").value;
+        const amount = Number(amountInput);
+        const btn = document.getElementById("submitBtn");
+        const errEl = document.getElementById("error-msg");
+
+        errEl.textContent = "";
+
+        if (!amount || amount < selectedCard.minDeposit) {
+            errEl.textContent = `Minimum initial deposit for this card is $${selectedCard.minDeposit.toFixed(2)}`;
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Processing...";
+
+        try {
+            const res = await apiRequest("/api/cards/issue", {
+                method: "POST",
+                body: JSON.stringify({ 
+                    card_type: selectedCard.id,
+                    card_name: selectedCard.name,
+                    fee: selectedCard.fee,
+                    initial_deposit: amount 
+                })
+            });
+
+            if(res.success) {
+                document.getElementById("main-content").style.display = "none";
+                document.getElementById("success-view").style.display = "block";
+            }
+        } catch(err) {
+            errEl.textContent = err.message || "Unable to issue card. Please try again.";
+            btn.disabled = false;
+            btn.textContent = "Issue Card Now";
+        }
+    });
+
+    // =========================================================
+    // MODAL CONTROLS
+    // =========================================================
+    function setupBottomSheet(btnId, modalId, backdropId, closeBtnId) {
+        const btn = document.getElementById(btnId);
+        const modal = document.getElementById(modalId);
+        const backdrop = document.getElementById(backdropId);
+        const closeBtn = document.getElementById(closeBtnId);
+
+        function open() {
+            modal.classList.add('show');
+            backdrop.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        function close() {
+            modal.classList.remove('show');
+            backdrop.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        if(btn) btn.addEventListener('click', open);
+        if(closeBtn) closeBtn.addEventListener('click', close);
+        if(backdrop) backdrop.addEventListener('click', close);
+        
+        return { open, close };
+    }
+
+    // Initialize
+    const notifControls = setupBottomSheet('openNotificationsBtn', 'notificationModal', 'notificationBackdrop', 'closeNotificationBtn');
+    
+    renderCarousel();
+    selectCard(cardTypes[0]);
+    loadUserProfile();
+    loadNotifications();
+</script>
+</body>
+</html>

@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no,
+               viewport-fit=cover">
+<title>Crest United Bank | Create Account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+    --ink:#07151b;
+    --deep:#0b2425;
+    --deep2:#103536;
+    --green:#1e6256;
+    --green2:#2c806c;
+    --mint:#b8e0ca;
+    --white:#ffffff;
+    --text:#eef5f1;
+    --muted:#9eafaa;
+    --gold:#c9a96b;
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+html,
+body{
+    width:100%;
+    min-height:100%;
+    margin:0;
+    padding:0;
+    background:#07151b;
+}
+html{
+    background:#07151b;
+}
+body{
+    min-height:100vh;
+    min-height:100dvh;
+    font-family:"DM Sans",sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 15% 8%, rgba(44,128,108,.17), transparent 32%),
+        radial-gradient(circle at 90% 85%, rgba(201,169,107,.08), transparent 32%),
+        linear-gradient(135deg, #07151b 0%, #092326 52%, #0d3030 100%);
+    overflow-x:hidden;
+    overscroll-behavior:none;
+}
+body::before{
+    content:"";
+    position:fixed;
+    width:420px;
+    height:420px;
+    left:-230px;
+    top:15%;
+    border-radius:50%;
+    background:rgba(44,128,108,.09);
+    filter:blur(100px);
+    pointer-events:none;
+}
+body::after{
+    content:"";
+    position:fixed;
+    width:420px;
+    height:420px;
+    right:-230px;
+    bottom:0;
+    border-radius:50%;
+    background:rgba(201,169,107,.06);
+    filter:blur(100px);
+    pointer-events:none;
+}
+a{
+    color:inherit;
+    text-decoration:none;
+}
+button,
+input,
+select{
+    font-family:inherit;
+}
+
+/* =========================
+   PAGE
+========================= */
+.signup-page{
+    position:relative;
+    width:100%;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:
+        max(25px, env(safe-area-inset-top))
+        16px
+        max(25px, env(safe-area-inset-bottom));
+    isolation:isolate;
+}
+.signup-wrapper{
+    width:100%;
+    max-width:500px;
+}
+
+/* =========================
+   BRAND — ANIMATED HEXAGON RIBBON LOGO
+========================= */
+.signup-brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:22px;
+}
+
+.logo-hex-signup{
+    width:62px;
+    height:62px;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:14px;
+    filter:drop-shadow(0 0 20px rgba(44,128,108,.55));
+    transition:filter .45s cubic-bezier(.2,.75,.25,1);
+}
+.logo-hex-signup:hover{
+    filter:drop-shadow(0 0 30px rgba(184,224,202,.75));
+}
+.logo-hex-signup svg{
+    width:100%;
+    height:100%;
+    display:block;
+    overflow:visible;
+}
+
+/* Rotating gradient ring behind */
+.hex-aura{
+    position:absolute;
+    inset:-7px;
+    border-radius:50%;
+    background:conic-gradient(
+        from 0deg,
+        transparent,
+        rgba(201,169,107,.4),
+        transparent 30%,
+        rgba(184,224,202,.4),
+        transparent 60%,
+        transparent
+    );
+    animation:hexSpin 7s linear infinite;
+    filter:blur(5px);
+    opacity:.75;
+}
+@keyframes hexSpin{ to{ transform:rotate(360deg); } }
+
+/* Rotating hexagon outline */
+.hex-outline{
+    transform-origin:32px 32px;
+    animation:hexRotate 12s linear infinite;
+}
+@keyframes hexRotate{ to{ transform:rotate(360deg); } }
+
+/* Interlocking ribbon paths */
+.ribbon-a{
+    stroke-dasharray:120;
+    stroke-dashoffset:120;
+    animation:ribbonDrawA 3s cubic-bezier(.4,0,.2,1) forwards,
+              ribbonFloat 4s ease-in-out 3s infinite;
+}
+.ribbon-b{
+    stroke-dasharray:100;
+    stroke-dashoffset:100;
+    animation:ribbonDrawB 3s cubic-bezier(.4,0,.2,1) .5s forwards,
+              ribbonFloat 4s ease-in-out 3.5s infinite reverse;
+}
+@keyframes ribbonDrawA{ to{ stroke-dashoffset:0; } }
+@keyframes ribbonDrawB{ to{ stroke-dashoffset:0; } }
+@keyframes ribbonFloat{
+    0%,100%{ transform:translate(0,0); }
+    50%    { transform:translate(1px,-1px); }
+}
+
+/* Orbiting particles */
+.orbit{
+    transform-origin:32px 32px;
+    animation:orbitSpin 8s linear infinite;
+}
+.orbit-2{
+    transform-origin:32px 32px;
+    animation:orbitSpin 8s linear infinite reverse;
+    animation-delay:-4s;
+}
+@keyframes orbitSpin{ to{ transform:rotate(360deg); } }
+
+/* Center core pulse */
+.hex-core{
+    transform-origin:32px 32px;
+    animation:corePulse 2.8s ease-in-out infinite;
+}
+@keyframes corePulse{
+    0%,100%{ transform:scale(1); opacity:.85; }
+    50%    { transform:scale(1.15); opacity:1; }
+}
+
+/* Inner diamond shimmer */
+.hex-diamond{
+    transform-origin:32px 32px;
+    animation:diamondShimmer 4s ease-in-out infinite;
+}
+@keyframes diamondShimmer{
+    0%,100%{ opacity:.5; transform:scale(.9) rotate(0deg); }
+    50%    { opacity:1; transform:scale(1.1) rotate(45deg); }
+}
+
+/* Tiny trailing sparkles */
+.spark-1{ animation:sparkleFloat 3s ease-in-out infinite; }
+.spark-2{ animation:sparkleFloat 3s ease-in-out 1s infinite; }
+.spark-3{ animation:sparkleFloat 3s ease-in-out 2s infinite; }
+@keyframes sparkleFloat{
+    0%,100%{ opacity:0; transform:translateY(0) scale(.5); }
+    50%    { opacity:1; transform:translateY(-3px) scale(1); }
+}
+
+/* Brand text */
+.brand-text{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    line-height:1;
+}
+.brand-text strong{
+    font-family:"Manrope",sans-serif;
+    font-size:17px;
+    font-weight:800;
+    letter-spacing:2.6px;
+    margin-right:-2.6px;
+    color:#fff;
+    white-space:nowrap;
+    line-height:1.1;
+    text-align:center;
+}
+.brand-text span{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-top:7px;
+    font-size:9px;
+    letter-spacing:5px;
+    padding-left:5px;
+    color:#c9a96b;
+    font-weight:800;
+    line-height:1;
+}
+.brand-text span::before,
+.brand-text span::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,rgba(201,169,107,.15),rgba(201,169,107,.75));
+}
+.brand-text span::after{
+    background:linear-gradient(90deg,rgba(201,169,107,.75),rgba(201,169,107,.15));
+}
+
+/* =========================
+   CARD
+========================= */
+.signup-card{
+    width:100%;
+    padding:29px 28px 25px;
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,.10);
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.085),
+            rgba(255,255,255,.035)
+        );
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    box-shadow:0 30px 80px rgba(0,0,0,.32);
+}
+
+/* =========================
+   HEADER
+========================= */
+.signup-header{
+    margin-bottom:22px;
+}
+.signup-header h1{
+    font-family:"Manrope",sans-serif;
+    font-size:27px;
+    line-height:1.15;
+    letter-spacing:-1px;
+    font-weight:700;
+}
+.signup-header p{
+    margin-top:7px;
+    color:#8fa29d;
+    font-size:10px;
+    line-height:1.6;
+}
+
+/* =========================
+   FORM
+========================= */
+.form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+.form-group{
+    margin-bottom:13px;
+}
+.form-label{
+    display:block;
+    margin-bottom:7px;
+    color:#c5d2ce;
+    font-size:9px;
+    font-weight:700;
+}
+
+/* =========================
+   INPUT
+========================= */
+.input-wrapper{
+    position:relative;
+}
+.input-icon{
+    position:absolute;
+    left:13px;
+    top:50%;
+    width:16px;
+    height:16px;
+    transform:translateY(-50%);
+    color:#6f8982;
+    pointer-events:none;
+}
+.input-icon svg{
+    width:100%;
+    height:100%;
+}
+.form-input,
+.form-select{
+    display:block;
+    width:100%;
+    height:46px;
+    padding:0 12px 0 39px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:9px;
+    outline:none;
+    background:rgba(0,0,0,.17);
+    color:var(--white);
+    font-size:16px;
+    font-weight:500;
+    -webkit-appearance:none;
+    appearance:none;
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+.form-input::placeholder{
+    color:#61756f;
+}
+.form-input:focus,
+.form-select:focus{
+    border-color:rgba(184,224,202,.48);
+    background:rgba(0,0,0,.23);
+    box-shadow:0 0 0 3px rgba(184,224,202,.06);
+}
+.form-select{
+    padding-right:35px;
+    color:#dce7e3;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #8ca49d 50%),
+        linear-gradient(135deg, #8ca49d 50%, transparent 50%);
+    background-position:
+        calc(100% - 17px) 20px,
+        calc(100% - 12px) 20px;
+    background-size:5px 5px, 5px 5px;
+    background-repeat:no-repeat;
+}
+.form-select option{
+    background:#0b2425;
+    color:#ffffff;
+}
+
+/* =========================
+   SSN
+========================= */
+.ssn-note{
+    margin-top:-4px;
+    margin-bottom:13px;
+    color:#627872;
+    font-size:7px;
+    line-height:1.5;
+}
+
+/* =========================
+   TERMS
+========================= */
+.terms{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    margin:4px 0 18px;
+    color:#788d87;
+    font-size:8px;
+    line-height:1.6;
+}
+.terms input{
+    width:14px;
+    height:14px;
+    flex-shrink:0;
+    margin-top:1px;
+    accent-color:var(--mint);
+}
+.terms a{
+    color:var(--mint);
+    font-weight:700;
+}
+
+/* =========================
+   BUTTON
+========================= */
+.create-account-btn{
+    width:100%;
+    height:49px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:none;
+    border-radius:10px;
+    background:var(--mint);
+    color:#08201d;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        opacity .2s ease;
+}
+.create-account-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(184,224,202,.15);
+}
+.create-account-btn:active{
+    transform:translateY(0);
+}
+.create-account-btn:disabled{
+    opacity:.65;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+}
+
+/* =========================
+   DIVIDER
+========================= */
+.divider{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:19px 0;
+}
+.divider-line{
+    flex:1;
+    height:1px;
+    background:rgba(255,255,255,.08);
+}
+.divider span{
+    color:#566d67;
+    font-size:8px;
+    letter-spacing:.8px;
+    text-transform:uppercase;
+}
+
+/* =========================
+   LOGIN
+========================= */
+.login-link{
+    text-align:center;
+    color:#81948f;
+    font-size:10px;
+}
+.login-link a{
+    color:var(--mint);
+    font-weight:800;
+    margin-left:4px;
+}
+.login-link a:hover{
+    text-decoration:underline;
+}
+
+/* =========================
+   SECURITY
+========================= */
+.security-note{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    margin-top:17px;
+    color:#617771;
+    font-size:8px;
+}
+.security-note svg{
+    width:13px;
+    height:13px;
+    color:#78938a;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.signup-footer{
+    text-align:center;
+    margin-top:18px;
+    color:#526963;
+    font-size:7px;
+    letter-spacing:.3px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media(max-width:520px){
+    .signup-page{
+        padding-left:15px;
+        padding-right:15px;
+    }
+    .signup-card{
+        padding:26px 20px 23px;
+        border-radius:19px;
+    }
+    .form-row{
+        grid-template-columns:1fr;
+        gap:0;
+    }
+    .signup-header h1{
+        font-size:25px;
+    }
+    .logo-hex-signup{
+        width:56px;
+        height:56px;
+    }
+    .brand-text strong{
+        font-size:15px;
+        letter-spacing:2.2px;
+    }
+    .brand-text span{
+        font-size:8px;
+        letter-spacing:4px;
+    }
+}
+
+/* =========================
+   SHORT SCREENS
+========================= */
+@media(max-height:720px){
+    .signup-page{
+        align-items:flex-start;
+        padding-top:max(22px, env(safe-area-inset-top));
+    }
+    .signup-brand{
+        margin-bottom:15px;
+    }
+    .signup-card{
+        padding-top:22px;
+        padding-bottom:20px;
+    }
+    .signup-header{
+        margin-bottom:17px;
+    }
+    .form-group{
+        margin-bottom:10px;
+    }
+    .terms{
+        margin-bottom:14px;
+    }
+    .divider{
+        margin:14px 0;
+    }
+    .security-note{
+        margin-top:12px;
+    }
+    .signup-footer{
+        margin-top:11px;
+    }
+}
+
+/* =========================
+   REDUCED MOTION
+========================= */
+@media(prefers-reduced-motion:reduce){
+    *,
+    *::before,
+    *::after{
+        transition:none!important;
+        animation:none!important;
+    }
+}
+</style>
+</head>
+<body>
+
+<main class="signup-page">
+<div class="signup-wrapper">
+
+<!-- BRAND — ANIMATED HEXAGON RIBBON LOGO -->
+<div class="signup-brand">
+
+    <div class="logo-hex-signup">
+        <!-- Rotating aura glow behind -->
+        <div class="hex-aura"></div>
+
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+
+            <!-- Glow base -->
+            <circle cx="32" cy="32" r="26" fill="url(#hexGlow)" filter="url(#hexBlur)"/>
+
+            <!-- Outer hexagon — rotating gradient stroke -->
+            <polygon class="hex-outline"
+                     points="32,6 54.5,19 54.5,45 32,58 9.5,45 9.5,19"
+                     fill="none"
+                     stroke="url(#hexGradA)"
+                     stroke-width="1.8"
+                     stroke-linejoin="round"
+                     opacity=".85"/>
+
+            <!-- Inner hexagon ring -->
+            <polygon points="32,14 47,23 47,41 32,50 17,41 17,23"
+                     fill="none"
+                     stroke="url(#hexGradB)"
+                     stroke-width=".8"
+                     stroke-linejoin="round"
+                     opacity=".5"/>
+
+            <!-- Interlocking ribbon A -->
+            <path class="ribbon-a"
+                  d="M18 22 Q26 18 32 24 T46 30 Q48 38 40 42 T24 40"
+                  fill="none"
+                  stroke="url(#hexGradA)"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  opacity=".9"/>
+
+            <!-- Interlocking ribbon B -->
+            <path class="ribbon-b"
+                  d="M46 22 Q38 18 32 24 T18 30 Q16 38 24 42 T40 40"
+                  fill="none"
+                  stroke="url(#hexGradB)"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  opacity=".85"/>
+
+            <!-- Center diamond core -->
+            <path class="hex-diamond"
+                  d="M32 24 L38 32 L32 40 L26 32 Z"
+                  fill="url(#hexCore)"
+                  opacity=".9"/>
+
+            <!-- Pulsing center dot -->
+            <circle class="hex-core"
+                    cx="32" cy="32" r="3"
+                    fill="#eafaf0"
+                    opacity=".95"/>
+
+            <!-- Orbiting particles -->
+            <g class="orbit">
+                <circle cx="32" cy="8" r="1.6" fill="#eafaf0" opacity=".9"/>
+            </g>
+            <g class="orbit-2">
+                <circle cx="32" cy="56" r="1.3" fill="#e3c98f" opacity=".85"/>
+            </g>
+
+            <!-- Tiny sparkles -->
+            <circle class="spark-1" cx="52" cy="16" r="1" fill="#b8e0ca" opacity=".8"/>
+            <circle class="spark-2" cx="12" cy="48" r="1.1" fill="#e3c98f" opacity=".7"/>
+            <circle class="spark-3" cx="50" cy="50" r="0.9" fill="#eafaf0" opacity=".75"/>
+
+        </svg>
+    </div>
+
+    <div class="brand-text">
+        <strong>CREST UNITED</strong>
+        <span>BANK</span>
+    </div>
+</div>
+
+<!-- SIGNUP CARD -->
+<section class="signup-card">
+
+<div class="signup-header">
+    <h1>
+        Create your account
+    </h1>
+    <p>
+        Join Crest United Bank and start managing
+        your finances with confidence.
+    </p>
+</div>
+
+<form
+    id="signupForm"
+    autocomplete="on"
+    novalidate>
+
+<!-- FIRST + LAST NAME -->
+<div class="form-row">
+
+<div class="form-group">
+<label class="form-label" for="firstName">
+    First Name
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="12" cy="8" r="3"/>
+<path d="M5 20 c0-3.5 3.1-6 7-6 s7 2.5 7 6"/>
+</svg>
+</div>
+<input type="text" id="firstName" class="form-input" placeholder="First name" autocomplete="given-name" required>
+</div>
+</div>
+
+<div class="form-group">
+<label class="form-label" for="lastName">
+    Last Name
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="12" cy="8" r="3"/>
+<path d="M5 20 c0-3.5 3.1-6 7-6 s7 2.5 7 6"/>
+</svg>
+</div>
+<input type="text" id="lastName" class="form-input" placeholder="Last name" autocomplete="family-name" required>
+</div>
+</div>
+
+</div>
+
+<!-- EMAIL -->
+<div class="form-group">
+<label class="form-label" for="email">
+    Email Address
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<rect x="3" y="5" width="18" height="14" rx="2"/>
+<path d="M3 7l9 6 9-6"/>
+</svg>
+</div>
+<input type="email" id="email" class="form-input" placeholder="Enter your email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" required>
+</div>
+</div>
+
+<!-- PHONE -->
+<div class="form-group">
+<label class="form-label" for="phone">
+    Phone Number
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+<rect x="7" y="3" width="10" height="18" rx="2"/>
+<path d="M10 6h4"/>
+<circle cx="12" cy="18" r=".7" fill="currentColor" stroke="none"/>
+</svg>
+</div>
+<input type="tel" id="phone" class="form-input" placeholder="Enter phone number" autocomplete="tel" inputmode="tel" required>
+</div>
+</div>
+
+<!-- COUNTRY -->
+<div class="form-group">
+<label class="form-label" for="country">
+    Country
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="12" cy="12" r="9"/>
+<path d="M3 12h18"/>
+<path d="M12 3 c3 3 3 15 0 18"/>
+<path d="M12 3 c-3 3 -3 15 0 18"/>
+</svg>
+</div>
+<select id="country" class="form-select" autocomplete="country-name" required>
+<option value="" disabled selected>
+    Select your country
+</option>
+<option value="Nigeria">Nigeria</option>
+<option value="United States">United States</option>
+<option value="United Kingdom">United Kingdom</option>
+<option value="Canada">Canada</option>
+<option value="Ghana">Ghana</option>
+<option value="South Africa">South Africa</option>
+<option value="Australia">Australia</option>
+<option value="Other">Other</option>
+</select>
+</div>
+</div>
+
+<!-- STATE -->
+<div class="form-group">
+<label class="form-label" for="state">
+    State
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M3 21h18"/>
+<path d="M5 21V7l7-4 7 4v14"/>
+<path d="M9 21v-5h6v5"/>
+<path d="M9 9h.01M15 9h.01M9 12h.01M15 12h.01"/>
+</svg>
+</div>
+<input type="text" id="state" class="form-input" placeholder="Enter your state" autocomplete="address-level1" required>
+</div>
+</div>
+
+<!-- CITY -->
+<div class="form-group">
+<label class="form-label" for="city">
+    City
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M3 21h18"/>
+<path d="M5 21V10l5-3v14"/>
+<path d="M10 21V5l5-2v18"/>
+<path d="M15 21v-8l4-2v10"/>
+</svg>
+</div>
+<input type="text" id="city" class="form-input" placeholder="Enter your city" autocomplete="address-level2" required>
+</div>
+</div>
+
+<!-- ADDRESS -->
+<div class="form-group">
+<label class="form-label" for="address">
+    Address
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M3 10.5L12 3l9 7.5"/>
+<path d="M5 9.5V21h14V9.5"/>
+<path d="M9 21v-6h6v6"/>
+</svg>
+</div>
+<input type="text" id="address" class="form-input" placeholder="Enter your full address" autocomplete="street-address" required>
+</div>
+</div>
+
+<!-- SSN -->
+<div class="form-group">
+<label class="form-label" for="ssn">
+    SSN
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<rect x="4" y="4" width="16" height="16" rx="2"/>
+<circle cx="9" cy="9" r="2"/>
+<path d="M13 8h4"/>
+<path d="M13 12h4"/>
+<path d="M7 15h10"/>
+<path d="M7 18h7"/>
+</svg>
+</div>
+<input type="password" id="ssn" class="form-input" placeholder="Enter your SSN" autocomplete="off" inputmode="numeric" maxlength="11" required>
+</div>
+</div>
+
+<div class="ssn-note">
+    Your SSN is securely submitted to Crest United for account verification.
+</div>
+
+<!-- PASSWORD -->
+<div class="form-group">
+<label class="form-label" for="password">
+    Password
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+<rect x="5" y="10" width="14" height="10" rx="2"/>
+<path d="M8 10V7 a4 4 0 0 1 8 0v3"/>
+</svg>
+</div>
+<input type="password" id="password" class="form-input" placeholder="Create a password" autocomplete="new-password" required>
+</div>
+</div>
+
+<!-- CONFIRM PASSWORD -->
+<div class="form-group">
+<label class="form-label" for="confirmPassword">
+    Confirm Password
+</label>
+<div class="input-wrapper">
+<div class="input-icon">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M20 11 a8 8 0 1 1-4-7"/>
+<path d="M20 4v7h-7"/>
+</svg>
+</div>
+<input type="password" id="confirmPassword" class="form-input" placeholder="Confirm your password" autocomplete="new-password" required>
+</div>
+</div>
+
+<!-- TERMS -->
+<label class="terms">
+<input type="checkbox" id="terms" required>
+<span>
+I agree to the
+<a href="terms.html">Terms & Conditions</a>
+and
+<a href="privacy.html">Privacy Policy</a>
+of Crest United Bank.
+</span>
+</label>
+
+<!-- BUTTON -->
+<button type="submit" class="create-account-btn">
+    Create Account
+</button>
+
+</form>
+
+<!-- DIVIDER -->
+<div class="divider">
+<div class="divider-line"></div>
+<span>Already a customer?</span>
+<div class="divider-line"></div>
+</div>
+
+<!-- LOGIN -->
+<div class="login-link">
+Already have an account?
+<a href="login.html">Sign in</a>
+</div>
+
+<!-- SECURITY -->
+<div class="security-note">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+<path d="M12 3l7 3v5 c0 4.7-2.8 8.2-7 10 -4.2-1.8-7-5.3-7-10V6l7-3Z"/>
+<path d="M9 12l2 2 4-4"/>
+</svg>
+Secure account registration
+</div>
+
+</section>
+
+<!-- FOOTER -->
+<div class="signup-footer">
+© 2026 Crest United Bank · Secure Digital Banking
+</div>
+
+</div>
+</main>
+
+<!-- SVG gradient definitions for the hexagon ribbon logo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="hexGradA" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eafaf0"/>
+      <stop offset="50%" stop-color="#9fd2b4"/>
+      <stop offset="100%" stop-color="#2c806c"/>
+    </linearGradient>
+    <linearGradient id="hexGradB" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff1c1"/>
+      <stop offset="50%" stop-color="#e3c98f"/>
+      <stop offset="100%" stop-color="#9c7328"/>
+    </linearGradient>
+    <linearGradient id="hexCore" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b8e0ca"/>
+      <stop offset="100%" stop-color="#1e6256"/>
+    </linearGradient>
+    <radialGradient id="hexGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#b8e0ca" stop-opacity=".4"/>
+      <stop offset="100%" stop-color="#b8e0ca" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="hexBlur">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>
+</svg>
+
+<script>
+/* =====================================================
+   CREST UNITED BANK — SIGNUP
+===================================================== */
+
+const signupForm = document.getElementById("signupForm");
+const button = signupForm.querySelector(".create-account-btn");
+const password = document.getElementById("password");
+const confirmPassword = document.getElementById("confirmPassword");
+const ssnInput = document.getElementById("ssn");
+
+/* =====================================================
+   SSN — NUMBERS ONLY
+===================================================== */
+ssnInput.addEventListener("input", function(){
+    this.value = this.value.replace(/\D/g, "").slice(0, 11);
+});
+
+/* =====================================================
+   SIGNUP
+===================================================== */
+signupForm.addEventListener("submit", async function(event){
+    event.preventDefault();
+
+    /* HTML VALIDATION */
+    if (!signupForm.checkValidity()) {
+        signupForm.reportValidity();
+        return;
+    }
+
+    /* PASSWORD MATCH */
+    if (password.value !== confirmPassword.value) {
+        alert("Passwords do not match. Please check and try again.");
+        confirmPassword.focus();
+        return;
+    }
+
+    /* PASSWORD LENGTH */
+    if (password.value.length < 8) {
+        alert("Password must be at least 8 characters.");
+        password.focus();
+        return;
+    }
+
+    /* GET FORM VALUES */
+    const firstName = document.getElementById("firstName").value.trim();
+    const lastName = document.getElementById("lastName").value.trim();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const phone = document.getElementById("phone").value.trim();
+    const country = document.getElementById("country").value.trim();
+    const state = document.getElementById("state").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const ssn = document.getElementById("ssn").value.trim();
+    const terms = document.getElementById("terms").checked;
+
+    /* BACKEND PAYLOAD — names MUST match Express route */
+    const payload = {
+        fname: firstName,
+        sname: lastName,
+        email: email,
+        ssn: ssn,
+        phone: phone,
+        pass: password.value,
+        cpass: confirmPassword.value,
+        country: country,
+        state: state,
+        city: city,
+        address: address,
+        terms: terms
+    };
+
+    /* LOADING */
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = "Creating Account...";
+
+    try {
+        /* SEND TO LIVE BACKEND */
+        const response = await fetch(
+            "https://capital-crest.onrender.com/api/auth/register",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify(payload)
+            }
+        );
+
+        /* READ RESPONSE */
+        let result = null;
+        const responseText = await response.text();
+
+        try {
+            result = responseText ? JSON.parse(responseText) : null;
+        } catch {
+            result = null;
+        }
+
+        /* SERVER ERROR */
+        if (!response.ok) {
+            throw new Error(
+                result?.message ||
+                `Registration failed (${response.status})`
+            );
+        }
+
+        /* BACKEND SUCCESS CHECK */
+        if (!result || result.success !== true) {
+            throw new Error(
+                result?.message ||
+                "Unable to create account."
+            );
+        }
+
+        /* SAVE REGISTRATION DATA */
+        const registeredUser = {
+            user_id: result.user_id || result.user?.id || null,
+            email: result.user?.email || email,
+            account_number: result.account_number || null
+        };
+        localStorage.setItem("crestUnitedUser", JSON.stringify(registeredUser));
+
+        if (result.account_number) {
+            localStorage.setItem("crestUnitedAccountNumber", result.account_number);
+        }
+        if (result.user_id) {
+            localStorage.setItem("crestUnitedUserId", result.user_id);
+        }
+
+        /* SUCCESS MESSAGE */
+        alert(result.message || "Registration successful.");
+
+        /* GO TO LOGIN */
+        window.location.href = "login.html";
+
+    } catch (error) {
+        console.error("SIGNUP ERROR:", error);
+        alert(
+            error.message ||
+            "Something went wrong while creating your account."
+        );
+        button.disabled = false;
+        button.textContent = originalText;
+    }
+});
+</script>
+
+</body>
+</html>

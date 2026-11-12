@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no,
+               viewport-fit=cover">
+
+<title>Crest United Bank | Total Users</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
+
+<style>
+
+/* =====================================================
+   ROOT
+===================================================== */
+
+:root{
+    --ink:#07151b;
+    --deep:#0b2425;
+    --deep2:#103536;
+    --green:#1e6256;
+    --green2:#2c806c;
+    --mint:#b8e0ca;
+    --white:#ffffff;
+    --text:#eef5f1;
+    --muted:#9eafaa;
+    --gold:#c9a96b;
+    --danger:#d98b8b;
+    --line:rgba(255,255,255,.09);
+    --card:rgba(255,255,255,.055);
+    --shadow:0 30px 80px rgba(0,0,0,.30);
+}
+
+/* =====================================================
+   RESET
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+    background:var(--ink);
+}
+
+body{
+    min-height:100vh;
+    min-height:100dvh;
+
+    font-family:"DM Sans",sans-serif;
+
+    color:var(--text);
+
+    background:
+        radial-gradient(circle at 12% 8%, rgba(44,128,108,.16), transparent 30%),
+        radial-gradient(circle at 88% 88%, rgba(201,169,107,.08), transparent 32%),
+        linear-gradient(135deg, #07151b 0%, #092326 52%, #0d3030 100%);
+
+    overflow-x:hidden;
+}
+
+body::before,
+body::after{
+    content:"";
+    position:fixed;
+    width:430px;
+    height:430px;
+    border-radius:50%;
+    filter:blur(100px);
+    pointer-events:none;
+    z-index:0;
+}
+
+body::before{
+    left:-240px;
+    top:15%;
+    background:rgba(44,128,108,.08);
+}
+
+body::after{
+    right:-240px;
+    bottom:-80px;
+    background:rgba(201,169,107,.06);
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+button{
+    font-family:inherit;
+    cursor:pointer;
+}
+
+input{
+    font-family:inherit;
+}
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.page{
+    position:relative;
+    z-index:1;
+
+    width:min(1100px,94%);
+
+    margin:auto;
+
+    padding:
+        max(20px, env(safe-area-inset-top))
+        0
+        45px;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:3px 0 20px;
+
+    border-bottom:1px solid var(--line);
+
+    margin-bottom:26px;
+
+    gap:14px;
+}
+
+/* =====================================================
+   BRAND — ANIMATED HEXAGON RIBBON LOGO
+===================================================== */
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    flex-shrink:0;
+}
+
+.logo-hex-admin{
+    width:46px;
+    height:46px;
+    flex-shrink:0;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    filter:drop-shadow(0 0 14px rgba(44,128,108,.55));
+    transition:filter .45s cubic-bezier(.2,.75,.25,1);
+}
+
+.brand:hover .logo-hex-admin{
+    filter:drop-shadow(0 0 24px rgba(184,224,202,.75));
+}
+
+.logo-hex-admin svg{
+    width:100%;
+    height:100%;
+    display:block;
+    overflow:visible;
+}
+
+.hex-aura{
+    position:absolute;
+    inset:-6px;
+    border-radius:50%;
+    background:conic-gradient(
+        from 0deg,
+        transparent,
+        rgba(201,169,107,.35),
+        transparent 30%,
+        rgba(184,224,202,.35),
+        transparent 60%,
+        transparent
+    );
+    animation:hexSpin 7s linear infinite;
+    filter:blur(5px);
+    opacity:.7;
+}
+
+@keyframes hexSpin{ to{ transform:rotate(360deg); } }
+
+.hex-outline{
+    transform-origin:32px 32px;
+    animation:hexRotate 12s linear infinite;
+}
+
+@keyframes hexRotate{ to{ transform:rotate(360deg); } }
+
+.ribbon-a{
+    stroke-dasharray:120;
+    stroke-dashoffset:120;
+    animation:
+        ribbonDrawA 3s cubic-bezier(.4,0,.2,1) forwards,
+        ribbonFloat 4s ease-in-out 3s infinite;
+}
+
+.ribbon-b{
+    stroke-dasharray:100;
+    stroke-dashoffset:100;
+    animation:
+        ribbonDrawB 3s cubic-bezier(.4,0,.2,1) .5s forwards,
+        ribbonFloat 4s ease-in-out 3.5s infinite reverse;
+}
+
+@keyframes ribbonDrawA{ to{ stroke-dashoffset:0; } }
+@keyframes ribbonDrawB{ to{ stroke-dashoffset:0; } }
+@keyframes ribbonFloat{
+    0%,100%{ transform:translate(0,0); }
+    50%    { transform:translate(1px,-1px); }
+}
+
+.orbit{
+    transform-origin:32px 32px;
+    animation:orbitSpin 8s linear infinite;
+}
+
+.orbit-2{
+    transform-origin:32px 32px;
+    animation:orbitSpin 8s linear infinite reverse;
+    animation-delay:-4s;
+}
+
+@keyframes orbitSpin{ to{ transform:rotate(360deg); } }
+
+.hex-core{
+    transform-origin:32px 32px;
+    animation:corePulse 2.8s ease-in-out infinite;
+}
+
+@keyframes corePulse{
+    0%,100%{ transform:scale(1); opacity:.85; }
+    50%    { transform:scale(1.15); opacity:1; }
+}
+
+.hex-diamond{
+    transform-origin:32px 32px;
+    animation:diamondShimmer 4s ease-in-out infinite;
+}
+
+@keyframes diamondShimmer{
+    0%,100%{ opacity:.5; transform:scale(.9) rotate(0deg); }
+    50%    { opacity:1; transform:scale(1.1) rotate(45deg); }
+}
+
+.spark-1{ animation:sparkleFloat 3s ease-in-out infinite; }
+.spark-2{ animation:sparkleFloat 3s ease-in-out 1s infinite; }
+.spark-3{ animation:sparkleFloat 3s ease-in-out 2s infinite; }
+
+@keyframes sparkleFloat{
+    0%,100%{ opacity:0; transform:translateY(0) scale(.5); }
+    50%    { opacity:1; transform:translateY(-3px) scale(1); }
+}
+
+.brand-text{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    line-height:1;
+}
+
+.brand-name{
+    font-family:"Manrope",sans-serif;
+    font-size:14px;
+    font-weight:800;
+    letter-spacing:2.2px;
+    color:#fff;
+    line-height:1.1;
+    white-space:nowrap;
+}
+
+.brand-bank{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:5px;
+    color:#c9a96b;
+    font-size:7px;
+    font-weight:800;
+    letter-spacing:3.6px;
+    line-height:1;
+    white-space:nowrap;
+}
+
+.brand-bank::before,
+.brand-bank::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg,rgba(201,169,107,.15),rgba(201,169,107,.7));
+}
+
+.brand-bank::after{
+    background:linear-gradient(90deg,rgba(201,169,107,.7),rgba(201,169,107,.15));
+}
+
+/* =====================================================
+   ADMIN BADGE / BACK LINK
+===================================================== */
+
+.admin-actions{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.back-link{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 12px;
+    border:1px solid rgba(184,224,202,.18);
+    border-radius:999px;
+    background:rgba(184,224,202,.05);
+    color:#cde5da;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.3px;
+    transition:.2s ease;
+    white-space:nowrap;
+}
+
+.back-link:hover{
+    background:rgba(184,224,202,.10);
+    border-color:rgba(184,224,202,.30);
+    color:var(--mint);
+}
+
+.back-link svg{
+    width:13px;
+    height:13px;
+}
+
+.admin-badge{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:8px 12px;
+    border:1px solid rgba(201,169,107,.25);
+    border-radius:999px;
+    background:rgba(201,169,107,.07);
+    color:#d9bc83;
+    font-size:8px;
+    font-weight:800;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+}
+
+.admin-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 10px rgba(201,169,107,.55);
+}
+
+/* =====================================================
+   INTRO
+===================================================== */
+
+.intro{
+    margin-bottom:22px;
+}
+
+.intro h1{
+    font-family:"Manrope",sans-serif;
+    font-size:28px;
+    line-height:1.15;
+    letter-spacing:-.8px;
+    font-weight:700;
+}
+
+.intro p{
+    margin-top:8px;
+    max-width:640px;
+    color:#8fa29d;
+    font-size:11px;
+    line-height:1.7;
+}
+
+/* =====================================================
+   TOOLBAR
+===================================================== */
+
+.toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.search-wrap{
+    position:relative;
+    flex:1;
+    min-width:220px;
+}
+
+.search-icon{
+    position:absolute;
+    left:13px;
+    top:50%;
+    width:15px;
+    height:15px;
+    transform:translateY(-50%);
+    color:#6f8982;
+    pointer-events:none;
+}
+
+.search-input{
+    width:100%;
+    height:42px;
+    padding:0 14px 0 38px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:10px;
+    background:rgba(0,0,0,.18);
+    color:var(--white);
+    font-size:13px;
+    outline:none;
+    transition:.2s ease;
+}
+
+.search-input::placeholder{
+    color:#5f7670;
+}
+
+.search-input:focus{
+    border-color:rgba(184,224,202,.45);
+    background:rgba(0,0,0,.24);
+    box-shadow:0 0 0 3px rgba(184,224,202,.06);
+}
+
+.refresh-btn{
+    height:42px;
+    padding:0 16px;
+    border:1px solid rgba(184,224,202,.18);
+    border-radius:10px;
+    background:rgba(184,224,202,.06);
+    color:var(--mint);
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.4px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    transition:.2s ease;
+}
+
+.refresh-btn:hover{
+    background:rgba(184,224,202,.13);
+    border-color:rgba(184,224,202,.30);
+}
+
+.refresh-btn svg{
+    width:13px;
+    height:13px;
+}
+
+.refresh-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+/* =====================================================
+   USERS LIST
+===================================================== */
+
+.users-list{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+.user-row{
+    display:grid;
+    grid-template-columns:auto 1fr auto auto;
+    align-items:center;
+    gap:14px;
+
+    padding:15px 17px;
+
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px;
+
+    background:linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.02));
+
+    transition:.2s ease;
+    cursor:pointer;
+}
+
+.user-row:hover{
+    border-color:rgba(184,224,202,.22);
+    background:linear-gradient(145deg, rgba(184,224,202,.07), rgba(255,255,255,.03));
+}
+
+.user-avatar{
+    width:42px;
+    height:42px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:linear-gradient(145deg, var(--mint), var(--green2));
+    color:#09201d;
+    font-size:13px;
+    font-weight:800;
+    overflow:hidden;
+}
+
+.user-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+.user-info{
+    min-width:0;
+}
+
+.user-name{
+    font-size:13px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.user-email{
+    margin-top:3px;
+    color:#7f958e;
+    font-size:10px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.user-balance{
+    text-align:right;
+    font-family:"Manrope",sans-serif;
+    font-size:13px;
+    font-weight:800;
+    color:var(--mint);
+    white-space:nowrap;
+}
+
+.user-chevron{
+    width:18px;
+    height:18px;
+    color:#5f7670;
+    flex-shrink:0;
+}
+
+/* =====================================================
+   EMPTY / LOADING STATE
+===================================================== */
+
+.state-box{
+    padding:50px 20px;
+    text-align:center;
+    border:1px dashed rgba(255,255,255,.10);
+    border-radius:16px;
+    color:#6f8982;
+    font-size:11px;
+    line-height:1.7;
+}
+
+.state-box strong{
+    display:block;
+    color:#cde5da;
+    font-size:13px;
+    margin-bottom:6px;
+    font-weight:700;
+}
+
+/* =====================================================
+   USER DETAIL PANEL
+===================================================== */
+
+.detail-backdrop{
+    position:fixed;
+    inset:0;
+    z-index:9000;
+    background:rgba(2,10,12,.72);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .22s ease, visibility .22s ease;
+}
+
+.detail-backdrop.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.detail-panel{
+    position:fixed;
+    top:50%;
+    left:50%;
+    z-index:9001;
+
+    width:min(520px,94%);
+    max-height:92vh;
+    overflow-y:auto;
+
+    transform:translate(-50%,-46%) scale(.97);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    border:1px solid rgba(184,224,202,.16);
+    border-radius:22px;
+
+    background:linear-gradient(145deg, #0b2425, #07151b);
+
+    box-shadow:0 30px 90px rgba(0,0,0,.55);
+
+    transition:transform .25s ease, opacity .25s ease, visibility .25s ease;
+
+    scrollbar-width:thin;
+    scrollbar-color:rgba(184,224,202,.15) transparent;
+}
+
+.detail-panel.show{
+    transform:translate(-50%,-50%) scale(1);
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.detail-panel::-webkit-scrollbar{
+    width:6px;
+}
+.detail-panel::-webkit-scrollbar-thumb{
+    background:rgba(184,224,202,.18);
+    border-radius:3px;
+}
+
+.detail-head{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:22px 22px 18px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.detail-avatar{
+    width:52px;
+    height:52px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:linear-gradient(145deg, var(--mint), var(--green2));
+    color:#09201d;
+    font-size:16px;
+    font-weight:800;
+    overflow:hidden;
+}
+
+.detail-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+.detail-id{
+    flex:1;
+    min-width:0;
+}
+
+.detail-id h2{
+    font-family:"Manrope",sans-serif;
+    font-size:16px;
+    font-weight:800;
+    line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.detail-id p{
+    margin-top:3px;
+    color:#7f958e;
+    font-size:10px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.detail-close{
+    width:34px;
+    height:34px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:50%;
+    background:rgba(255,255,255,.04);
+    color:#cde5da;
+    font-size:15px;
+    line-height:1;
+    transition:.2s ease;
+}
+
+.detail-close:hover{
+    background:rgba(255,255,255,.08);
+    color:#fff;
+}
+
+.detail-body{
+    padding:20px 22px 22px;
+}
+
+.detail-section-title{
+    font-size:9px;
+    letter-spacing:1.6px;
+    text-transform:uppercase;
+    color:#6f8982;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.balance-row{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:22px;
+}
+
+.balance-pill{
+    padding:13px 11px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:11px;
+    background:rgba(255,255,255,.03);
+}
+
+.balance-pill span{
+    display:block;
+    font-size:8px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:#7f958e;
+    font-weight:700;
+    margin-bottom:5px;
+}
+
+.balance-pill strong{
+    display:block;
+    font-family:"Manrope",sans-serif;
+    font-size:14px;
+    font-weight:800;
+    color:var(--mint);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* =====================================================
+   ADD FUNDS FORM
+===================================================== */
+
+.add-funds-form{
+    display:grid;
+    gap:11px;
+}
+
+.form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+}
+
+.field{
+    position:relative;
+}
+
+.field label{
+    display:block;
+    margin-bottom:6px;
+    color:#c5d2ce;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.4px;
+}
+
+.field-input{
+    width:100%;
+    height:43px;
+    padding:0 13px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:10px;
+    background:rgba(0,0,0,.20);
+    color:var(--white);
+    font-size:13px;
+    font-weight:600;
+    outline:none;
+    transition:.2s ease;
+    -webkit-appearance:none;
+    appearance:none;
+}
+
+.field-input::placeholder{
+    color:#5f7670;
+    font-weight:500;
+}
+
+.field-input:focus{
+    border-color:rgba(184,224,202,.45);
+    background:rgba(0,0,0,.26);
+    box-shadow:0 0 0 3px rgba(184,224,202,.06);
+}
+
+.field-input:disabled{
+    opacity:.6;
+}
+
+.field-select{
+    background-image:
+        linear-gradient(45deg, transparent 50%, #8ca49d 50%),
+        linear-gradient(135deg, #8ca49d 50%, transparent 50%);
+    background-position:
+        calc(100% - 17px) 19px,
+        calc(100% - 12px) 19px;
+    background-size:5px 5px, 5px 5px;
+    background-repeat:no-repeat;
+    padding-right:32px;
+    cursor:pointer;
+}
+
+.field-select option{
+    background:#0b2425;
+    color:#fff;
+}
+
+.hint{
+    color:#6f8982;
+    font-size:9px;
+    line-height:1.55;
+    margin-top:-2px;
+}
+
+.submit-btn{
+    width:100%;
+    height:46px;
+    border:0;
+    border-radius:10px;
+    background:var(--mint);
+    color:#08201d;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.3px;
+    margin-top:4px;
+    transition:.2s ease;
+}
+
+.submit-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 12px 26px rgba(184,224,202,.18);
+}
+
+.submit-btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+}
+
+.form-message{
+    margin-top:10px;
+    padding:10px 12px;
+    border-radius:9px;
+    font-size:10px;
+    line-height:1.55;
+    display:none;
+}
+
+.form-message.show{
+    display:block;
+}
+
+.form-message.success{
+    border:1px solid rgba(184,224,202,.25);
+    background:rgba(184,224,202,.07);
+    color:var(--mint);
+}
+
+.form-message.error{
+    border:1px solid rgba(217,139,139,.28);
+    background:rgba(217,139,139,.07);
+    color:#e5a3a3;
+}
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:24px;
+    z-index:9500;
+
+    padding:11px 17px;
+
+    border:1px solid rgba(184,224,202,.28);
+    border-radius:10px;
+
+    background:rgba(11,36,37,.98);
+    color:#dff0e8;
+
+    font-size:11px;
+    font-weight:600;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
+
+    transform:translate(-50%,20px);
+    opacity:0;
+    pointer-events:none;
+
+    transition:.25s ease;
+}
+
+.toast.show{
+    transform:translate(-50%,0);
+    opacity:1;
+}
+
+.toast.error{
+    border-color:rgba(217,139,139,.30);
+    color:#f0c1c1;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer{
+    text-align:center;
+    margin-top:32px;
+    color:#526963;
+    font-size:7px;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:700px){
+
+    .page{
+        width:calc(100% - 26px);
+        padding-top:18px;
+    }
+
+    .brand-name{ font-size:13px; letter-spacing:2px; }
+    .brand-bank{ font-size:7px; letter-spacing:3.2px; }
+
+    .logo-hex-admin{
+        width:42px;
+        height:42px;
+    }
+
+    .intro h1{ font-size:24px; }
+
+    .header{
+        gap:10px;
+        padding-bottom:16px;
+        margin-bottom:20px;
+    }
+
+    .admin-actions{ gap:7px; }
+    .back-link{ padding:7px 10px; font-size:8px; }
+    .admin-badge{ padding:7px 10px; font-size:7px; }
+
+    .user-row{
+        grid-template-columns:auto 1fr auto;
+        gap:11px;
+        padding:13px 14px;
+    }
+
+    .user-balance{
+        grid-column:2 / -1;
+        text-align:left;
+        font-size:12px;
+        color:#a6c8b7;
+    }
+
+    .user-chevron{ display:none; }
+
+    .balance-row{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .balance-row .balance-pill:last-child{
+        grid-column:1 / -1;
+    }
+
+    .form-row{
+        grid-template-columns:1fr;
+    }
+
+    .detail-head{ padding:18px 18px 15px; }
+    .detail-body{ padding:17px 18px 20px; }
+}
+
+@media(max-width:380px){
+    .brand-name{ font-size:12px; letter-spacing:1.8px; }
+    .brand-bank{ font-size:6px; letter-spacing:2.8px; }
+    .admin-badge span{ display:none; }
+    .intro h1{ font-size:22px; }
+    .logo-hex-admin{ width:38px; height:38px; }
+}
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media(prefers-reduced-motion:reduce){
+    *,
+    *::before,
+    *::after{
+        transition:none!important;
+        animation:none!important;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<main class="page">
+
+    <!-- =================================================
+         HEADER
+    ================================================= -->
+
+    <header class="header">
+
+        <a href="admin.html"
+           class="brand"
+           aria-label="Crest United Bank Admin">
+
+            <div class="logo-hex-admin">
+                <div class="hex-aura"></div>
+
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                    <circle cx="32" cy="32" r="26" fill="url(#hexGlow)" filter="url(#hexBlur)"/>
+
+                    <polygon class="hex-outline"
+                             points="32,6 54.5,19 54.5,45 32,58 9.5,45 9.5,19"
+                             fill="none"
+                             stroke="url(#hexGradA)"
+                             stroke-width="1.8"
+                             stroke-linejoin="round"
+                             opacity=".85"/>
+
+                    <polygon points="32,14 47,23 47,41 32,50 17,41 17,23"
+                             fill="none"
+                             stroke="url(#hexGradB)"
+                             stroke-width=".8"
+                             stroke-linejoin="round"
+                             opacity=".5"/>
+
+                    <path class="ribbon-a"
+                          d="M18 22 Q26 18 32 24 T46 30 Q48 38 40 42 T24 40"
+                          fill="none"
+                          stroke="url(#hexGradA)"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                          opacity=".9"/>
+
+                    <path class="ribbon-b"
+                          d="M46 22 Q38 18 32 24 T18 30 Q16 38 24 42 T40 40"
+                          fill="none"
+                          stroke="url(#hexGradB)"
+                          stroke-width="2.4"
+                          stroke-linecap="round"
+                          opacity=".85"/>
+
+                    <path class="hex-diamond"
+                          d="M32 24 L38 32 L32 40 L26 32 Z"
+                          fill="url(#hexCore)"
+                          opacity=".9"/>
+
+                    <circle class="hex-core"
+                            cx="32" cy="32" r="3"
+                            fill="#eafaf0"
+                            opacity=".95"/>
+
+                    <g class="orbit">
+                        <circle cx="32" cy="8" r="1.6" fill="#eafaf0" opacity=".9"/>
+                    </g>
+                    <g class="orbit-2">
+                        <circle cx="32" cy="56" r="1.3" fill="#e3c98f" opacity=".85"/>
+                    </g>
+
+                    <circle class="spark-1" cx="52" cy="16" r="1" fill="#b8e0ca" opacity=".8"/>
+                    <circle class="spark-2" cx="12" cy="48" r="1.1" fill="#e3c98f" opacity=".7"/>
+                    <circle class="spark-3" cx="50" cy="50" r="0.9" fill="#eafaf0" opacity=".75"/>
+                </svg>
+            </div>
+
+            <div class="brand-text">
+                <div class="brand-name">CREST UNITED</div>
+                <div class="brand-bank">BANK</div>
+            </div>
+
+        </a>
+
+        <div class="admin-actions">
+
+            <a href="admin.html" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5"/>
+                    <path d="M11 18l-6-6 6-6"/>
+                </svg>
+                Back
+            </a>
+
+            <div class="admin-badge">
+                <div class="admin-dot"></div>
+                <span>ADMIN</span>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =================================================
+         INTRO
+    ================================================= -->
+
+    <section class="intro">
+
+        <h1>Total Users</h1>
+
+        <p>
+            View every registered Crest United customer,
+            inspect their balances, and add funds to their
+            checking, savings, or card account.
+        </p>
+
+    </section>
+
+
+    <!-- =================================================
+         TOOLBAR
+    ================================================= -->
+
+    <div class="toolbar">
+
+        <div class="search-wrap">
+            <div class="search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="M21 21l-4.3-4.3"/>
+                </svg>
+            </div>
+            <input
+                type="search"
+                class="search-input"
+                id="searchInput"
+                placeholder="Search by name, email, or phone"
+                autocomplete="off">
+        </div>
+
+        <button type="button" class="refresh-btn" id="refreshBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 1 1-3.5-7.1"/>
+                <path d="M21 3v6h-6"/>
+            </svg>
+            Refresh
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         USERS LIST
+    ================================================= -->
+
+    <div class="users-list" id="usersList">
+
+        <div class="state-box">
+            <strong>Loading users…</strong>
+            Fetching the latest customer list.
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         FOOTER
+    ================================================= -->
+
+    <footer class="footer">
+        CREST UNITED BANK • ADMINISTRATION
+    </footer>
+
+</main>
+
+
+<!-- =====================================================
+     USER DETAIL PANEL
+===================================================== -->
+
+<div class="detail-backdrop" id="detailBackdrop"></div>
+
+<section class="detail-panel" id="detailPanel" role="dialog" aria-modal="true" aria-labelledby="detailName">
+
+    <div class="detail-head">
+
+        <div class="detail-avatar" id="detailAvatar">--</div>
+
+        <div class="detail-id">
+            <h2 id="detailName">—</h2>
+            <p id="detailEmail">—</p>
+        </div>
+
+        <button type="button" class="detail-close" id="detailClose" aria-label="Close">✕</button>
+
+    </div>
+
+    <div class="detail-body">
+
+        <div class="detail-section-title">Current balances</div>
+
+        <div class="balance-row">
+
+            <div class="balance-pill">
+                <span>Checking</span>
+                <strong id="balChecking">—</strong>
+            </div>
+
+            <div class="balance-pill">
+                <span>Savings</span>
+                <strong id="balSavings">—</strong>
+            </div>
+
+            <div class="balance-pill">
+                <span>Card</span>
+                <strong id="balCard">—</strong>
+            </div>
+
+        </div>
+
+        <div class="detail-section-title">Add funds</div>
+
+        <form class="add-funds-form" id="addFundsForm" novalidate>
+
+            <div class="form-row">
+
+                <div class="field">
+                    <label for="fundsType">Account</label>
+                    <select id="fundsType" class="field-input field-select">
+                        <option value="checking">Checking</option>
+                        <option value="savings">Savings</option>
+                        <option value="card">Card</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="fundsAmount">Amount (USD)</label>
+                    <input
+                        type="text"
+                        id="fundsAmount"
+                        class="field-input"
+                        inputmode="decimal"
+                        autocomplete="off"
+                        placeholder="0.00">
+                </div>
+
+            </div>
+
+            <p class="hint">
+                Funds are added on top of the current balance.
+                Amount must be greater than zero.
+            </p>
+
+            <button type="submit" class="submit-btn" id="fundsSubmit">
+                Add Funds
+            </button>
+
+            <div class="form-message" id="formMessage"></div>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
+
+<div class="toast" id="toast"></div>
+
+
+<!-- =====================================================
+     SVG GRADIENTS
+===================================================== -->
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="hexGradA" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eafaf0"/>
+      <stop offset="50%" stop-color="#9fd2b4"/>
+      <stop offset="100%" stop-color="#2c806c"/>
+    </linearGradient>
+    <linearGradient id="hexGradB" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff1c1"/>
+      <stop offset="50%" stop-color="#e3c98f"/>
+      <stop offset="100%" stop-color="#9c7328"/>
+    </linearGradient>
+    <linearGradient id="hexCore" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b8e0ca"/>
+      <stop offset="100%" stop-color="#1e6256"/>
+    </linearGradient>
+    <radialGradient id="hexGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#b8e0ca" stop-opacity=".4"/>
+      <stop offset="100%" stop-color="#b8e0ca" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="hexBlur">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>
+</svg>
+
+<script>
+
+/* =====================================================
+   CONFIG
+===================================================== */
+
+const API_BASE = "https://capital-crest.onrender.com";
+
+/* =====================================================
+   AUTH
+===================================================== */
+
+function getToken(){
+    const keys = [
+        "access_token",
+        "accessToken",
+        "token",
+        "capitalCrestToken",
+        "session"
+    ];
+    for(const key of keys){
+        const raw = localStorage.getItem(key);
+        if(!raw) continue;
+        try{
+            const parsed = JSON.parse(raw);
+            if(parsed?.access_token) return parsed.access_token;
+            if(parsed?.session?.access_token) return parsed.session.access_token;
+            if(parsed?.data?.session?.access_token) return parsed.data.session.access_token;
+        }catch(err){
+            return raw;
+        }
+    }
+    return null;
+}
+
+function clearAdminAuth(){
+    [
+        "access_token",
+        "accessToken",
+        "token",
+        "capitalCrestToken",
+        "session",
+        "capitalCrestRefreshToken"
+    ].forEach(k => localStorage.removeItem(k));
+    window.location.replace("login.html");
+}
+
+async function apiRequest(endpoint, options = {}){
+    const token = getToken();
+    if(!token){
+        const err = new Error("Authentication required");
+        err.status = 401;
+        throw err;
+    }
+    const headers = {
+        Accept:"application/json",
+        "Content-Type":"application/json",
+        ...(options.headers || {})
+    };
+    headers.Authorization = `Bearer ${token}`;
+
+    const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+
+    let data = null;
+    const ct = res.headers.get("content-type") || "";
+    if(ct.includes("application/json")){
+        try{ data = await res.json(); }catch(e){ data = null; }
+    }else{
+        try{
+            const text = await res.text();
+            data = text ? { message: text } : null;
+        }catch(e){ data = null; }
+    }
+
+    if(!res.ok){
+        const err = new Error(data?.message || `Request failed (${res.status})`);
+        err.status = res.status;
+        err.data = data;
+        throw err;
+    }
+
+    return data;
+}
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function formatMoney(amount){
+    const n = Number(amount);
+    const safe = Number.isFinite(n) ? n : 0;
+    try{
+        return new Intl.NumberFormat("en-US", {
+            style:"currency",
+            currency:"USD",
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        }).format(safe);
+    }catch(err){
+        return `$${safe.toFixed(2)}`;
+    }
+}
+
+function initialsOf(name){
+    const parts = String(name || "").trim().split(/\s+/);
+    const first = parts[0]?.charAt(0) || "";
+    const last = parts.length > 1 ? parts[parts.length - 1].charAt(0) : "";
+    return (first + last).toUpperCase() || "--";
+}
+
+function escapeHTML(v){
+    return String(v ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+/* =====================================================
+   STATE
+===================================================== */
+
+let allUsers = [];
+let activeUser = null;
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const usersList = document.getElementById("usersList");
+const searchInput = document.getElementById("searchInput");
+const refreshBtn = document.getElementById("refreshBtn");
+
+const detailBackdrop = document.getElementById("detailBackdrop");
+const detailPanel = document.getElementById("detailPanel");
+const detailClose = document.getElementById("detailClose");
+
+const detailAvatar = document.getElementById("detailAvatar");
+const detailName = document.getElementById("detailName");
+const detailEmail = document.getElementById("detailEmail");
+
+const balChecking = document.getElementById("balChecking");
+const balSavings = document.getElementById("balSavings");
+const balCard = document.getElementById("balCard");
+
+const addFundsForm = document.getElementById("addFundsForm");
+const fundsType = document.getElementById("fundsType");
+const fundsAmount = document.getElementById("fundsAmount");
+const fundsSubmit = document.getElementById("fundsSubmit");
+const formMessage = document.getElementById("formMessage");
+
+const toastEl = document.getElementById("toast");
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+let toastTimer = null;
+function showToast(message, isError = false){
+    if(!toastEl) return;
+    toastEl.textContent = message;
+    toastEl.classList.toggle("error", !!isError);
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2800);
+}
+
+/* =====================================================
+   LOAD USERS
+===================================================== */
+
+async function loadUsers(){
+    usersList.innerHTML = `
+        <div class="state-box">
+            <strong>Loading users…</strong>
+            Fetching the latest customer list.
+        </div>
+    `;
+
+    refreshBtn.disabled = true;
+    refreshBtn.style.opacity = ".6";
+
+    try{
+        const res = await apiRequest("/api/admin/users");
+        const list = Array.isArray(res?.users) ? res.users : [];
+        allUsers = list;
+        renderUsers(list);
+    }catch(err){
+        console.error("LOAD USERS ERROR:", err);
+        if(err.status === 401 || err.status === 403){
+            clearAdminAuth();
+            return;
+        }
+        usersList.innerHTML = `
+            <div class="state-box">
+                <strong>Unable to load users</strong>
+                ${escapeHTML(err.message || "Please try again.")}
+            </div>
+        `;
+    }finally{
+        refreshBtn.disabled = false;
+        refreshBtn.style.opacity = "1";
+    }
+}
+
+/* =====================================================
+   RENDER USERS
+===================================================== */
+
+function renderUsers(list){
+    if(!Array.isArray(list) || list.length === 0){
+        usersList.innerHTML = `
+            <div class="state-box">
+                <strong>No users yet</strong>
+                Once customers register, they will appear here.
+            </div>
+        `;
+        return;
+    }
+
+    usersList.innerHTML = list.map(user => {
+        const name = user.full_name || `${user.first_name || ""} ${user.surname || ""}`.trim() || "Unnamed User";
+        const email = user.email || "No email";
+        const phone = user.phone || "";
+        const balance = Number(user.balance) || 0;
+        const initials = initialsOf(name);
+        const avatarUrl = user.avatar_url || null;
+
+        const avatarMarkup = avatarUrl
+            ? `<div class="user-avatar"><img src="${escapeHTML(avatarUrl)}" alt="" onerror="this.parentElement.textContent='${escapeHTML(initials)}'"></div>`
+            : `<div class="user-avatar">${escapeHTML(initials)}</div>`;
+
+        return `
+            <div class="user-row" data-user-id="${escapeHTML(user.id)}">
+                ${avatarMarkup}
+                <div class="user-info">
+                    <div class="user-name">${escapeHTML(name)}</div>
+                    <div class="user-email">${escapeHTML(email)}${phone ? " · " + escapeHTML(phone) : ""}</div>
+                </div>
+                <div class="user-balance">${escapeHTML(formatMoney(balance))}</div>
+                <svg class="user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 6l6 6-6 6"/>
+                </svg>
+            </div>
+        `;
+    }).join("");
+
+    usersList.querySelectorAll(".user-row").forEach(row => {
+        row.addEventListener("click", () => {
+            const id = row.dataset.userId;
+            const user = allUsers.find(u => u.id === id);
+            if(user) openDetail(user);
+        });
+    });
+}
+
+/* =====================================================
+   FILTER
+===================================================== */
+
+function applyFilter(){
+    const q = String(searchInput.value || "").trim().toLowerCase();
+    if(!q){
+        renderUsers(allUsers);
+        return;
+    }
+    const filtered = allUsers.filter(u => {
+        const name = String(u.full_name || `${u.first_name || ""} ${u.surname || ""}`).toLowerCase();
+        const email = String(u.email || "").toLowerCase();
+        const phone = String(u.phone || "").toLowerCase();
+        return name.includes(q) || email.includes(q) || phone.includes(q);
+    });
+    renderUsers(filtered);
+}
+
+/* =====================================================
+   OPEN DETAIL
+===================================================== */
+
+function openDetail(user){
+    activeUser = user;
+
+    const name = user.full_name || `${user.first_name || ""} ${user.surname || ""}`.trim() || "Unnamed User";
+    const email = user.email || "No email";
+    const initials = initialsOf(name);
+    const avatarUrl = user.avatar_url || null;
+
+    if(avatarUrl){
+        detailAvatar.innerHTML = `<img src="${escapeHTML(avatarUrl)}" alt="">`;
+    }else{
+        detailAvatar.textContent = initials;
+    }
+
+    detailName.textContent = name;
+    detailEmail.textContent = email;
+
+    balChecking.textContent = formatMoney(user?.account_balance?.available_balance ?? user?.balance ?? 0);
+    balSavings.textContent = formatMoney(
+        (user?.accounts || []).find(a => String(a.account_type).toLowerCase().includes("saving"))
+            ?.available_balance ?? 0
+    );
+    balCard.textContent = formatMoney(0); 
+
+    /* Refresh balances from the detailed endpoint */
+    refreshBalances(user.id);
+
+    /* Reset form */
+    fundsAmount.value = "";
+    fundsType.value = "checking";
+    fundsSubmit.disabled = false;
+    fundsSubmit.textContent = "Add Funds";
+    formMessage.className = "form-message";
+    formMessage.textContent = "";
+
+    detailBackdrop.classList.add("show");
+    detailPanel.classList.add("show");
+    document.body.style.overflow = "hidden";
+}
+
+async function refreshBalances(userId){
+    try{
+        const res = await apiRequest(`/api/admin/users/${userId}`);
+        if(!res?.success) return;
+
+        const checking = Number(res?.balances?.checking) || 0;
+        const savings = Number(res?.balances?.savings) || 0;
+        const card = Number(res?.balances?.card) || 0;
+
+        balChecking.textContent = formatMoney(checking);
+        balSavings.textContent = formatMoney(savings);
+        balCard.textContent = formatMoney(card);
+
+        const idx = allUsers.findIndex(u => u.id === userId);
+        if(idx !== -1){
+            allUsers[idx].balance = checking;
+            allUsers[idx].balances = { checking, savings, card };
+        }
+    }catch(err){
+        console.warn("refreshBalances failed:", err);
+    }
+}
+
+/* =====================================================
+   CLOSE DETAIL
+===================================================== */
+
+function closeDetail(){
+    detailBackdrop.classList.remove("show");
+    detailPanel.classList.remove("show");
+    document.body.style.overflow = "";
+    activeUser = null;
+}
+
+detailClose.addEventListener("click", closeDetail);
+detailBackdrop.addEventListener("click", closeDetail);
+
+document.addEventListener("keydown", e => {
+    if(e.key === "Escape" && detailPanel.classList.contains("show")){
+        closeDetail();
+    }
+});
+
+/* =====================================================
+   ADD FUNDS
+===================================================== */
+
+addFundsForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if(!activeUser) return;
+
+    const raw = String(fundsAmount.value || "").trim();
+    const amount = Number(raw);
+    const type = String(fundsType.value || "checking").toLowerCase();
+
+    if(!raw){
+        return setFormMessage("Enter an amount to add.", true);
+    }
+    if(!Number.isFinite(amount) || amount <= 0){
+        return setFormMessage("Amount must be a number greater than zero.", true);
+    }
+    if(amount > 100000000){
+        return setFormMessage("Amount is too large.", true);
+    }
+
+    /* Loading state */
+    fundsSubmit.disabled = true;
+    fundsSubmit.textContent = "Adding…";
+    setFormMessage("", false);
+
+    try{
+        /* =================================================
+           FETCH FRESH BALANCES RIGHT BEFORE WE UPDATE
+           (Prevents resetting other accounts to 0)
+        ================================================= */
+        const freshRes = await apiRequest(`/api/admin/users/${activeUser.id}`);
+        
+        const currentChecking = Number(freshRes?.balances?.checking ?? 0);
+        const currentSavings = Number(freshRes?.balances?.savings ?? 0);
+        const currentCard = Number(freshRes?.balances?.card ?? 0);
+
+        let newChecking = currentChecking;
+        let newSavings = currentSavings;
+        let newCard = currentCard;
+
+        if(type === "checking") newChecking = currentChecking + amount;
+        else if(type === "savings") newSavings = currentSavings + amount;
+        else if(type === "card") newCard = currentCard + amount;
+
+        /* -----------------------------------------------
+           Send update to backend
+        ----------------------------------------------- */
+        const res = await apiRequest(`/api/admin/users/${activeUser.id}/balances`, {
+            method: "PUT",
+            body: JSON.stringify({
+                checking_balance: newChecking,
+                savings_balance: newSavings,
+                card_balance: newCard
+            })
+        });
+
+        if(!res?.success){
+            throw new Error(res?.message || "Unable to add funds.");
+        }
+
+        /* Update UI */
+        balChecking.textContent = formatMoney(newChecking);
+        balSavings.textContent = formatMoney(newSavings);
+        balCard.textContent = formatMoney(newCard);
+
+        /* Update local state */
+        activeUser.balance = newChecking;
+        activeUser.balances = { checking:newChecking, savings:newSavings, card:newCard };
+
+        const idx = allUsers.findIndex(u => u.id === activeUser.id);
+        if(idx !== -1){
+            allUsers[idx].balance = newChecking;
+        }
+
+        /* Refresh list rows */
+        applyFilter();
+
+        setFormMessage(`Added ${formatMoney(amount)} to ${labelFor(type)} balance.`, false);
+        showToast(`Added ${formatMoney(amount)} to ${labelFor(type)}`);
+
+        fundsAmount.value = "";
+    }catch(err){
+        console.error("ADD FUNDS ERROR:", err);
+        setFormMessage(err.message || "Unable to add funds.", true);
+        showToast(err.message || "Unable to add funds", true);
+    }finally{
+        fundsSubmit.disabled = false;
+        fundsSubmit.textContent = "Add Funds";
+    }
+});
+
+function labelFor(type){
+    if(type === "checking") return "Checking";
+    if(type === "savings") return "Savings";
+    if(type === "card") return "Card";
+    return type;
+}
+
+function setFormMessage(msg, isError){
+    formMessage.textContent = msg || "";
+    formMessage.classList.remove("success", "error", "show");
+    if(!msg) return;
+    formMessage.classList.add(isError ? "error" : "success", "show");
+}
+
+/* Allow numbers only (with one decimal) in amount field */
+fundsAmount.addEventListener("input", () => {
+    let v = String(fundsAmount.value || "").replace(/[^\d.]/g, "");
+    const parts = v.split(".");
+    if(parts.length > 2) v = parts[0] + "." + parts.slice(1).join("");
+    fundsAmount.value = v;
+});
+
+/* =====================================================
+   SEARCH + REFRESH
+===================================================== */
+
+let searchTimer = null;
+searchInput.addEventListener("input", () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyFilter, 140);
+});
+
+refreshBtn.addEventListener("click", loadUsers);
+
+/* =====================================================
+   START
+===================================================== */
+
+function start(){
+    const token = getToken();
+    if(!token){
+        window.location.replace("login.html");
+        return;
+    }
+    loadUsers();
+}
+
+if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", start, { once:true });
+}else{
+    start();
+}
+
+</script>
+
+</body>
+</html>

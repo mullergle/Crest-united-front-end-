@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Crest United Bank | Profile</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --ink:#07151b; --deep:#0a2223; --deep2:#103536; --green:#1e6256; --green2:#2c806c;
+    --mint:#b8e0ca; --cream:#f5f2e8; --white:#fff; --text:#eef5f1; --muted:#8fa39d; --gold:#c9a96b;
+    --line:rgba(255,255,255,.08); --card:rgba(255,255,255,.045); --danger:#d98b8b; --shadow:0 25px 70px rgba(0,0,0,.22);
+    --nav-height:64px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+html{ background:#07151b; scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+
+body{
+    min-height:100vh; min-height:100dvh;
+    font-family:"DM Sans",sans-serif;
+    color:var(--text);
+    background: radial-gradient(circle at 10% 0%, rgba(44,128,108,.13), transparent 28%), linear-gradient(135deg, #07151b, #092526 55%, #0b2929);
+    overflow-x:hidden; -webkit-tap-highlight-color:transparent;
+    padding-bottom:calc(var(--nav-height) + 10px);
+}
+
+a{ color:inherit; text-decoration:none; }
+button, input, select, textarea{ font-family:inherit; }
+button{ cursor:pointer; }
+
+/* =========================================================
+   FULL PAGE LOADER
+========================================================= */
+#pageLoader{
+    position:fixed; inset:0; z-index:99999;
+    display:flex; align-items:center; justify-content:center;
+    background: radial-gradient(circle at center, rgba(16,53,54,.96), rgba(7,21,27,.99));
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    opacity:1; visibility:visible; pointer-events:auto;
+    transition: opacity .25s ease, visibility .25s ease;
+}
+#pageLoader.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+.loader-content{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.loader-ring{
+    width:58px; height:58px; position:relative; border-radius:50%;
+    border:3px solid rgba(184,224,202,.12); border-top-color:var(--mint); border-right-color:rgba(184,224,202,.65);
+    animation:loaderSpin .85s linear infinite; box-shadow:0 0 30px rgba(184,224,202,.10);
+}
+.loader-ring::after{
+    content:""; position:absolute; inset:7px; border-radius:50%;
+    border:1px solid rgba(201,169,107,.28); animation:loaderPulse 1.4s ease-in-out infinite;
+}
+.loader-title{ margin-top:20px; color:#eef5f1; font-family:"Manrope",sans-serif; font-size:13px; font-weight:700; letter-spacing:.3px; }
+.loader-subtitle{ margin-top:6px; color:#8fa29d; font-size:9px; letter-spacing:.5px; }
+@keyframes loaderSpin{ to{ transform:rotate(360deg); } }
+@keyframes loaderPulse{ 0%, 100%{ transform:scale(.85); opacity:.35; } 50%{ transform:scale(1); opacity:1; } }
+
+.dashboard{ min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; }
+
+/* =========================================================
+   TOPBAR (Matched to Dashboard)
+========================================================= */
+.topbar{
+    height:64px; position:sticky; top:0; z-index:500;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px; border-bottom:1px solid var(--line);
+    background:rgba(7,21,27,.85); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+}
+.profile-section{ display:flex; align-items:center; }
+.profile-section .avatar{
+    width:42px; height:42px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%; background:linear-gradient(145deg, var(--mint), var(--green2));
+    color:#09201d; font-size:13px; font-weight:800; border:none;
+    box-shadow:0 0 0 2px rgba(184,224,202,.12); transition:box-shadow .2s;
+}
+.topbar-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.icon-button{
+    width:36px; height:36px; border:1px solid var(--line); border-radius:10px;
+    background:rgba(255,255,255,.025); color:#9aada7;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .2s, color .2s;
+}
+.icon-button:hover{ background:rgba(184,224,202,.08); color:var(--mint); }
+.icon-button svg{ width:16px; }
+
+/* =========================================================
+   BOTTOM NAVIGATION (SOLID)
+========================================================= */
+.bottom-nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:1000; height:var(--nav-height);
+    display:flex; align-items:center; justify-content:space-around;
+    background: #07151b;
+    border-top:1px solid var(--line);
+    padding:0 6px; padding-bottom:env(safe-area-inset-bottom);
+    box-shadow:0 -10px 40px rgba(0,0,0,.3);
+}
+.bottom-nav a{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    height:100%; color:#6a7f79; font-size:8px; font-weight:700; letter-spacing:.3px;
+    border-radius:12px; transition:color .2s, background .2s; position:relative;
+    min-width:0; padding:4px 0;
+}
+.bottom-nav a svg{ width:20px; height:20px; flex-shrink:0; transition:transform .2s; }
+.bottom-nav a.active{ color:var(--mint); }
+.bottom-nav a.active svg{ transform:translateY(-1px); }
+.bottom-nav a.active::before{
+    content:""; position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:22px; height:3px; border-radius:0 0 4px 4px; background:var(--mint);
+    box-shadow:0 0 10px rgba(184,224,202,.6);
+}
+.bottom-nav a:active{ background:rgba(184,224,202,.06); }
+
+/* =========================================================
+   CONTENT
+========================================================= */
+.content{ width:min(850px,94%); margin:auto; padding:26px 0 40px; }
+
+.profile-header{ margin-bottom:25px; }
+.profile-kicker{
+    color:var(--mint); font-size:9px; font-weight:800;
+    letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;
+}
+.profile-header h1{
+    font-family:"Manrope",sans-serif; font-size:clamp(27px,4vw,37px);
+    line-height:1.1; letter-spacing:-1px;
+}
+.profile-header p{ margin-top:8px; color:#778d87; font-size:10px; }
+
+/* PROFILE CARD */
+.profile-card{
+    border:1px solid var(--line); border-radius:20px;
+    background:rgba(255,255,255,.035); overflow:hidden; box-shadow:var(--shadow);
+}
+.profile-top{
+    padding:30px; display:flex; align-items:center; gap:20px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    background:radial-gradient(circle at 90% 0%, rgba(184,224,202,.08), transparent 35%);
+}
+.avatar-large{
+    width:76px; height:76px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%; background:linear-gradient(145deg, var(--mint), var(--green2));
+    color:#09201d; font-size:22px; font-weight:800;
+    box-shadow:0 10px 35px rgba(44,128,108,.2);
+}
+.profile-name{ min-width:0; }
+.profile-name h2{ font-family:"Manrope",sans-serif; font-size:21px; font-weight:700; }
+.profile-name p{ margin-top:5px; color:#718780; font-size:9px; }
+.account-status{
+    display:inline-flex; align-items:center; gap:6px; margin-top:9px;
+    padding:6px 9px; border-radius:20px; background:rgba(184,224,202,.06);
+    color:var(--mint); font-size:8px; font-weight:700;
+}
+.status-dot{
+    width:5px; height:5px; border-radius:50%; background:var(--mint);
+    box-shadow:0 0 10px rgba(184,224,202,.7);
+}
+
+.section{ padding:25px 30px; border-bottom:1px solid rgba(255,255,255,.06); }
+.section:last-child{ border-bottom:none; }
+.section-title{ margin-bottom:17px; font-family:"Manrope",sans-serif; font-size:14px; font-weight:700; }
+
+.info-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.info-item{
+    padding:16px; border:1px solid var(--line); border-radius:12px;
+    background:rgba(255,255,255,.025);
+}
+.info-label{ color:#657a74; font-size:8px; text-transform:uppercase; letter-spacing:1.2px; }
+.info-value{ margin-top:7px; color:#dbe6e2; font-size:10px; font-weight:600; word-break:break-word; }
+
+/* SECURITY */
+.security-card{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:20px; padding:18px; border:1px solid var(--line);
+    border-radius:13px; background:rgba(255,255,255,.025);
+}
+.security-left{ display:flex; align-items:center; gap:13px; }
+.security-icon{
+    width:39px; height:39px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:10px; background:rgba(184,224,202,.06); color:var(--mint);
+}
+.security-icon svg{ width:18px; }
+.security-text strong{ display:block; font-size:10px; }
+.security-text span{ display:block; margin-top:4px; color:#637972; font-size:8px; }
+.change-password{
+    border:1px solid rgba(184,224,202,.16); border-radius:9px; padding:10px 13px;
+    background:rgba(184,224,202,.055); color:var(--mint);
+    font-size:9px; font-weight:700; white-space:nowrap; transition:.2s ease;
+}
+.change-password:hover{ background:rgba(184,224,202,.11); border-color:rgba(184,224,202,.3); }
+
+/* MODAL */
+.modal-overlay{
+    position:fixed; inset:0; z-index:100;
+    display:none; align-items:center; justify-content:center;
+    padding:20px; background:rgba(0,0,0,.65);
+    backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px);
+}
+.modal-overlay.show{ display:flex; }
+.modal{
+    width:min(390px,100%); padding:28px 25px 24px;
+    border:1px solid rgba(184,224,202,.14); border-radius:18px;
+    background:linear-gradient(145deg, #123937, #0b2929);
+    box-shadow:0 30px 90px rgba(0,0,0,.45);
+    text-align:center; animation:modalIn .22s ease;
+}
+@keyframes modalIn{
+    from{ opacity:0; transform:translateY(10px) scale(.97); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+}
+.modal-icon{
+    width:55px; height:55px; margin:0 auto 17px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%; background:rgba(184,224,202,.09); color:var(--mint);
+}
+.modal-icon svg{ width:25px; height:25px; }
+.modal h3{ font-family:"Manrope",sans-serif; font-size:17px; font-weight:700; }
+.modal p{ margin-top:9px; color:#8ba09a; font-size:10px; line-height:1.6; }
+.modal-email{
+    margin-top:14px; padding:11px; border-radius:9px;
+    background:rgba(255,255,255,.04); color:#cbd9d4;
+    font-size:9px; word-break:break-word;
+}
+.modal-close{
+    width:100%; margin-top:19px; padding:12px;
+    border:1px solid rgba(184,224,202,.17); border-radius:9px;
+    background:rgba(184,224,202,.08); color:var(--mint);
+    font-size:9px; font-weight:700;
+}
+.modal-close:hover{ background:rgba(184,224,202,.13); }
+
+@media(max-width:600px){
+    .topbar{ height:58px; padding:0 16px; }
+    .profile-section .avatar{ width:38px; height:38px; font-size:12px; }
+    .content{ width:calc(100% - 28px); padding:20px 0 30px; }
+    .profile-header h1{ font-size:27px; }
+    .profile-top{ padding:23px; gap:14px; }
+    .avatar-large{ width:62px; height:62px; font-size:18px; }
+    .profile-name h2{ font-size:17px; }
+    .section{ padding:21px; }
+    .info-grid{ grid-template-columns:1fr; }
+    .security-card{ align-items:flex-start; flex-direction:column; }
+    .change-password{ width:100%; text-align:center; }
+}
+</style>
+</head>
+<body>
+
+<!-- FULL PAGE LOADER -->
+<div id="pageLoader">
+    <div class="loader-content">
+        <div class="loader-ring"></div>
+        <div class="loader-title">Loading profile</div>
+        <div class="loader-subtitle">Securely connecting to Crest United</div>
+    </div>
+</div>
+
+<div class="dashboard">
+
+<!-- TOPBAR -->
+<header class="topbar">
+    <div class="profile-section">
+        <button class="avatar" id="topAvatar" type="button" onclick="window.location.href='dashboard.html'" aria-label="Back to Dashboard">PO</button>
+    </div>
+    <div class="topbar-right">
+        <a href="notifications.html" class="icon-button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 9a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
+        </a>
+    </div>
+</header>
+
+<main class="content">
+
+    <section class="profile-header">
+        <div class="profile-kicker">Account</div>
+        <h1>Your Profile</h1>
+        <p>Manage your personal information and account security.</p>
+    </section>
+
+    <section class="profile-card">
+
+        <div class="profile-top">
+            <div class="avatar-large" id="profileAvatar">--</div>
+            <div class="profile-name">
+                <h2 id="profileName">Loading...</h2>
+                <p id="profileAccountType">Personal Account</p>
+                <div class="account-status">
+                    <span class="status-dot"></span>
+                    <span id="accountStatus">Loading...</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3 class="section-title">Personal Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value" id="fullName">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Account Type</div>
+                    <div class="info-value" id="accountType">Personal Account</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value" id="emailAddress">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phone Number</div>
+                    <div class="info-value" id="phoneNumber">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3 class="section-title">Security</h3>
+            <div class="security-card">
+                <div class="security-left">
+                    <div class="security-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="5" y="10" width="14" height="10" rx="2"/>
+                            <path d="M8 10V7a4 4 0 018 0v3"/>
+                            <circle cx="12" cy="15" r="1"/>
+                        </svg>
+                    </div>
+                    <div class="security-text">
+                        <strong>Password</strong>
+                        <span>Your password is securely protected.</span>
+                    </div>
+                </div>
+                <button class="change-password" id="changePasswordBtn" type="button">Change Password</button>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav" aria-label="Main navigation">
+    <a href="dashboard.html" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <span>Home</span>
+    </a>
+    
+    <a href="get-card.html" data-page="cards">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        <span>Get Card</span>
+    </a>
+
+    <a href="transfer.html" data-page="transfer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8l7-5 7 5"/><path d="M5 16l7 5 7-5"/></svg>
+        <span>Transfer</span>
+    </a>
+    
+    <a href="profile.html" class="active" data-page="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>
+        <span>Profile</span>
+    </a>
+
+    <a href="settings.html" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Settings</span>
+    </a>
+</nav>
+
+</div>
+
+<!-- CHANGE PASSWORD POPUP -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16v16H4z"/>
+                <path d="M4 5l8 7 8-7"/>
+            </svg>
+        </div>
+        <h3>Check Your Email</h3>
+        <p>A change password link has been sent to your email. Please check your inbox and follow the link to create a new password.</p>
+        <div class="modal-email" id="modalEmail">Loading...</div>
+        <button class="modal-close" id="closeModal" type="button">Done</button>
+    </div>
+</div>
+
+<script>
+const API_BASE = "https://capital-crest.onrender.com";
+
+const pageLoader = document.getElementById("pageLoader");
+function showLoader(){ if(pageLoader) pageLoader.classList.remove("hidden"); }
+function hideLoader(){ if(pageLoader) pageLoader.classList.add("hidden"); }
+
+function getAccessToken(){
+    const keys = ["access_token", "accessToken", "crestUnitedToken", "supabase_access_token", "supabaseAccessToken", "token", "session"];
+    for(const key of keys){
+        const value = localStorage.getItem(key);
+        if(!value) continue;
+        try{
+            const parsed = JSON.parse(value);
+            if(parsed?.access_token) return parsed.access_token;
+            if(parsed?.session?.access_token) return parsed.session.access_token;
+            if(parsed?.data?.session?.access_token) return parsed.data.session.access_token;
+        }catch(error){
+            if(typeof value === "string" && value.length > 20) return value;
+        }
+    }
+    return null;
+}
+
+function clearAuth(){
+    ["access_token", "accessToken", "crestUnitedToken", "crestUnitedRefreshToken", "supabase_access_token", "supabaseAccessToken", "token", "session"].forEach(key => localStorage.removeItem(key));
+}
+
+async function apiRequest(endpoint, options = {}){
+    const token = getAccessToken();
+    if(!token){ const error = new Error("Authentication required"); error.status = 401; throw error; }
+    const headers = { Accept: "application/json", "Content-Type": "application/json", ...(options.headers || {}) };
+    headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+    const contentType = response.headers.get("content-type") || "";
+    let data = null;
+    if(contentType.includes("application/json")){
+        try { data = await response.json(); } catch(error) { data = null; }
+    }else{
+        try { const text = await response.text(); data = text ? {message:text} : null; } catch(error) { data = null; }
+    }
+    if(!response.ok){
+        const error = new Error(data?.message || `Request failed (${response.status})`);
+        error.status = response.status;
+        error.data = data;
+        throw error;
+    }
+    return data;
+}
+
+function safeText(value, fallback = "—"){
+    if(value === undefined || value === null || String(value).trim() === "") return fallback;
+    return String(value);
+}
+
+function getInitials(firstName, surname, fullName){
+    let first = String(firstName || "").trim();
+    let last = String(surname || "").trim();
+    if(!first && !last && fullName){
+        const parts = String(fullName).trim().split(/\s+/).filter(Boolean);
+        if(parts.length > 1){ first = parts[0]; last = parts[parts.length - 1]; }
+        else { first = parts[0] || ""; }
+    }
+    const initials = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+    if(initials) return initials;
+    if(first) return first.slice(0,2).toUpperCase();
+    return "--";
+}
+
+async function loadProfile(){
+    const token = getAccessToken();
+    if(!token){ window.location.replace("login.html"); return; }
+
+    showLoader();
+
+    try{
+        const data = await apiRequest("/api/auth/me");
+        if(!data?.success) throw new Error(data?.message || "Unable to load profile");
+
+        const profile = data.profile || {};
+        const user = data.user || {};
+
+        const firstName = profile.first_name || profile.firstName || user.first_name || user.firstName || "";
+        const surname = profile.surname || profile.last_name || profile.lastName || user.surname || "";
+        const email = profile.email || user.email || "";
+        const phone = profile.phone || profile.phone_number || user.phone || user.phone_number || "";
+        const fullName = [firstName, surname].filter(Boolean).join(" ") || profile.full_name || profile.name || user.name || "Account Holder";
+        const accountType = profile.account_type || profile.accountType || "Personal Account";
+        const suspended = profile.is_suspended === true || profile.is_suspended === "true" || profile.is_suspended === 1 || profile.is_suspended === "1";
+        const accountStatus = suspended ? "Account Suspended" : "Account Active";
+        const initials = getInitials(firstName, surname, fullName);
+
+        const avatar = document.getElementById("profileAvatar");
+        if(avatar) avatar.textContent = initials;
+
+        // Topbar avatar
+        const topAvatar = document.getElementById("topAvatar");
+        if(topAvatar) topAvatar.textContent = initials;
+
+        const profileName = document.getElementById("profileName");
+        if(profileName) profileName.textContent = fullName;
+
+        const fullNameElement = document.getElementById("fullName");
+        if(fullNameElement) fullNameElement.textContent = fullName;
+
+        const emailElement = document.getElementById("emailAddress");
+        if(emailElement) emailElement.textContent = safeText(email);
+
+        const phoneElement = document.getElementById("phoneNumber");
+        if(phoneElement) phoneElement.textContent = safeText(phone);
+
+        const accountTypeElement = document.getElementById("accountType");
+        if(accountTypeElement) accountTypeElement.textContent = accountType;
+
+        const profileAccountType = document.getElementById("profileAccountType");
+        if(profileAccountType) profileAccountType.textContent = accountType;
+
+        const statusElement = document.getElementById("accountStatus");
+        if(statusElement) statusElement.textContent = accountStatus;
+
+        const modalEmail = document.getElementById("modalEmail");
+        if(modalEmail) modalEmail.textContent = safeText(email, "Your registered email");
+
+    }catch(error){
+        console.error("Crest United profile error:", error);
+        if(error.status === 401 || error.status === 403){ clearAuth(); window.location.replace("login.html"); return; }
+        document.getElementById("profileName").textContent = "Unable to load profile";
+        document.getElementById("fullName").textContent = "Unable to load";
+        document.getElementById("emailAddress").textContent = "Unable to load";
+        document.getElementById("phoneNumber").textContent = "Unable to load";
+        document.getElementById("accountStatus").textContent = "Unable to load";
+    }finally{
+        hideLoader();
+    }
+}
+
+const changePasswordBtn = document.getElementById("changePasswordBtn");
+const modalOverlay = document.getElementById("modalOverlay");
+const closeModal = document.getElementById("closeModal");
+
+changePasswordBtn.addEventListener("click", function(){
+    modalOverlay.classList.add("show");
+    document.body.style.overflow = "hidden";
+});
+
+function hideModal(){
+    modalOverlay.classList.remove("show");
+    document.body.style.overflow = "";
+}
+closeModal.addEventListener("click", hideModal);
+
+modalOverlay.addEventListener("click", function(event){
+    if(event.target === modalOverlay) hideModal();
+});
+
+document.addEventListener("keydown", function(event){
+    if(event.key === "Escape" && modalOverlay.classList.contains("show")) hideModal();
+});
+
+if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", loadProfile, { once:true });
+}else{
+    loadProfile();
+}
+</script>
+</body>
+</html>

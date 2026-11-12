@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no,
+               viewport-fit=cover">
+
+<title>Crest United Bank | Admin Dashboard</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet">
+
+<style>
+
+/* =====================================================
+   ROOT
+===================================================== */
+
+:root{
+    --ink:#07151b;
+    --deep:#0b2425;
+    --deep2:#103536;
+    --green:#1e6256;
+    --green2:#2c806c;
+    --mint:#b8e0ca;
+    --white:#ffffff;
+    --text:#eef5f1;
+    --muted:#9eafaa;
+    --gold:#c9a96b;
+    --line:rgba(255,255,255,.09);
+    --card:rgba(255,255,255,.055);
+    --shadow:0 30px 80px rgba(0,0,0,.30);
+}
+
+/* =====================================================
+   RESET
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+    background:var(--ink);
+}
+
+html{
+    background:var(--ink);
+}
+
+body{
+    min-height:100vh;
+    min-height:100dvh;
+
+    font-family:"DM Sans",sans-serif;
+
+    color:var(--text);
+
+    background:
+        radial-gradient(
+            circle at 12% 8%,
+            rgba(44,128,108,.16),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 88% 88%,
+            rgba(201,169,107,.08),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #07151b 0%,
+            #092326 52%,
+            #0d3030 100%
+        );
+
+    overflow-x:hidden;
+}
+
+/* =====================================================
+   BACKGROUND GLOW
+===================================================== */
+
+body::before{
+    content:"";
+
+    position:fixed;
+
+    width:430px;
+    height:430px;
+
+    left:-240px;
+    top:15%;
+
+    border-radius:50%;
+
+    background:
+        rgba(44,128,108,.08);
+
+    filter:blur(100px);
+
+    pointer-events:none;
+}
+
+body::after{
+    content:"";
+
+    position:fixed;
+
+    width:430px;
+    height:430px;
+
+    right:-240px;
+    bottom:-80px;
+
+    border-radius:50%;
+
+    background:
+        rgba(201,169,107,.06);
+
+    filter:blur(100px);
+
+    pointer-events:none;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.page{
+    position:relative;
+    z-index:1;
+
+    width:min(1000px,92%);
+
+    margin:auto;
+
+    padding:
+        28px
+        0
+        45px;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+    display:flex;
+
+    align-items:center;
+    justify-content:space-between;
+
+    padding:
+        3px
+        0
+        25px;
+
+    border-bottom:
+        1px solid
+        var(--line);
+
+    margin-bottom:30px;
+}
+
+/* =====================================================
+   BRAND — ANIMATED HEXAGON RIBBON LOGO
+===================================================== */
+
+.brand{
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+/* Hexagon logo container */
+.logo-hex-admin{
+    width:50px;
+    height:50px;
+
+    flex-shrink:0;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    filter:drop-shadow(0 0 16px rgba(44,128,108,.55));
+
+    transition:filter .45s cubic-bezier(.2,.75,.25,1);
+}
+
+.brand:hover .logo-hex-admin{
+    filter:drop-shadow(0 0 26px rgba(184,224,202,.75));
+}
+
+.logo-hex-admin svg{
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    overflow:visible;
+}
+
+/* Rotating gradient aura behind */
+.hex-aura{
+    position:absolute;
+
+    inset:-6px;
+
+    border-radius:50%;
+
+    background:conic-gradient(
+        from 0deg,
+        transparent,
+        rgba(201,169,107,.35),
+        transparent 30%,
+        rgba(184,224,202,.35),
+        transparent 60%,
+        transparent
+    );
+
+    animation:hexSpin 7s linear infinite;
+
+    filter:blur(5px);
+
+    opacity:.7;
+}
+
+@keyframes hexSpin{
+    to{ transform:rotate(360deg); }
+}
+
+/* Rotating hexagon outline */
+.hex-outline{
+    transform-origin:32px 32px;
+
+    animation:hexRotate 12s linear infinite;
+}
+
+@keyframes hexRotate{
+    to{ transform:rotate(360deg); }
+}
+
+/* Interlocking ribbons */
+.ribbon-a{
+    stroke-dasharray:120;
+    stroke-dashoffset:120;
+
+    animation:
+        ribbonDrawA 3s cubic-bezier(.4,0,.2,1) forwards,
+        ribbonFloat 4s ease-in-out 3s infinite;
+}
+
+.ribbon-b{
+    stroke-dasharray:100;
+    stroke-dashoffset:100;
+
+    animation:
+        ribbonDrawB 3s cubic-bezier(.4,0,.2,1) .5s forwards,
+        ribbonFloat 4s ease-in-out 3.5s infinite reverse;
+}
+
+@keyframes ribbonDrawA{
+    to{ stroke-dashoffset:0; }
+}
+
+@keyframes ribbonDrawB{
+    to{ stroke-dashoffset:0; }
+}
+
+@keyframes ribbonFloat{
+    0%,100%{ transform:translate(0,0); }
+    50%    { transform:translate(1px,-1px); }
+}
+
+/* Orbiting particles */
+.orbit{
+    transform-origin:32px 32px;
+
+    animation:orbitSpin 8s linear infinite;
+}
+
+.orbit-2{
+    transform-origin:32px 32px;
+
+    animation:orbitSpin 8s linear infinite reverse;
+
+    animation-delay:-4s;
+}
+
+@keyframes orbitSpin{
+    to{ transform:rotate(360deg); }
+}
+
+/* Pulsing core */
+.hex-core{
+    transform-origin:32px 32px;
+
+    animation:corePulse 2.8s ease-in-out infinite;
+}
+
+@keyframes corePulse{
+    0%,100%{ transform:scale(1); opacity:.85; }
+    50%    { transform:scale(1.15); opacity:1; }
+}
+
+/* Shimmering diamond */
+.hex-diamond{
+    transform-origin:32px 32px;
+
+    animation:diamondShimmer 4s ease-in-out infinite;
+}
+
+@keyframes diamondShimmer{
+    0%,100%{ opacity:.5; transform:scale(.9) rotate(0deg); }
+    50%    { opacity:1; transform:scale(1.1) rotate(45deg); }
+}
+
+/* Twinkling sparkles */
+.spark-1{ animation:sparkleFloat 3s ease-in-out infinite; }
+.spark-2{ animation:sparkleFloat 3s ease-in-out 1s infinite; }
+.spark-3{ animation:sparkleFloat 3s ease-in-out 2s infinite; }
+
+@keyframes sparkleFloat{
+    0%,100%{ opacity:0; transform:translateY(0) scale(.5); }
+    50%    { opacity:1; transform:translateY(-3px) scale(1); }
+}
+
+/* Brand text */
+.brand-text{
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    line-height:1;
+}
+
+.brand-name{
+    font-family:"Manrope",sans-serif;
+
+    font-size:15px;
+
+    font-weight:800;
+
+    letter-spacing:2.4px;
+
+    color:#fff;
+
+    line-height:1.1;
+
+    white-space:nowrap;
+}
+
+.brand-bank{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    margin-top:6px;
+
+    color:#c9a96b;
+
+    font-size:8px;
+
+    font-weight:800;
+
+    letter-spacing:4px;
+
+    line-height:1;
+
+    white-space:nowrap;
+}
+
+.brand-bank::before,
+.brand-bank::after{
+    content:"";
+
+    flex:1;
+
+    height:1px;
+
+    background:linear-gradient(90deg,rgba(201,169,107,.15),rgba(201,169,107,.7));
+}
+
+.brand-bank::after{
+    background:linear-gradient(90deg,rgba(201,169,107,.7),rgba(201,169,107,.15));
+}
+
+/* =====================================================
+   ADMIN BADGE
+===================================================== */
+
+.admin-badge{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:
+        8px
+        12px;
+
+    border:
+        1px solid
+        rgba(201,169,107,.25);
+
+    border-radius:999px;
+
+    background:
+        rgba(201,169,107,.07);
+
+    color:#d9bc83;
+
+    font-size:8px;
+
+    font-weight:800;
+
+    letter-spacing:1.2px;
+
+    text-transform:uppercase;
+}
+
+.admin-dot{
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:var(--gold);
+
+    box-shadow:
+        0 0 10px
+        rgba(201,169,107,.55);
+}
+
+/* =====================================================
+   INTRO
+===================================================== */
+
+.intro{
+    margin-bottom:28px;
+}
+
+.intro h1{
+    font-family:"Manrope",sans-serif;
+
+    font-size:31px;
+
+    line-height:1.15;
+
+    letter-spacing:-1px;
+
+    font-weight:700;
+}
+
+.intro p{
+    margin-top:9px;
+
+    max-width:600px;
+
+    color:#8fa29d;
+
+    font-size:11px;
+
+    line-height:1.7;
+}
+
+/* =====================================================
+   ADMIN GRID
+===================================================== */
+
+.admin-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:16px;
+}
+
+/* =====================================================
+   ADMIN CARD
+===================================================== */
+
+.admin-card{
+    position:relative;
+
+    min-height:215px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    padding:25px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.09);
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.075),
+            rgba(255,255,255,.035)
+        );
+
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+
+    box-shadow:
+        0 22px 60px
+        rgba(0,0,0,.20);
+
+    overflow:hidden;
+
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+}
+
+.admin-card::before{
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+    height:180px;
+
+    right:-100px;
+    top:-100px;
+
+    border-radius:50%;
+
+    background:
+        rgba(44,128,108,.07);
+
+    filter:blur(20px);
+
+    pointer-events:none;
+}
+
+.admin-card:hover{
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(184,224,202,.20);
+
+    box-shadow:
+        0 30px 75px
+        rgba(0,0,0,.28);
+}
+
+/* =====================================================
+   ICON
+===================================================== */
+
+.card-icon{
+    width:46px;
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:13px;
+
+    background:
+        rgba(184,224,202,.08);
+
+    border:
+        1px solid
+        rgba(184,224,202,.13);
+
+    color:var(--mint);
+
+    margin-bottom:20px;
+}
+
+.card-icon svg{
+    width:22px;
+    height:22px;
+}
+
+/* =====================================================
+   CARD CONTENT
+===================================================== */
+
+.card-title{
+    font-family:"Manrope",sans-serif;
+
+    font-size:18px;
+
+    font-weight:800;
+
+    letter-spacing:-.3px;
+}
+
+.card-description{
+    margin-top:8px;
+
+    color:#82958f;
+
+    font-size:10px;
+
+    line-height:1.65;
+
+    max-width:350px;
+}
+
+/* =====================================================
+   CARD BUTTON
+===================================================== */
+
+.card-button{
+    margin-top:auto;
+
+    width:100%;
+
+    height:43px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border:
+        1px solid
+        rgba(184,224,202,.15);
+
+    border-radius:9px;
+
+    background:
+        rgba(184,224,202,.07);
+
+    color:var(--mint);
+
+    font-family:"DM Sans",sans-serif;
+
+    font-size:10px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        border-color .2s ease;
+}
+
+.card-button:hover{
+    background:
+        rgba(184,224,202,.13);
+
+    border-color:
+        rgba(184,224,202,.28);
+
+    transform:
+        translateY(-1px);
+}
+
+.card-button:active{
+    transform:
+        translateY(0);
+}
+
+/* =====================================================
+   LOGOUT CARD
+===================================================== */
+
+.logout-card{
+    grid-column:
+        1 / -1;
+
+    min-height:150px;
+
+    border-color:
+        rgba(201,169,107,.12);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(201,169,107,.055),
+            rgba(255,255,255,.025)
+        );
+}
+
+.logout-card::before{
+    background:
+        rgba(201,169,107,.07);
+}
+
+.logout-card .card-icon{
+    color:#d9bc83;
+
+    background:
+        rgba(201,169,107,.07);
+
+    border-color:
+        rgba(201,169,107,.14);
+}
+
+.logout-card .card-button{
+    color:#d9bc83;
+
+    background:
+        rgba(201,169,107,.06);
+
+    border-color:
+        rgba(201,169,107,.14);
+}
+
+.logout-card .card-button:hover{
+    background:
+        rgba(201,169,107,.11);
+
+    border-color:
+        rgba(201,169,107,.25);
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer{
+    text-align:center;
+
+    margin-top:32px;
+
+    color:#526963;
+
+    font-size:7px;
+
+    letter-spacing:1.4px;
+
+    text-transform:uppercase;
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:700px){
+
+    .page{
+        width:
+            calc(100% - 28px);
+
+        padding-top:22px;
+        padding-bottom:35px;
+    }
+
+    .header{
+        margin-bottom:25px;
+        padding-bottom:20px;
+    }
+
+    .brand{
+        gap:9px;
+    }
+
+    .logo-hex-admin{
+        width:42px;
+        height:42px;
+    }
+
+    .brand-name{
+        font-size:13px;
+        letter-spacing:2px;
+    }
+
+    .brand-bank{
+        font-size:7px;
+        letter-spacing:3.2px;
+        margin-top:5px;
+    }
+
+    .admin-badge{
+        padding:
+            7px
+            10px;
+
+        font-size:7px;
+    }
+
+    .intro h1{
+        font-size:27px;
+    }
+
+    .intro p{
+        font-size:10px;
+    }
+
+    .admin-grid{
+        grid-template-columns:1fr;
+
+        gap:13px;
+    }
+
+    .admin-card{
+        min-height:205px;
+
+        padding:22px;
+    }
+
+    .logout-card{
+        grid-column:auto;
+
+        min-height:185px;
+    }
+}
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media(max-width:380px){
+
+    .admin-badge{
+        padding:
+            6px
+            8px;
+    }
+
+    .admin-badge span{
+        display:none;
+    }
+
+    .intro h1{
+        font-size:25px;
+    }
+
+    .admin-card{
+        padding:20px;
+    }
+
+    .brand-name{
+        font-size:12px;
+        letter-spacing:1.8px;
+    }
+
+    .brand-bank{
+        font-size:6px;
+        letter-spacing:2.8px;
+    }
+
+    .logo-hex-admin{
+        width:38px;
+        height:38px;
+    }
+}
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+        transition:none!important;
+        animation:none!important;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<main class="page">
+
+    <!-- =================================================
+         HEADER
+    ================================================= -->
+
+    <header class="header">
+
+        <a href="dashboard.html"
+           class="brand"
+           aria-label="Crest United Bank">
+
+            <div class="logo-hex-admin">
+                <!-- Rotating aura glow behind -->
+                <div class="hex-aura"></div>
+
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+
+                    <!-- Glow base -->
+                    <circle cx="32" cy="32" r="26" fill="url(#hexGlow)" filter="url(#hexBlur)"/>
+
+                    <!-- Outer hexagon — rotating gradient stroke -->
+                    <polygon class="hex-outline"
+                             points="32,6 54.5,19 54.5,45 32,58 9.5,45 9.5,19"
+                             fill="none"
+                             stroke="url(#hexGradA)"
+                             stroke-width="1.8"
+                             stroke-linejoin="round"
+                             opacity=".85"/>
+
+                    <!-- Inner hexagon ring -->
+                    <polygon points="32,14 47,23 47,41 32,50 17,41 17,23"
+                             fill="none"
+                             stroke="url(#hexGradB)"
+                             stroke-width=".8"
+                             stroke-linejoin="round"
+                             opacity=".5"/>
+
+                    <!-- Interlocking ribbon A -->
+                    <path class="ribbon-a"
+                          d="M18 22 Q26 18 32 24 T46 30 Q48 38 40 42 T24 40"
+                          fill="none"
+                          stroke="url(#hexGradA)"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                          opacity=".9"/>
+
+                    <!-- Interlocking ribbon B -->
+                    <path class="ribbon-b"
+                          d="M46 22 Q38 18 32 24 T18 30 Q16 38 24 42 T40 40"
+                          fill="none"
+                          stroke="url(#hexGradB)"
+                          stroke-width="2.4"
+                          stroke-linecap="round"
+                          opacity=".85"/>
+
+                    <!-- Center diamond core -->
+                    <path class="hex-diamond"
+                          d="M32 24 L38 32 L32 40 L26 32 Z"
+                          fill="url(#hexCore)"
+                          opacity=".9"/>
+
+                    <!-- Pulsing center dot -->
+                    <circle class="hex-core"
+                            cx="32" cy="32" r="3"
+                            fill="#eafaf0"
+                            opacity=".95"/>
+
+                    <!-- Orbiting particles -->
+                    <g class="orbit">
+                        <circle cx="32" cy="8" r="1.6" fill="#eafaf0" opacity=".9"/>
+                    </g>
+                    <g class="orbit-2">
+                        <circle cx="32" cy="56" r="1.3" fill="#e3c98f" opacity=".85"/>
+                    </g>
+
+                    <!-- Tiny sparkles -->
+                    <circle class="spark-1" cx="52" cy="16" r="1" fill="#b8e0ca" opacity=".8"/>
+                    <circle class="spark-2" cx="12" cy="48" r="1.1" fill="#e3c98f" opacity=".7"/>
+                    <circle class="spark-3" cx="50" cy="50" r="0.9" fill="#eafaf0" opacity=".75"/>
+
+                </svg>
+            </div>
+
+            <div class="brand-text">
+
+                <div class="brand-name">
+                    CREST UNITED
+                </div>
+
+                <div class="brand-bank">
+                    BANK
+                </div>
+
+            </div>
+
+        </a>
+
+        <div class="admin-badge">
+
+            <div class="admin-dot"></div>
+
+            <span>
+                ADMIN
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- =================================================
+         INTRO
+    ================================================= -->
+
+    <section class="intro">
+
+        <h1>
+            Admin Dashboard
+        </h1>
+
+        <p>
+            Manage users, support conversations and
+            account access from one secure administration
+            center.
+        </p>
+
+    </section>
+
+
+    <!-- =================================================
+         ADMIN FEATURES
+    ================================================= -->
+
+    <section class="admin-grid">
+
+
+        <!-- =============================================
+             TOTAL USERS
+        ============================================== -->
+
+        <article class="admin-card">
+
+            <div class="card-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path
+                        d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+
+                    <circle
+                        cx="9"
+                        cy="7"
+                        r="4"/>
+
+                    <path
+                        d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+
+                    <path
+                        d="M16 3.13a4 4 0 0 1 0 7.75"/>
+
+                </svg>
+
+            </div>
+
+            <div class="card-title">
+                Total Users
+            </div>
+
+            <div class="card-description">
+                View and manage registered Crest United
+                customers and their account information.
+            </div>
+
+            <a
+                href="user.html"
+                class="card-button">
+
+                Manage Users
+
+            </a>
+
+        </article>
+
+
+        <!-- =============================================
+             MESSAGES
+        ============================================== -->
+
+        <article class="admin-card">
+
+            <div class="card-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path
+                        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8
+                           8.5 8.5 0 0 1-7.6 4.7
+                           8.38 8.38 0 0 1-3.8-.9
+                           L3 21l1.9-5.7
+                           A8.38 8.38 0 0 1 4 11.5
+                           8.5 8.5 0 0 1 8.7 3.9
+                           8.38 8.38 0 0 1 12.5 3
+                           h.5
+                           a8.5 8.5 0 0 1 8 8.5Z"/>
+
+                    <path
+                        d="M8 10h8"/>
+
+                    <path
+                        d="M8 14h5"/>
+
+                </svg>
+
+            </div>
+
+            <div class="card-title">
+                Messages
+            </div>
+
+            <div class="card-description">
+                Review customer support conversations
+                and manage incoming messages.
+            </div>
+
+            <a
+                href="messages.html"
+                class="card-button">
+
+                Open Messages
+
+            </a>
+
+        </article>
+
+
+        <!-- =============================================
+             SUSPENSION
+        ============================================== -->
+
+        <article class="admin-card">
+
+            <div class="card-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path
+                        d="M12 3l7 3v5
+                           c0 4.7-2.8 8.2-7 10
+                           -4.2-1.8-7-5.3-7-10V6l7-3Z"/>
+
+                    <path
+                        d="M9 9l6 6"/>
+
+                    <path
+                        d="M15 9l-6 6"/>
+
+                </svg>
+
+            </div>
+
+            <div class="card-title">
+                Suspension
+            </div>
+
+            <div class="card-description">
+                Control account access and review customers
+                whose banking access requires attention.
+            </div>
+
+            <a
+                href="suspension.html"
+                class="card-button">
+
+                Manage Suspension
+
+            </a>
+
+        </article>
+
+
+        <!-- =============================================
+             LOGOUT
+        ============================================== -->
+
+        <article class="admin-card logout-card">
+
+            <div class="card-icon">
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round">
+
+                    <path
+                        d="M9 21H5
+                           a2 2 0 0 1-2-2V5
+                           a2 2 0 0 1 2-2h4"/>
+
+                    <path
+                        d="M16 17l5-5-5-5"/>
+
+                    <path
+                        d="M21 12H9"/>
+
+                </svg>
+
+            </div>
+
+            <div class="card-title">
+                Logout
+            </div>
+
+            <div class="card-description">
+                Exit the Crest United administration
+                environment securely.
+            </div>
+
+            <a
+                href="log.html"
+                class="card-button">
+
+                Logout
+
+            </a>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =================================================
+         FOOTER
+    ================================================= -->
+
+    <footer class="footer">
+        CREST UNITED BANK • ADMINISTRATION
+    </footer>
+
+</main>
+
+<!-- SVG gradient definitions for the hexagon ribbon logo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="hexGradA" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eafaf0"/>
+      <stop offset="50%" stop-color="#9fd2b4"/>
+      <stop offset="100%" stop-color="#2c806c"/>
+    </linearGradient>
+    <linearGradient id="hexGradB" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff1c1"/>
+      <stop offset="50%" stop-color="#e3c98f"/>
+      <stop offset="100%" stop-color="#9c7328"/>
+    </linearGradient>
+    <linearGradient id="hexCore" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b8e0ca"/>
+      <stop offset="100%" stop-color="#1e6256"/>
+    </linearGradient>
+    <radialGradient id="hexGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#b8e0ca" stop-opacity=".4"/>
+      <stop offset="100%" stop-color="#b8e0ca" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="hexBlur">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>
+</svg>
+
+</body>
+</html>
