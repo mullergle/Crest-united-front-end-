@@ -497,7 +497,7 @@ input{
 
 .user-row{
     display:grid;
-    grid-template-columns:auto 1fr auto auto;
+    grid-template-columns:auto 1fr auto auto auto;
     align-items:center;
     gap:14px;
 
@@ -567,6 +567,95 @@ input{
     font-weight:800;
     color:var(--mint);
     white-space:nowrap;
+}
+
+/* ===== UPLOAD PIC BUTTON ===== */
+.upload-pic-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(184,224,202,.10);
+    color: var(--mint);
+    border: 1px solid rgba(184,224,202,.25);
+    transition: all 0.25s ease;
+    overflow: hidden;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.upload-pic-btn:hover {
+    background: rgba(184,224,202,.20);
+    border-color: rgba(184,224,202,.5);
+    transform: scale(1.06);
+    box-shadow: 0 0 0 3px rgba(184,224,202,.10);
+}
+
+.upload-pic-btn:active {
+    transform: scale(0.98);
+}
+
+.upload-pic-btn svg.camera-icon {
+    width: 16px;
+    height: 16px;
+    transition: opacity 0.2s ease;
+}
+
+.upload-pic-btn.has-photo {
+    border-color: rgba(184,224,202,.55);
+    background: transparent;
+    box-shadow: 0 0 0 2px rgba(184,224,202,.15), 0 4px 14px rgba(0,0,0,.3);
+}
+
+.upload-pic-btn .btn-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.upload-pic-btn.has-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(7,21,27,0) 40%, rgba(7,21,27,.75) 100%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.upload-pic-btn.has-photo:hover::after {
+    opacity: 1;
+}
+
+.upload-pic-btn.has-photo::before {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    background: var(--mint);
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 0 2px #07151b;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2308201d' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E");
+    background-size: 9px 9px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.upload-pic-btn.has-photo:hover::before {
+    opacity: 1;
 }
 
 .user-chevron{
@@ -1007,7 +1096,7 @@ input{
     .admin-badge{ padding:7px 10px; font-size:7px; }
 
     .user-row{
-        grid-template-columns:auto 1fr auto;
+        grid-template-columns:auto 1fr auto auto;
         gap:11px;
         padding:13px 14px;
     }
@@ -1019,6 +1108,10 @@ input{
         color:#a6c8b7;
     }
 
+    .upload-pic-btn {
+        grid-column: 3;
+        grid-row: 1;
+    }
     .user-chevron{ display:none; }
 
     .balance-row{
@@ -1172,8 +1265,8 @@ input{
 
         <p>
             View every registered Crest United customer,
-            inspect their balances, and add funds to their
-            checking, savings, or card account.
+            inspect their balances, and deposit funds
+            with a depositor name that appears on their receipt.
         </p>
 
     </section>
@@ -1280,7 +1373,7 @@ input{
 
         </div>
 
-        <div class="detail-section-title">Add funds</div>
+        <div class="detail-section-title">Deposit funds</div>
 
         <form class="add-funds-form" id="addFundsForm" novalidate>
 
@@ -1308,13 +1401,36 @@ input{
 
             </div>
 
+            <div class="field">
+                <label for="depositorName">Depositor Name (shown on receipt)</label>
+                <input
+                    type="text"
+                    id="depositorName"
+                    class="field-input"
+                    autocomplete="off"
+                    maxlength="80"
+                    placeholder="e.g. John Smith / Wire Transfer / Payroll">
+            </div>
+
+            <div class="field">
+                <label for="depositNote">Note (optional)</label>
+                <input
+                    type="text"
+                    id="depositNote"
+                    class="field-input"
+                    autocomplete="off"
+                    maxlength="140"
+                    placeholder="e.g. Monthly allowance">
+            </div>
+
             <p class="hint">
                 Funds are added on top of the current balance.
-                Amount must be greater than zero.
+                The depositor name is what the customer sees in their
+                transaction history.
             </p>
 
             <button type="submit" class="submit-btn" id="fundsSubmit">
-                Add Funds
+                Deposit Funds
             </button>
 
             <div class="form-message" id="formMessage"></div>
@@ -1325,6 +1441,19 @@ input{
 
 </section>
 
+<!-- =====================================================
+     UPLOAD PHOTO MODAL
+===================================================== -->
+<div class="detail-backdrop" id="photoBackdrop"></div>
+<div id="photoModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); z-index: 9500; width: min(340px, 90%); padding: 24px; background: #0b2425; border: 1px solid rgba(184,224,202,.16); border-radius: 20px; text-align: center; opacity: 0; visibility: hidden; transition: all 0.25s ease;">
+    <h3 style="font-family: 'Manrope', sans-serif; font-size: 16px; color: #fff; margin-bottom: 8px;">Update Photo</h3>
+    <p style="font-size: 12px; color: #8fa29d; margin-bottom: 20px;" id="uploadPhotoName">User Name</p>
+    
+    <input type="file" id="adminPhotoInput" accept="image/*" style="display: none;">
+    
+    <button id="selectPhotoBtn" style="width: 100%; height: 46px; border-radius: 10px; background: #b8e0ca; color: #08201d; font-weight: 800; font-size: 13px; margin-bottom: 10px; border: none;">Choose from Gallery</button>
+    <button id="cancelPhotoBtn" style="width: 100%; height: 46px; border-radius: 10px; background: rgba(255,255,255,0.05); color: #fff; font-weight: 700; font-size: 13px; border: 1px solid rgba(255,255,255,0.1);">Cancel</button>
+</div>
 
 <!-- =====================================================
      TOAST
@@ -1482,12 +1611,29 @@ function escapeHTML(v){
         .replace(/'/g,"&#039;");
 }
 
+function genClientReference(prefix = "DEP"){
+    const stamp = Date.now().toString(36).toUpperCase();
+    const rand  = Math.random().toString(36).slice(2, 7).toUpperCase();
+    return `${prefix}-${stamp}-${rand}`;
+}
+
+/* Build a cache-busting URL so the same filename doesn't get reused from cache */
+function bustedImageUrl(url){
+    if(!url) return null;
+    // Base64 images should not be cache-busted
+    if (url.startsWith("data:image")) return url;
+    
+    const sep = url.includes("?") ? "&" : "?";
+    return `${url}${sep}t=${Date.now()}`;
+}
+
 /* =====================================================
    STATE
 ===================================================== */
 
 let allUsers = [];
 let activeUser = null;
+let activePhotoUser = null;
 
 /* =====================================================
    ELEMENTS
@@ -1514,8 +1660,18 @@ const fundsType = document.getElementById("fundsType");
 const fundsAmount = document.getElementById("fundsAmount");
 const fundsSubmit = document.getElementById("fundsSubmit");
 const formMessage = document.getElementById("formMessage");
+const depositorNameInput = document.getElementById("depositorName");
+const depositNoteInput = document.getElementById("depositNote");
 
 const toastEl = document.getElementById("toast");
+
+/* Photo Modal Elements */
+const photoBackdrop = document.getElementById("photoBackdrop");
+const photoModal = document.getElementById("photoModal");
+const uploadPhotoName = document.getElementById("uploadPhotoName");
+const adminPhotoInput = document.getElementById("adminPhotoInput");
+const selectPhotoBtn = document.getElementById("selectPhotoBtn");
+const cancelPhotoBtn = document.getElementById("cancelPhotoBtn");
 
 /* =====================================================
    TOAST
@@ -1528,7 +1684,7 @@ function showToast(message, isError = false){
     toastEl.classList.toggle("error", !!isError);
     toastEl.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2800);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 3000);
 }
 
 /* =====================================================
@@ -1590,11 +1746,23 @@ function renderUsers(list){
         const phone = user.phone || "";
         const balance = Number(user.balance) || 0;
         const initials = initialsOf(name);
-        const avatarUrl = user.avatar_url || null;
+        
+        // Check for avatar_url or photo_url
+        const rawAvatar = user.avatar_url || user.photo_url || null;
+        const photoUrl = bustedImageUrl(rawAvatar);
 
-        const avatarMarkup = avatarUrl
-            ? `<div class="user-avatar"><img src="${escapeHTML(avatarUrl)}" alt="" onerror="this.parentElement.textContent='${escapeHTML(initials)}'"></div>`
+        const avatarMarkup = photoUrl
+            ? `<div class="user-avatar"><img src="${escapeHTML(photoUrl)}" alt="" onerror="this.parentElement.textContent='${escapeHTML(initials)}'"></div>`
             : `<div class="user-avatar">${escapeHTML(initials)}</div>`;
+
+        /* Button shows the uploaded photo when one exists */
+        const uploadBtnMarkup = photoUrl
+            ? `<button class="upload-pic-btn has-photo" data-photo-user="${escapeHTML(user.id)}" title="Change Profile Picture" aria-label="Change profile picture">
+                   <img class="btn-photo" src="${escapeHTML(photoUrl)}" alt="">
+               </button>`
+            : `<button class="upload-pic-btn" data-photo-user="${escapeHTML(user.id)}" title="Upload Profile Picture" aria-label="Upload profile picture">
+                   <svg class="camera-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+               </button>`;
 
         return `
             <div class="user-row" data-user-id="${escapeHTML(user.id)}">
@@ -1604,6 +1772,7 @@ function renderUsers(list){
                     <div class="user-email">${escapeHTML(email)}${phone ? " · " + escapeHTML(phone) : ""}</div>
                 </div>
                 <div class="user-balance">${escapeHTML(formatMoney(balance))}</div>
+                ${uploadBtnMarkup}
                 <svg class="user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 6l6 6-6 6"/>
                 </svg>
@@ -1611,11 +1780,23 @@ function renderUsers(list){
         `;
     }).join("");
 
+    /* Open user details when clicking a row (not the upload btn) */
     usersList.querySelectorAll(".user-row").forEach(row => {
-        row.addEventListener("click", () => {
+        row.addEventListener("click", (e) => {
+            if (e.target.closest('.upload-pic-btn')) return;
             const id = row.dataset.userId;
             const user = allUsers.find(u => u.id === id);
             if(user) openDetail(user);
+        });
+    });
+
+    /* Open the photo upload modal */
+    usersList.querySelectorAll(".upload-pic-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const userId = btn.dataset.photoUser;
+            const user = allUsers.find(u => u.id === userId);
+            if(user) openPhotoModal(user);
         });
     });
 }
@@ -1649,10 +1830,12 @@ function openDetail(user){
     const name = user.full_name || `${user.first_name || ""} ${user.surname || ""}`.trim() || "Unnamed User";
     const email = user.email || "No email";
     const initials = initialsOf(name);
-    const avatarUrl = user.avatar_url || null;
+    
+    const rawAvatar = user.avatar_url || user.photo_url || null;
+    const photoUrl = bustedImageUrl(rawAvatar);
 
-    if(avatarUrl){
-        detailAvatar.innerHTML = `<img src="${escapeHTML(avatarUrl)}" alt="">`;
+    if(photoUrl){
+        detailAvatar.innerHTML = `<img src="${escapeHTML(photoUrl)}" alt="">`;
     }else{
         detailAvatar.textContent = initials;
     }
@@ -1665,16 +1848,16 @@ function openDetail(user){
         (user?.accounts || []).find(a => String(a.account_type).toLowerCase().includes("saving"))
             ?.available_balance ?? 0
     );
-    balCard.textContent = formatMoney(0); 
+    balCard.textContent = formatMoney(0);
 
-    /* Refresh balances from the detailed endpoint */
     refreshBalances(user.id);
 
-    /* Reset form */
     fundsAmount.value = "";
     fundsType.value = "checking";
+    depositorNameInput.value = "";
+    depositNoteInput.value = "";
     fundsSubmit.disabled = false;
-    fundsSubmit.textContent = "Add Funds";
+    fundsSubmit.textContent = "Deposit Funds";
     formMessage.className = "form-message";
     formMessage.textContent = "";
 
@@ -1724,10 +1907,13 @@ document.addEventListener("keydown", e => {
     if(e.key === "Escape" && detailPanel.classList.contains("show")){
         closeDetail();
     }
+    if(e.key === "Escape" && photoBackdrop.classList.contains("show")){
+        closePhotoModal();
+    }
 });
 
 /* =====================================================
-   ADD FUNDS
+   DEPOSIT FUNDS
 ===================================================== */
 
 addFundsForm.addEventListener("submit", async event => {
@@ -1738,9 +1924,11 @@ addFundsForm.addEventListener("submit", async event => {
     const raw = String(fundsAmount.value || "").trim();
     const amount = Number(raw);
     const type = String(fundsType.value || "checking").toLowerCase();
+    const depositorName = String(depositorNameInput.value || "").trim();
+    const note = String(depositNoteInput.value || "").trim();
 
     if(!raw){
-        return setFormMessage("Enter an amount to add.", true);
+        return setFormMessage("Enter an amount to deposit.", true);
     }
     if(!Number.isFinite(amount) || amount <= 0){
         return setFormMessage("Amount must be a number greater than zero.", true);
@@ -1748,19 +1936,20 @@ addFundsForm.addEventListener("submit", async event => {
     if(amount > 100000000){
         return setFormMessage("Amount is too large.", true);
     }
+    if(!depositorName){
+        return setFormMessage("Enter the depositor name (shown on receipt).", true);
+    }
+    if(depositorName.length < 2){
+        return setFormMessage("Depositor name is too short.", true);
+    }
 
-    /* Loading state */
     fundsSubmit.disabled = true;
-    fundsSubmit.textContent = "Adding…";
+    fundsSubmit.textContent = "Processing…";
     setFormMessage("", false);
 
     try{
-        /* =================================================
-           FETCH FRESH BALANCES RIGHT BEFORE WE UPDATE
-           (Prevents resetting other accounts to 0)
-        ================================================= */
         const freshRes = await apiRequest(`/api/admin/users/${activeUser.id}`);
-        
+
         const currentChecking = Number(freshRes?.balances?.checking ?? 0);
         const currentSavings = Number(freshRes?.balances?.savings ?? 0);
         const currentCard = Number(freshRes?.balances?.card ?? 0);
@@ -1773,9 +1962,6 @@ addFundsForm.addEventListener("submit", async event => {
         else if(type === "savings") newSavings = currentSavings + amount;
         else if(type === "card") newCard = currentCard + amount;
 
-        /* -----------------------------------------------
-           Send update to backend
-        ----------------------------------------------- */
         const res = await apiRequest(`/api/admin/users/${activeUser.id}/balances`, {
             method: "PUT",
             body: JSON.stringify({
@@ -1786,15 +1972,51 @@ addFundsForm.addEventListener("submit", async event => {
         });
 
         if(!res?.success){
-            throw new Error(res?.message || "Unable to add funds.");
+            throw new Error(res?.message || "Unable to deposit funds.");
         }
 
-        /* Update UI */
+        const clientReference = genClientReference("DEP");
+
+        const payload = {
+            account_type: type,
+            amount: amount,
+            depositor_name: depositorName,
+            description: note || `Deposit from ${depositorName}`,
+            note: note || null,
+            type: "credit",
+            status: "completed",
+            reference: clientReference,
+            created_by: "admin"
+        };
+
+        let receiptSaved = false;
+        let reference = clientReference;
+
+        try{
+            const depositRes = await apiRequest(
+                `/api/admin/users/${activeUser.id}/deposits`,
+                { method: "POST", body: JSON.stringify(payload) }
+            );
+            receiptSaved = true;
+            reference = depositRes?.reference || depositRes?.transaction?.reference || clientReference;
+        }catch(depositErr){
+            console.warn("Deposits endpoint failed, trying /transactions:", depositErr);
+            try{
+                const txRes = await apiRequest(
+                    `/api/admin/users/${activeUser.id}/transactions`,
+                    { method: "POST", body: JSON.stringify(payload) }
+                );
+                receiptSaved = true;
+                reference = txRes?.reference || txRes?.transaction?.reference || clientReference;
+            }catch(txErr){
+                console.warn("Transactions endpoint failed too:", txErr);
+            }
+        }
+
         balChecking.textContent = formatMoney(newChecking);
         balSavings.textContent = formatMoney(newSavings);
         balCard.textContent = formatMoney(newCard);
 
-        /* Update local state */
         activeUser.balance = newChecking;
         activeUser.balances = { checking:newChecking, savings:newSavings, card:newCard };
 
@@ -1803,20 +2025,32 @@ addFundsForm.addEventListener("submit", async event => {
             allUsers[idx].balance = newChecking;
         }
 
-        /* Refresh list rows */
         applyFilter();
 
-        setFormMessage(`Added ${formatMoney(amount)} to ${labelFor(type)} balance.`, false);
-        showToast(`Added ${formatMoney(amount)} to ${labelFor(type)}`);
+        const typeLabel = labelFor(type);
+        const refText = reference ? ` Ref: ${reference}.` : "";
+        const receiptText = receiptSaved
+            ? `Receipt saved — will appear in the customer's history.`
+            : `Balance updated, but receipt endpoint was unavailable (history may not show this yet).`;
+
+        setFormMessage(
+            `Deposited ${formatMoney(amount)} to ${typeLabel} from "${depositorName}". ${receiptText}${refText}`,
+            false
+        );
+
+        showToast(`✅ ${formatMoney(amount)} → ${typeLabel} (${depositorName})`);
 
         fundsAmount.value = "";
+        depositorNameInput.value = "";
+        depositNoteInput.value = "";
+
     }catch(err){
-        console.error("ADD FUNDS ERROR:", err);
-        setFormMessage(err.message || "Unable to add funds.", true);
-        showToast(err.message || "Unable to add funds", true);
+        console.error("DEPOSIT ERROR:", err);
+        setFormMessage(err.message || "Unable to deposit funds.", true);
+        showToast(err.message || "Unable to deposit funds", true);
     }finally{
         fundsSubmit.disabled = false;
-        fundsSubmit.textContent = "Add Funds";
+        fundsSubmit.textContent = "Deposit Funds";
     }
 });
 
@@ -1834,12 +2068,105 @@ function setFormMessage(msg, isError){
     formMessage.classList.add(isError ? "error" : "success", "show");
 }
 
-/* Allow numbers only (with one decimal) in amount field */
 fundsAmount.addEventListener("input", () => {
     let v = String(fundsAmount.value || "").replace(/[^\d.]/g, "");
     const parts = v.split(".");
     if(parts.length > 2) v = parts[0] + "." + parts.slice(1).join("");
     fundsAmount.value = v;
+});
+
+/* =====================================================
+   PHOTO UPLOAD LOGIC
+===================================================== */
+
+function openPhotoModal(user) {
+    activePhotoUser = user;
+    const name = user.full_name || `${user.first_name || ""} ${user.surname || ""}`.trim() || "User";
+    uploadPhotoName.textContent = `Update photo for ${name}`;
+    
+    photoBackdrop.classList.add("show");
+    photoModal.style.opacity = "1";
+    photoModal.style.visibility = "visible";
+    photoModal.style.transform = "translate(-50%, -50%) scale(1)";
+}
+
+function closePhotoModal() {
+    photoBackdrop.classList.remove("show");
+    photoModal.style.opacity = "0";
+    photoModal.style.visibility = "hidden";
+    photoModal.style.transform = "translate(-50%, -50%) scale(0.9)";
+    adminPhotoInput.value = "";
+    activePhotoUser = null;
+}
+
+photoBackdrop.addEventListener("click", closePhotoModal);
+cancelPhotoBtn.addEventListener("click", closePhotoModal);
+
+selectPhotoBtn.addEventListener("click", () => {
+    adminPhotoInput.click();
+});
+
+adminPhotoInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file || !activePhotoUser) return;
+
+    if (file.size > 1.5 * 1024 * 1024) {
+        alert("Image must be smaller than 1.5MB");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+        const base64 = event.target.result;
+        
+        selectPhotoBtn.textContent = "Uploading...";
+        selectPhotoBtn.disabled = true;
+
+        try {
+            const res = await apiRequest(`/api/admin/users/${activePhotoUser.id}/photo`, {
+                method: "POST",
+                body: JSON.stringify({ image: base64 })
+            });
+
+            if (res.success) {
+                /* 
+                 * FIX: Use the returned URL if the server gave one. 
+                 * If the server didn't give a URL (res.avatar_url is missing), 
+                 * fallback to using the base64 image we just read so it updates instantly.
+                 */
+                const finalImageUrl = res.avatar_url || res.photo_url || base64;
+
+                /* Update the local user object so re-render shows the photo */
+                const idx = allUsers.findIndex(u => u.id === activePhotoUser.id);
+                if (idx !== -1) {
+                    allUsers[idx].avatar_url = finalImageUrl;
+                }
+
+                /* Re-render the entire list so the button reflects the new photo */
+                applyFilter();
+
+                /* Refresh the open detail panel if this user is currently active */
+                if (activeUser && activeUser.id === activePhotoUser.id) {
+                    activeUser.avatar_url = finalImageUrl;
+                    const bustUrl = bustedImageUrl(finalImageUrl);
+                    detailAvatar.innerHTML = `<img src="${escapeHTML(bustUrl)}" alt="">`;
+                }
+
+                showToast("Photo updated successfully");
+                closePhotoModal();
+            } else {
+                alert(res.message || "Upload failed");
+            }
+        } catch (err) {
+            console.error("PHOTO UPLOAD ERROR:", err);
+            alert("Upload failed: " + (err.message || "Unknown error"));
+        } finally {
+            selectPhotoBtn.textContent = "Choose from Gallery";
+            selectPhotoBtn.disabled = false;
+        }
+    };
+    reader.onerror = () => alert("Failed to read file");
+    reader.readAsDataURL(file);
 });
 
 /* =====================================================

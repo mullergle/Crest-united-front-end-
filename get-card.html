@@ -14,7 +14,7 @@
     --ink:#07151b; --deep:#0a2223; --deep2:#103536; --green:#1e6256; --green2:#2c806c;
     --mint:#b8e0ca; --cream:#f5f2e8; --white:#fff; --text:#eef5f1; --muted:#8fa39d; --gold:#c9a96b;
     --line:rgba(255,255,255,.08); --card:rgba(255,255,255,.045); --danger:#d98b8b; --shadow:0 25px 70px rgba(0,0,0,.22);
-    --nav-height:64px;
+    --nav-height:68px;
 }
 
 *{ margin:0; padding:0; box-sizing:border-box; }
@@ -59,75 +59,130 @@ button{ cursor:pointer; }
 .notification-message { font-size: 11px; color: #81958f; line-height: 1.5; }
 
 /* =========================================================
-   BOTTOM NAVIGATION (SOLID)
+   STUNNING BOTTOM NAVIGATION (GLASS-MORPHISM)
 ========================================================= */
-.bottom-nav{ 
-    position:fixed; 
-    left:0; 
-    right:0; 
-    bottom:0; 
-    z-index:1000; 
-    height:var(--nav-height); 
-    display:flex; 
-    align-items:center; 
-    justify-content:space-around; 
-    background: #07151b; /* SOLID BACKGROUND */
-    border-top:1px solid var(--line); 
-    padding:0 6px; 
-    padding-bottom:env(safe-area-inset-bottom); 
-    box-shadow:0 -10px 40px rgba(0,0,0,.3); 
+.bottom-nav {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 1000;
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: rgba(10, 30, 32, 0.55);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    padding: 0 8px;
+    padding-bottom: env(safe-area-inset-bottom);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.bottom-nav a{ 
-    flex:1; 
-    display:flex; 
-    flex-direction:column; 
-    align-items:center; 
-    justify-content:center; 
-    gap:3px; 
-    height:100%; 
-    color:#6a7f79; 
-    font-size:8px; 
-    font-weight:700; 
-    letter-spacing:.3px; 
-    border-radius:12px; 
-    transition:color .2s, background .2s; 
-    position:relative; 
-    min-width:0; 
-    padding:4px 0; 
+.bottom-nav a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 100%;
+    color: #6a8f84;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    min-width: 0;
+    padding: 6px 0;
 }
 
-.bottom-nav a svg{ 
-    width:20px; 
-    height:20px; 
-    flex-shrink:0; 
-    transition:transform .2s; 
+.bottom-nav a svg {
+    width: 21px;
+    height: 21px;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.3s ease;
 }
 
-.bottom-nav a.active{ 
-    color:var(--mint); 
+.bottom-nav a.active {
+    color: var(--mint);
+    background: linear-gradient(180deg, rgba(184, 224, 202, 0.12) 0%, rgba(184, 224, 202, 0.02) 100%);
+    border: 1px solid rgba(184, 224, 202, 0.15);
+    box-shadow: 0 4px 16px rgba(184, 224, 202, 0.08), inset 0 1px 0 rgba(184, 224, 202, 0.15);
 }
 
-.bottom-nav a.active svg{ 
-    transform:translateY(-1px); 
+.bottom-nav a.active svg {
+    transform: translateY(-2px) scale(1.05);
+    filter: drop-shadow(0 0 10px rgba(184, 224, 202, 0.45));
 }
 
-.bottom-nav a.active::before{ 
-    content:""; 
-    position:absolute; 
-    top:0; 
-    left:50%; 
-    transform:translateX(-50%); 
-    width:22px; 
-    height:3px; 
-    border-radius:0 0 4px 4px; 
-    background:var(--mint); 
-    box-shadow:0 0 10px rgba(184,224,202,.6); 
+.bottom-nav a.active span {
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 14px rgba(184, 224, 202, 0.35);
 }
 
-.bottom-nav a:active{ 
-    background:rgba(184,224,202,.06); 
+/* Animated gradient ring around active icon */
+.bottom-nav a.active::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(184, 224, 202, 0.12) 0%, transparent 70%);
+    animation: navPulse 2.5s ease-in-out infinite;
+    pointer-events: none;
 }
+
+/* Subtle top highlight line on active item */
+.bottom-nav a.active::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2.5px;
+    border-radius: 0 0 4px 4px;
+    background: linear-gradient(90deg, transparent, var(--mint), transparent);
+    box-shadow: 0 0 10px rgba(184, 224, 202, 0.7);
+    opacity: 0.9;
+}
+
+/* Hover / press states */
+.bottom-nav a:not(.active):hover {
+    color: #9ec4b6;
+    background: rgba(184, 224, 202, 0.05);
+}
+.bottom-nav a:not(.active):active {
+    background: rgba(184, 224, 202, 0.09);
+    transform: scale(0.96);
+}
+.bottom-nav a:active {
+    transform: scale(0.96);
+}
+
+@keyframes navPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0.5;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.15);
+        opacity: 0.9;
+    }
+}
+/* ========================================================= */
 
 /* CONTENT */
 .content{ width:100%; padding:26px 0 30px; display: flex; flex-direction: column; align-items: center; }
@@ -186,9 +241,51 @@ button{ cursor:pointer; }
 .form-group input{ width: 100%; height: 48px; border-radius: 12px; border: 1px solid rgba(184,224,202,.2); background: rgba(0,0,0,.2); color: #fff; padding: 0 16px; font-size: 16px; outline: none; transition: border-color .2s; }
 .form-group input:focus{ border-color: var(--mint); }
 
-.action-btn{ width: 100%; height: 52px; border: 0; border-radius: 14px; background: linear-gradient(145deg,#b8e0ca,#75b79d); color: #09201d; font-weight: 800; font-size: 15px; cursor: pointer; transition: opacity .2s, transform .1s; }
+/* =========================================================
+   ACTION BUTTON (with spinner support)
+========================================================= */
+.action-btn{
+    width: 100%; height: 52px; border: 0; border-radius: 14px;
+    background: linear-gradient(145deg,#b8e0ca,#75b79d);
+    color: #09201d; font-weight: 800; font-size: 15px;
+    cursor: pointer; transition: opacity .2s, transform .1s;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    position: relative;
+}
 .action-btn:active{ transform: scale(.98); }
-.action-btn:disabled{ opacity: .6; cursor: not-allowed; }
+.action-btn:disabled{ opacity: .75; cursor: not-allowed; }
+
+/* =========================================================
+   LOADER SPINNER (Matching Dashboard's elegant loader)
+========================================================= */
+.btn-spinner{
+    width: 22px;
+    height: 22px;
+    position: relative;
+    border-radius: 50%;
+    border: 2.5px solid rgba(9, 32, 29, 0.15);
+    border-top-color: #09201d;
+    border-right-color: rgba(9, 32, 29, 0.55);
+    animation: btnSpin 0.85s linear infinite;
+    flex-shrink: 0;
+}
+.btn-spinner::after{
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    border: 1px solid rgba(9, 32, 29, 0.25);
+    animation: btnPulse 1.4s ease-in-out infinite;
+}
+@keyframes btnSpin{
+    to{ transform: rotate(360deg); }
+}
+@keyframes btnPulse{
+    0%, 100%{ transform: scale(.85); opacity: .35; }
+    50%{ transform: scale(1); opacity: 1; }
+}
+
+/* ========================================================= */
 
 #error-msg{ color: #d98b8b; font-size: 12px; text-align: center; margin-bottom: 12px; min-height: 16px; }
 
@@ -198,6 +295,18 @@ button{ cursor:pointer; }
 #success-view h3{ font-family: 'Manrope', sans-serif; font-size: 24px; margin-bottom: 8px; }
 #success-view p{ font-size: 14px; color: var(--muted); margin-bottom: 30px; line-height: 1.5; }
 
+@media(max-width:760px){
+    .bottom-nav{ left:8px; right:8px; bottom:8px; border-radius:24px; }
+    .bottom-nav a{ font-size:7px; }
+    .bottom-nav a svg{ width:19px; height:19px; }
+}
+@media(max-width:480px){
+    .bottom-nav{ left:6px; right:6px; bottom:6px; border-radius:22px; padding:0 4px; }
+    .bottom-nav a{ font-size:6.5px; gap:2px; padding:4px 0; }
+    .bottom-nav a svg{ width:18px; height:18px; }
+    .bottom-nav a.active::before{ width:36px; height:36px; }
+}
+@media(prefers-reduced-motion:reduce){ *, *::before, *::after{ transition:none!important; animation:none!important; } }
 </style>
 </head>
 <body>
@@ -281,6 +390,9 @@ button{ cursor:pointer; }
     </div>
 </div>
 
+<!-- =========================================================
+     STUNNING BOTTOM NAVIGATION
+========================================================= -->
 <nav class="bottom-nav" aria-label="Main navigation">
     <a href="dashboard.html" data-page="dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -292,7 +404,6 @@ button{ cursor:pointer; }
         <span>Get Card</span>
     </a>
     
-    <!-- UPDATED: Links to transfer.html -->
     <a href="transfer.html" data-page="transfer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8l7-5 7 5"/><path d="M5 16l7 5 7-5"/></svg>
         <span>Transfer</span>
@@ -533,10 +644,15 @@ button{ cursor:pointer; }
         document.getElementById("depositAmount").placeholder = `Minimum $${card.minDeposit.toFixed(2)}`;
     }
 
-    document.getElementById("submitBtn").addEventListener("click", async () => {
+    // =========================================================
+    // SUBMIT BUTTON WITH SPINNER
+    // =========================================================
+    const submitBtn = document.getElementById("submitBtn");
+    const originalBtnHTML = submitBtn.innerHTML;
+
+    submitBtn.addEventListener("click", async () => {
         const amountInput = document.getElementById("depositAmount").value;
         const amount = Number(amountInput);
-        const btn = document.getElementById("submitBtn");
         const errEl = document.getElementById("error-msg");
 
         errEl.textContent = "";
@@ -546,8 +662,9 @@ button{ cursor:pointer; }
             return;
         }
 
-        btn.disabled = true;
-        btn.textContent = "Processing...";
+        // === SHOW SPINNER ===
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span class="btn-spinner"></span><span>Issuing your card…</span>`;
 
         try {
             const res = await apiRequest("/api/cards/issue", {
@@ -561,13 +678,18 @@ button{ cursor:pointer; }
             });
 
             if(res.success) {
+                // Brief pause so the user sees the spinner complete gracefully
+                await new Promise(r => setTimeout(r, 350));
                 document.getElementById("main-content").style.display = "none";
                 document.getElementById("success-view").style.display = "block";
+            } else {
+                throw new Error(res.message || "Unable to issue card. Please try again.");
             }
         } catch(err) {
             errEl.textContent = err.message || "Unable to issue card. Please try again.";
-            btn.disabled = false;
-            btn.textContent = "Issue Card Now";
+            // === RESTORE BUTTON ===
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHTML;
         }
     });
 
