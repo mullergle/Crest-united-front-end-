@@ -8,7 +8,7 @@
                maximum-scale=1.0,
                user-scalable=no,
                viewport-fit=cover">
-<title>Capital Crest | Notifications</title>
+<title>Crest United Bank | Notifications</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap"
@@ -76,6 +76,7 @@ button{
     font-family:inherit;
     cursor:pointer;
 }
+
 /* =========================================================
    PAGE
 ========================================================= */
@@ -86,95 +87,42 @@ button{
     margin:0;
     padding:0;
 }
+
 /* =========================================================
-   TOPBAR
+   TOPBAR (Simplified like Dashboard)
 ========================================================= */
 .topbar{
-    height:76px;
+    height:64px;
     position:sticky;
     top:0;
     z-index:500;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 38px;
+    padding:0 20px;
     border-bottom:
         1px solid var(--line);
     background:
-        rgba(7,21,27,.76);
+        rgba(7,21,27,.85);
     backdrop-filter:blur(18px);
     -webkit-backdrop-filter:blur(18px);
 }
+
 /* =========================================================
-   TOPBAR LEFT
+   TOPBAR LEFT (Avatar)
 ========================================================= */
 .topbar-left{
     display:flex;
     align-items:center;
-    gap:14px;
 }
-/* =========================================================
-   EXIT BUTTON
-========================================================= */
-.exit-button{
-    height:38px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:0 13px;
-    border:
-        1px solid
-        rgba(255,255,255,.09);
-    border-radius:10px;
-    background:
-        rgba(255,255,255,.035);
-    color:#9aada7;
-    font-size:9px;
-    font-weight:700;
-    transition:.2s ease;
-}
-.exit-button:hover{
-    color:var(--mint);
-    border-color:
-        rgba(184,224,202,.2);
-    background:
-        rgba(184,224,202,.06);
-}
-.exit-button svg{
-    width:16px;
-    height:16px;
-}
-/* =========================================================
-   PAGE TITLE
-========================================================= */
-.page-heading{
-    display:flex;
-    flex-direction:column;
-}
-.page-title{
-    font-family:"Manrope",sans-serif;
-    font-size:18px;
-    font-weight:700;
-}
-.page-subtitle{
-    margin-top:3px;
-    color:#687e77;
-    font-size:9px;
-}
-/* =========================================================
-   TOPBAR RIGHT
-========================================================= */
-.topbar-right{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
+
 /* =========================================================
    AVATAR
 ========================================================= */
 .avatar{
-    width:38px;
-    height:38px;
+    width:42px;
+    height:42px;
+    flex-shrink:0;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -186,17 +134,35 @@ button{
             var(--green2)
         );
     color:#09201d;
-    font-size:11px;
+    font-size:13px;
     font-weight:800;
+    border:none;
+    box-shadow:0 0 0 2px rgba(184,224,202,.12);
+    transition:box-shadow .2s;
+    cursor:pointer;
 }
+.avatar:hover{
+    box-shadow:0 0 0 3px rgba(184,224,202,.25);
+}
+
+/* =========================================================
+   TOPBAR RIGHT (Empty, but kept for layout)
+========================================================= */
+.topbar-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
 /* =========================================================
    CONTENT
 ========================================================= */
 .content{
     width:min(900px,94%);
     margin:auto;
-    padding:24px 0 0;
+    padding:24px 0 40px;
 }
+
 /* =========================================================
    PAGE INTRO
 ========================================================= */
@@ -226,6 +192,7 @@ button{
     color:#778d87;
     font-size:10px;
 }
+
 /* =========================================================
    MARK ALL READ
 ========================================================= */
@@ -247,6 +214,7 @@ button{
     background:
         rgba(184,224,202,.10);
 }
+
 /* =========================================================
    NOTIFICATION CARD
 ========================================================= */
@@ -258,6 +226,7 @@ button{
     background:
         rgba(255,255,255,.032);
 }
+
 /* =========================================================
    NOTIFICATION
 ========================================================= */
@@ -281,6 +250,7 @@ button{
     background:
         rgba(184,224,202,.025);
 }
+
 /* =========================================================
    UNREAD
 ========================================================= */
@@ -297,6 +267,7 @@ button{
     width:3px;
     background:var(--mint);
 }
+
 /* =========================================================
    NOTIFICATION ICON
 ========================================================= */
@@ -316,6 +287,7 @@ button{
     width:18px;
     height:18px;
 }
+
 /* =========================================================
    DIFFERENT NOTIFICATION TYPES
 ========================================================= */
@@ -328,6 +300,7 @@ button{
 .notification.danger .notification-icon{
     color:#d98b8b;
 }
+
 /* =========================================================
    NOTIFICATION BODY
 ========================================================= */
@@ -357,6 +330,7 @@ button{
     font-size:9px;
     line-height:1.6;
 }
+
 /* =========================================================
    UNREAD DOT
 ========================================================= */
@@ -371,6 +345,7 @@ button{
         0 0 10px
         rgba(184,224,202,.65);
 }
+
 /* =========================================================
    NOTIFICATION FOOTER
 ========================================================= */
@@ -392,6 +367,7 @@ button{
     text-transform:uppercase;
     letter-spacing:.8px;
 }
+
 /* =========================================================
    EMPTY STATE
 ========================================================= */
@@ -424,6 +400,7 @@ button{
     color:#718780;
     font-size:9px;
 }
+
 /* =========================================================
    LOADING STATE
 ========================================================= */
@@ -465,6 +442,7 @@ button{
         opacity:1;
     }
 }
+
 /* =========================================================
    ERROR STATE
 ========================================================= */
@@ -510,6 +488,7 @@ button{
     font-size:8px;
     font-weight:700;
 }
+
 /* =========================================================
    SECURITY NOTICE
 ========================================================= */
@@ -543,31 +522,25 @@ button{
     font-size:7px;
     line-height:1.5;
 }
+
 /* =========================================================
    MOBILE
 ========================================================= */
 @media(max-width:760px){
     .topbar{
-        height:68px;
-        padding:
-            0 16px;
-        padding-top:
-            env(safe-area-inset-top);
+        height:58px;
+        padding:0 16px;
     }
-    .exit-button{
-        padding:0 11px;
-    }
-    .page-title{
-        font-size:15px;
-    }
-    .page-subtitle{
-        display:none;
+    .avatar{
+        width:38px;
+        height:38px;
+        font-size:12px;
     }
     .content{
         width:
             calc(100% - 28px);
         padding:
-            18px 0 0;
+            18px 0 30px;
     }
     .page-intro{
         align-items:flex-start;
@@ -607,6 +580,7 @@ button{
         margin-bottom:0;
     }
 }
+
 /* =========================================================
    SMALL PHONES
 ========================================================= */
@@ -614,14 +588,6 @@ button{
     .topbar-right .avatar{
         width:34px;
         height:34px;
-    }
-    .exit-button span{
-        display:none;
-    }
-    .exit-button{
-        width:38px;
-        padding:0;
-        justify-content:center;
     }
     .page-intro h1{
         font-size:26px;
@@ -637,6 +603,7 @@ button{
         height:34px;
     }
 }
+
 /* =========================================================
    REDUCED MOTION
 ========================================================= */
@@ -651,102 +618,99 @@ button{
 </head>
 <body>
 <div class="page">
+
 <!-- =======================================================
-     TOPBAR
+     TOPBAR (Avatar only)
 ======================================================= -->
 <header class="topbar">
+
     <div class="topbar-left">
-        <button
-            class="exit-button"
-            onclick="exitToDashboard()"
-            aria-label="Exit notifications">
-            <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.7"
-                stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M15 6l-6 6 6 6"/>
-                <path d="M9 12h12"/>
-            </svg>
-            <span>
-                Exit
-            </span>
-        </button>
-        <div class="page-heading">
-            <div class="page-title">
-                Notifications
-            </div>
-            <div class="page-subtitle">
-                Capital Crest Online Banking
-            </div>
-        </div>
+        <button class="avatar" id="userAvatar" onclick="window.location.href='dashboard.html'" aria-label="Back to Dashboard">--</button>
     </div>
+
     <div class="topbar-right">
-        <div
-            class="avatar"
-            id="userAvatar">
-            --
-        </div>
+        <!-- Empty, or can add a help icon here if needed later -->
     </div>
+
 </header>
+
 <!-- =======================================================
      MAIN CONTENT
 ======================================================= -->
 <main class="content">
+
     <section class="page-intro">
+
         <div>
+
             <div class="intro-kicker">
                 Account Activity
             </div>
+
             <h1>
                 Notifications
             </h1>
+
             <p>
                 Stay updated with your account activity and security alerts.
             </p>
+
         </div>
+
         <button
             class="mark-read"
             id="markAllRead"
             disabled>
             Mark all as read
         </button>
+
     </section>
+
     <!-- ===================================================
          NOTIFICATIONS
     ==================================================== -->
     <section
         class="notifications"
         id="notificationList">
+
         <div
             class="loading-state"
             id="loadingState">
+
             <div class="loading-icon">
+
                 <svg
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
                     stroke-width="1.6"
                     stroke-linecap="round">
+
                     <path
                         d="M18 9a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
                     <path d="M10 21h4"/>
+
                 </svg>
+
             </div>
+
             <h2>
                 Loading notifications
             </h2>
+
             <p>
                 Checking your latest account activity...
             </p>
+
         </div>
+
         <!-- ERROR -->
         <div
             class="error-state"
             id="errorState">
+
             <div class="error-icon">
+
                 <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -754,56 +718,75 @@ button{
                     stroke-width="1.6"
                     stroke-linecap="round"
                     stroke-linejoin="round">
+
                     <circle
                         cx="12"
                         cy="12"
                         r="9"/>
                     <path d="M12 8v5"/>
                     <path d="M12 16h.01"/>
+
                 </svg>
+
             </div>
+
             <h2>
                 Unable to load notifications
             </h2>
+
             <p>
                 We couldn't retrieve your notifications. Please try again.
             </p>
+
             <button
                 class="retry-button"
                 onclick="loadNotifications()">
                 Try Again
             </button>
+
         </div>
+
     </section>
+
     <!-- ===================================================
          EMPTY STATE
     ==================================================== -->
     <div
         class="empty-state"
         id="emptyState">
+
         <div class="empty-icon">
+
             <svg
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="1.6"
                 stroke-linecap="round">
+
                 <path
                     d="M18 9a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
                 <path d="M10 21h4"/>
+
             </svg>
+
         </div>
+
         <h2>
             You're all caught up
         </h2>
+
         <p>
             There are no new notifications.
         </p>
+
     </div>
+
     <!-- ===================================================
          SECURITY NOTICE
     ==================================================== -->
     <div class="security-notice">
+
         <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -811,28 +794,39 @@ button{
             stroke-width="1.6"
             stroke-linecap="round"
             stroke-linejoin="round">
+
             <path
                 d="M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4z"/>
             <path d="M12 8v4"/>
             <path d="M12 16h.01"/>
+
         </svg>
+
         <div>
+
             <strong>
                 Stay alert
             </strong>
+
             <span>
-                Capital Crest will never ask you to share your password, PIN, CVV, or one-time security codes through a notification.
+                Crest United will never ask you to share your password, PIN, CVV, or one-time security codes through a notification.
             </span>
+
         </div>
+
     </div>
+
 </main>
+
 </div>
+
 <script>
 /* =========================================================
-   CAPITAL CREST CONFIG
+   CREST UNITED BANK CONFIG
 ========================================================= */
 const API_BASE_URL =
     "https://capital-crest.onrender.com";
+
 /* =========================================================
    ELEMENTS
 ========================================================= */
@@ -860,6 +854,7 @@ const userAvatar =
     document.getElementById(
         "userAvatar"
     );
+
 /* =========================================================
    AUTH TOKEN
 ========================================================= */
@@ -867,7 +862,7 @@ function getAccessToken(){
     const keys = [
         "access_token",
         "accessToken",
-        "capitalCrestToken",
+        "crestUnitedToken",
         "supabase_access_token",
         "supabaseAccessToken",
         "token",
@@ -915,6 +910,7 @@ function getAccessToken(){
     }
     return null;
 }
+
 /* =========================================================
    CLEAR AUTH
 ========================================================= */
@@ -922,30 +918,24 @@ function clearAuth(){
     const keys = [
         "access_token",
         "accessToken",
-        "capitalCrestToken",
+        "crestUnitedToken",
         "supabase_access_token",
         "supabaseAccessToken",
         "token",
         "session",
-        "capitalCrestRefreshToken"
+        "crestUnitedRefreshToken"
     ];
     keys.forEach(key => {
         localStorage.removeItem(key);
     });
 }
+
 /* =========================================================
    PERSISTENT READ STATE
 ========================================================= */
-/*
-   Read notification IDs are stored locally.
-   This means:
-   - Clicking a notification marks it read.
-   - Refreshing the page keeps it read.
-   - Leaving and returning keeps it read.
-   - "Mark all as read" remains read after refresh.
-*/
 const READ_STORAGE_KEY =
-    "capitalCrestReadNotifications";
+    "crestUnitedReadNotifications";
+
 function getReadNotifications(){
     try{
         const saved =
@@ -968,6 +958,7 @@ function getReadNotifications(){
     }
     return [];
 }
+
 function saveReadNotifications(ids){
     try{
         const uniqueIds =
@@ -985,6 +976,7 @@ function saveReadNotifications(ids){
         );
     }
 }
+
 function markNotificationAsRead(id){
     const readIds =
         getReadNotifications();
@@ -997,6 +989,7 @@ function markNotificationAsRead(id){
         );
     }
 }
+
 function markNotificationsAsRead(ids){
     const readIds =
         getReadNotifications();
@@ -1011,6 +1004,7 @@ function markNotificationsAsRead(ids){
         readIds
     );
 }
+
 function isPersistentlyRead(id){
     const readIds =
         getReadNotifications();
@@ -1018,6 +1012,7 @@ function isPersistentlyRead(id){
         String(id)
     );
 }
+
 /* =========================================================
    API REQUEST
 ========================================================= */
@@ -1068,6 +1063,7 @@ async function apiRequest(endpoint){
     }
     return data;
 }
+
 /* =========================================================
    HELPER
 ========================================================= */
@@ -1083,6 +1079,7 @@ function firstValid(...values){
     }
     return null;
 }
+
 /* =========================================================
    GET USER NAME
 ========================================================= */
@@ -1125,6 +1122,7 @@ function getUserName(profile,user){
     .join(" ")
     .trim();
 }
+
 /* =========================================================
    INITIALS
 ========================================================= */
@@ -1147,6 +1145,7 @@ function getInitials(name){
         parts[parts.length - 1][0]
     ).toUpperCase();
 }
+
 /* =========================================================
    FORMAT DATE
 ========================================================= */
@@ -1200,6 +1199,7 @@ function formatNotificationTime(value){
         );
     return datePart + " · " + time;
 }
+
 /* =========================================================
    NOTIFICATION TYPE
 ========================================================= */
@@ -1236,6 +1236,7 @@ function getNotificationType(notification){
     }
     return "";
 }
+
 /* =========================================================
    ICON
 ========================================================= */
@@ -1338,6 +1339,7 @@ function getNotificationIcon(notification){
         </svg>
     `;
 }
+
 /* =========================================================
    ESCAPE HTML
 ========================================================= */
@@ -1351,6 +1353,7 @@ function escapeHTML(value){
     .replace(/"/g,"&quot;")
     .replace(/'/g,"&#039;");
 }
+
 /* =========================================================
    NORMALIZE NOTIFICATIONS
 ========================================================= */
@@ -1385,6 +1388,7 @@ function normalizeNotifications(data){
     }
     return [];
 }
+
 /* =========================================================
    NOTIFICATION ID
 ========================================================= */
@@ -1396,13 +1400,6 @@ function getNotificationId(
         notification?.id,
         notification?.notification_id,
         notification?.notificationId,
-        /*
-           If the backend doesn't provide an ID,
-           use a stable fingerprint made from the
-           notification's content instead of the
-           array index. This prevents read state
-           from changing just because the order changes.
-        */
         notification?.created_at &&
         (
             String(
@@ -1426,6 +1423,7 @@ function getNotificationId(
         index
     );
 }
+
 /* =========================================================
    IS UNREAD
 ========================================================= */
@@ -1433,9 +1431,6 @@ function isUnread(
     notification,
     notificationId
 ){
-    /*
-       Local persistent read state takes priority.
-    */
     if(
         isPersistentlyRead(
             notificationId
@@ -1478,6 +1473,7 @@ function isUnread(
     }
     return false;
 }
+
 /* =========================================================
    RENDER NOTIFICATION
 ========================================================= */
@@ -1499,7 +1495,7 @@ function renderNotification(
             notification?.body,
             notification?.description,
             notification?.text,
-            "You have a new notification from Capital Crest."
+            "You have a new notification from Crest United Bank."
         );
     const dateValue =
         firstValid(
@@ -1588,6 +1584,7 @@ function renderNotification(
         </div>
     `;
 }
+
 /* =========================================================
    UPDATE MARK READ BUTTON
 ========================================================= */
@@ -1616,6 +1613,7 @@ function updateMarkReadButton(){
             "default";
     }
 }
+
 /* =========================================================
    SHOW EMPTY STATE
 ========================================================= */
@@ -1625,6 +1623,7 @@ function showEmptyState(){
     emptyState.style.display =
         "block";
 }
+
 /* =========================================================
    SHOW ERROR
 ========================================================= */
@@ -1636,6 +1635,7 @@ function showError(){
     errorState.style.display =
         "block";
 }
+
 /* =========================================================
    LOAD USER PROFILE
 ========================================================= */
@@ -1666,6 +1666,7 @@ async function loadUserProfile(){
         );
     }
 }
+
 /* =========================================================
    LOAD NOTIFICATIONS
 ========================================================= */
@@ -1731,6 +1732,7 @@ async function loadNotifications(){
         showError();
     }
 }
+
 /* =========================================================
    CLICK NOTIFICATION
 ========================================================= */
@@ -1750,10 +1752,6 @@ function attachNotificationClicks(){
                 ){
                     const notificationId =
                         this.dataset.notificationId;
-                    /*
-                       Save the notification as
-                       read BEFORE changing the UI.
-                    */
                     markNotificationAsRead(
                         notificationId
                     );
@@ -1773,6 +1771,7 @@ function attachNotificationClicks(){
         );
     });
 }
+
 /* =========================================================
    MARK ALL AS READ
 ========================================================= */
@@ -1807,39 +1806,13 @@ markAllRead.addEventListener(
                 }
             }
         );
-        /*
-           Persist ALL read notification IDs.
-        */
         markNotificationsAsRead(
             notificationIds
         );
         updateMarkReadButton();
     }
 );
-/* =========================================================
-   EXIT TO DASHBOARD
-========================================================= */
-function exitToDashboard(){
-    localStorage.setItem(
-        "capitalCrestActivePage",
-        "notifications"
-    );
-    window.location.href =
-        "dashboard.html?sidebar=open&active=notifications";
-}
-/* =========================================================
-   ESCAPE KEY
-========================================================= */
-document.addEventListener(
-    "keydown",
-    function(event){
-        if(
-            event.key === "Escape"
-        ){
-            exitToDashboard();
-        }
-    }
-);
+
 /* =========================================================
    INITIALIZE
 ========================================================= */

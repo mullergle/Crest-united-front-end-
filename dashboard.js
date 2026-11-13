@@ -510,11 +510,42 @@ function openDashboardReceipt(encodedTx) {
     document.getElementById("receiptDate").textContent = dateStr;
     document.getElementById("receiptRef").textContent = tx.reference || tx.id || "—";
 
-    document.getElementById("receiptAccountName").textContent = tx.recipient_name || "External Account";
-    document.getElementById("receiptBank").textContent = tx.recipient_bank_name || "Crest United Bank";
-    document.getElementById("receiptTo").textContent = tx.recipient_account_number || tx.account_number || "—";
-    document.getElementById("receiptSwift").textContent = tx.recipient_swift_code || "—";
-    document.getElementById("receiptRouting").textContent = tx.recipient_routing_number || "—";
+    // ✅ SMART FIELD LOOKUP (checks multiple field names and nested objects)
+    const findField = (...keys) => {
+        for (const key of keys) {
+            if (tx[key] !== undefined && tx[key] !== null && tx[key] !== "") return tx[key];
+            if (tx.recipient && tx.recipient[key] !== undefined && tx.recipient[key] !== null && tx.recipient[key] !== "") return tx.recipient[key];
+            if (tx.metadata && tx.metadata[key] !== undefined && tx.metadata[key] !== null && tx.metadata[key] !== "") return tx.metadata[key];
+        }
+        return null;
+    };
+
+    // Account Name
+    const accountName = findField("recipient_name", "recipientName", "account_name", "accountName", "beneficiary_name", "name") || "External Account";
+
+    // Bank Name
+    const bankName = findField("recipient_bank_name", "recipientBankName", "bank_name", "bankName", "beneficiary_bank") || "Crest United Bank";
+
+    // Account Number — try direct fields, then extract from description
+    let accountNumber = findField("recipient_account_number", "recipientAccountNumber", "account_number", "accountNumber", "beneficiary_account");
+    if (!accountNumber && tx.description) {
+        // Extract pattern like "(2124643486)" from description
+        const match = String(tx.description).match(/\(([\d\s\-]+)\)/);
+        if (match) accountNumber = match[1].trim();
+    }
+    if (!accountNumber) accountNumber = "—";
+
+    // SWIFT Code
+    const swiftCode = findField("recipient_swift_code", "recipientSwiftCode", "swift_code", "swiftCode", "swift", "bic") || "—";
+
+    // Routing Number
+    const routingNumber = findField("recipient_routing_number", "recipientRoutingNumber", "routing_number", "routingNumber", "routing") || "—";
+
+    document.getElementById("receiptAccountName").textContent = accountName;
+    document.getElementById("receiptBank").textContent = bankName;
+    document.getElementById("receiptTo").textContent = accountNumber;
+    document.getElementById("receiptSwift").textContent = swiftCode;
+    document.getElementById("receiptRouting").textContent = routingNumber;
     document.getElementById("receiptDesc").textContent = tx.description || "Bank Transfer";
 
     if(tx.status === "pending" || tx.status === "failed") {
@@ -1131,6 +1162,34 @@ window.openTransactionInModal = function(tx) {
         }
     }, 300);
 };
+
+
+/* =========================================================
+   PAGE VISIBILITY - REFRESH ON RETURN
+========================================================= */
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        // Small delay to ensure any pending changes are saved
+        setTimeout(() => {
+            const token = getAccessToken();
+            if (token) {
+                loadTransactions().then(() => loadDashboardSummary());
+            }
+        }, 300);
+    }
+});
+
+// Also refresh when page is restored from browser back/forward cache
+window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+        const token = getAccessToken();
+        if (token) {
+            loadTransactions().then(() => loadDashboardSummary());
+        }
+    }
+});
+
+
 
 /* =========================================================
    START

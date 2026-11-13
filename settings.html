@@ -193,7 +193,7 @@ input:checked + .slider:before{ transform:translateX(20px); }
 .bottom-nav{
     position:fixed; left:0; right:0; bottom:0; z-index:1000; height:var(--nav-height);
     display:flex; align-items:center; justify-content:space-around;
-    background: #07151b; /* SOLID */
+    background: #07151b;
     border-top:1px solid var(--line);
     padding:0 6px; padding-bottom:env(safe-area-inset-bottom);
     box-shadow:0 -10px 40px rgba(0,0,0,.3);
@@ -250,7 +250,6 @@ input:checked + .slider:before{ transform:translateX(20px); }
 </header>
 
 <div class="content">
-    <!-- Profile group REMOVED as requested -->
 
     <!-- Security & Privacy -->
     <div class="settings-group">
@@ -378,7 +377,8 @@ input:checked + .slider:before{ transform:translateX(20px); }
         </div>
     </div>
 
-    <button style="width: 100%; padding: 16px; margin-top: 10px; background: rgba(217,139,139,.1); color: #d98b8b; border: 1px solid rgba(217,139,139,.2); border-radius: 14px; font-weight: 700; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='rgba(217,139,139,.2)'" onmouseout="this.style.background='rgba(217,139,139,.1)'">
+    <!-- UPDATED SIGN OUT BUTTON -->
+    <button id="signOutBtn" style="width: 100%; padding: 16px; margin-top: 10px; background: rgba(217,139,139,.1); color: #d98b8b; border: 1px solid rgba(217,139,139,.2); border-radius: 14px; font-weight: 700; font-size: 14px; transition: background 0.2s; cursor: pointer;">
         Sign Out
     </button>
 </div>
@@ -390,7 +390,6 @@ input:checked + .slider:before{ transform:translateX(20px); }
         <span>Home</span>
     </a>
     
-    <!-- REPLACED "HISTORY" WITH "GET CARD" -->
     <a href="get-card.html" data-page="cards">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
         <span>Get Card</span>
@@ -421,10 +420,41 @@ input:checked + .slider:before{ transform:translateX(20px); }
     // Hide the loader once the page loads
     document.addEventListener("DOMContentLoaded", function() {
         const pageLoader = document.getElementById("pageLoader");
-        
         setTimeout(function() {
             pageLoader.classList.remove("active");
         }, 800); 
+    });
+
+    // =========================================================
+    // SIGN OUT LOGIC
+    // =========================================================
+    document.getElementById("signOutBtn").addEventListener("click", function() {
+        // Clear all auth-related data from localStorage
+        const keysToRemove = [
+            "access_token",
+            "accessToken",
+            "supabase_access_token",
+            "supabaseAccessToken",
+            "capitalCrestToken",
+            "capitalCrestRefreshToken",
+            "token",
+            "session",
+            "capitalCrestActivePage",
+            "capitalCrestReturnMenu",
+            "capitalCrestReadNotifications",
+            "capitalCrestProfilePhoto_current"
+        ];
+        
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+
+        // Show loader while redirecting
+        const pageLoader = document.getElementById("pageLoader");
+        pageLoader.classList.add("active");
+        
+        // Redirect to login page after a brief moment
+        setTimeout(function() {
+            window.location.replace("login.html");
+        }, 500);
     });
 </script>
 </body>

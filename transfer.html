@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <style>
 :root{
@@ -24,34 +25,33 @@ a{ color:inherit; text-decoration:none; }
 button, input, select, textarea{ font-family:inherit; }
 button{ cursor:pointer; }
 
-/* FULL PAGE LOADER */
+/* 🌟 FULL SCREEN LOADER 🌟 */
 #pageLoader{
     position:fixed; inset:0; z-index:99999;
     display:flex; align-items:center; justify-content:center;
     background: radial-gradient(circle at center, rgba(16,53,54,.96), rgba(7,21,27,.99));
     backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
     opacity:1; visibility:visible; pointer-events:auto;
-    transition: opacity .25s ease, visibility .25s ease;
+    transition: opacity .3s ease, visibility .3s ease;
 }
 #pageLoader.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
 .loader-content{ display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
 .loader-ring{
-    width:58px; height:58px; position:relative; border-radius:50%;
+    width:64px; height:64px; position:relative; border-radius:50%;
     border:3px solid rgba(184,224,202,.12); border-top-color:var(--mint); border-right-color:rgba(184,224,202,.65);
     animation:loaderSpin .85s linear infinite; box-shadow:0 0 30px rgba(184,224,202,.10);
 }
 .loader-ring::after{
-    content:""; position:absolute; inset:7px; border-radius:50%;
+    content:""; position:absolute; inset:8px; border-radius:50%;
     border:1px solid rgba(201,169,107,.28); animation:loaderPulse 1.4s ease-in-out infinite;
 }
-.loader-title{ margin-top:20px; color:#eef5f1; font-family:"Manrope",sans-serif; font-size:13px; font-weight:700; letter-spacing:.3px; }
-.loader-subtitle{ margin-top:6px; color:#8fa29d; font-size:9px; letter-spacing:.5px; }
+.loader-title{ margin-top:24px; color:#eef5f1; font-family:"Manrope",sans-serif; font-size:14px; font-weight:700; letter-spacing:.5px; }
+.loader-subtitle{ margin-top:8px; color:#8fa29d; font-size:10px; letter-spacing:.5px; }
 @keyframes loaderSpin{ to{ transform:rotate(360deg); } }
 @keyframes loaderPulse{ 0%, 100%{ transform:scale(.85); opacity:.35; } 50%{ transform:scale(1); opacity:1; } }
 
 .dashboard{ min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; }
 
-/* TOPBAR */
 .topbar{
     height:64px; position:sticky; top:0; z-index:500;
     display:flex; align-items:center; justify-content:space-between;
@@ -76,9 +76,6 @@ button{ cursor:pointer; }
 .icon-button:hover{ background:rgba(184,224,202,.08); color:var(--mint); }
 .icon-button svg{ width:16px; }
 
-/* =========================================================
-   BOTTOM NAVIGATION (SOLID)
-========================================================= */
 .bottom-nav{
     position:fixed; left:0; right:0; bottom:0; z-index:1000; height:var(--nav-height);
     display:flex; align-items:center; justify-content:space-around;
@@ -103,9 +100,6 @@ button{ cursor:pointer; }
 }
 .bottom-nav a:active{ background:rgba(184,224,202,.06); }
 
-/* =========================================================
-   MAIN CONTENT
-========================================================= */
 .content{ width:min(600px,94%); margin:auto; padding:26px 0 30px; }
 
 .page-header{ margin-bottom:24px; }
@@ -113,7 +107,6 @@ button{ cursor:pointer; }
 .page-header h1{ font-family:"Manrope",sans-serif; font-size:clamp(25px,3vw,32px); line-height:1.1; letter-spacing:-1px; }
 .page-header p{ margin-top:7px; color:#778d87; font-size:11px; }
 
-/* FORM CARD */
 .form-card{
     background:rgba(255,255,255,.032); border:1px solid var(--line);
     border-radius:20px; padding:26px 22px; box-shadow:var(--shadow);
@@ -121,13 +114,25 @@ button{ cursor:pointer; }
 
 .form-group{ margin-bottom:18px; }
 .form-group label{ display:block; font-size:11px; color:#8fa39d; margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px; font-weight:600; }
-.form-group input, .form-group select{
+.form-group input{
     width:100%; height:48px; border-radius:12px;
     border:1px solid rgba(184,224,202,.2); background:rgba(0,0,0,.2);
     color:#fff; padding:0 16px; font-size:15px; outline:none; transition:border-color .2s;
 }
-.form-group input:focus, .form-group select:focus{ border-color:var(--mint); }
+.form-group input:focus{ border-color:var(--mint); }
 .form-group input::placeholder{ color:#5a6b66; }
+
+/* Custom Bank Selector Trigger */
+.bank-select-trigger{
+    width:100%; height:48px; border-radius:12px;
+    border:1px solid rgba(184,224,202,.2); background:rgba(0,0,0,.2);
+    color:#fff; padding:0 16px; font-size:15px; outline:none; 
+    display:flex; align-items:center; justify-content:space-between;
+    cursor:pointer; transition:border-color .2s;
+}
+.bank-select-trigger:hover, .bank-select-trigger:focus{ border-color:var(--mint); }
+.bank-select-trigger span{ color:#5a6b66; }
+.bank-select-trigger.has-value span{ color:#fff; }
 
 .amount-input-wrap{ position:relative; }
 .amount-currency{
@@ -141,13 +146,13 @@ button{ cursor:pointer; }
     background:linear-gradient(145deg,#b8e0ca,#75b79d);
     color:#09201d; font-weight:800; font-size:15px; cursor:pointer;
     transition:opacity .2s, transform .1s; margin-top:8px;
+    display:flex; align-items:center; justify-content:center;
 }
 .action-btn:active{ transform:scale(.98); }
 .action-btn:disabled{ opacity:.6; cursor:not-allowed; }
 
 #error-msg{ color:#d98b8b; font-size:12px; text-align:center; margin-bottom:12px; min-height:16px; }
 
-/* INFO CARD */
 .info-card{
     margin-top:20px; padding:16px 18px; border-radius:14px;
     background:rgba(201,169,107,.04); border:1px solid rgba(201,169,107,.12);
@@ -157,7 +162,78 @@ button{ cursor:pointer; }
 .info-card strong{ display:block; font-size:11px; color:#eef5f1; margin-bottom:4px; }
 .info-card span{ display:block; font-size:10px; color:#8ba09a; line-height:1.5; }
 
-/* OTP MODAL */
+/* 🔍 BANK SEARCH MODAL 🔍 */
+#bankSearchOverlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(7, 21, 27, 0.9);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    display: none; flex-direction: column;
+    animation: fadeIn .2s ease;
+}
+#bankSearchOverlay.show { display: flex; }
+.bank-search-header {
+    padding: 20px; background: #07151b; border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 12px;
+}
+.bank-search-header input {
+    flex: 1; height: 48px; border-radius: 12px;
+    border: 1px solid rgba(184,224,202,.2); background: rgba(255,255,255,.05);
+    color: #fff; padding: 0 16px; font-size: 15px; outline: none;
+}
+.bank-search-header input::placeholder { color: #5a6b66; }
+.bank-search-close {
+    background: none; border: none; color: #fff; font-size: 24px; padding: 8px;
+}
+.bank-search-list {
+    flex: 1; overflow-y: auto; padding: 10px 20px 40px;
+}
+.bank-item {
+    padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.05);
+    color: #fff; font-size: 15px; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+}
+.bank-item:active { background: rgba(184,224,202,.05); }
+.bank-item-group {
+    font-size: 11px; color: var(--mint); font-weight: 800; text-transform: uppercase;
+    letter-spacing: 1px; margin: 20px 0 8px; pointer-events: none;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* 📩 NOTIFICATIONS BOTTOM SHEET 📩 */
+.bottom-sheet-backdrop {
+    position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,.6);
+    backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease;
+}
+.bottom-sheet-backdrop.show { opacity: 1; visibility: visible; }
+.bottom-sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 9999;
+    background: #0a1c30; border-radius: 24px 24px 0 0;
+    border-top: 1px solid rgba(184,224,202,.15);
+    box-shadow: 0 -20px 60px rgba(0,0,0,.5);
+    transform: translateY(100%); transition: transform .35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    max-height: 85vh; display: flex; flex-direction: column;
+}
+.bottom-sheet.show { transform: translateY(0); }
+.modal-drag-handle { width: 40px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.15); margin: 12px auto 4px; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px 16px; border-bottom: 1px solid var(--line); }
+.modal-header h2 { font-family: "Manrope", sans-serif; font-size: 16px; font-weight: 700; }
+.modal-close-btn { background: none; border: none; color: var(--muted); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+.modal-close-btn:hover { background: rgba(255,255,255,.05); color: #fff; }
+.modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; scrollbar-width: none; }
+.modal-body::-webkit-scrollbar { display: none; }
+
+/* NOTIFICATION ITEMS */
+.notification-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,.04); cursor: pointer; }
+.notification-item:last-child { border-bottom: none; padding-bottom: 30px; }
+.notification-icon { width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; background: rgba(184,224,202,.06); color: var(--mint); display: flex; align-items: center; justify-content: center; }
+.notification-icon svg { width: 18px; height: 18px; }
+.notification-content { flex: 1; }
+.notification-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.notification-title { font-size: 12px; font-weight: 700; color: #fff; }
+.notification-time { font-size: 9px; color: var(--muted); }
+.notification-message { font-size: 11px; color: #81958f; line-height: 1.5; }
+
+/* 🛡️ OTP MODAL */
 .modal-overlay{
     position:fixed; inset:0; z-index:100;
     display:none; align-items:center; justify-content:center;
@@ -172,37 +248,120 @@ button{ cursor:pointer; }
     box-shadow:0 30px 90px rgba(0,0,0,.5);
     text-align:center; animation:modalIn .22s ease;
 }
-@keyframes modalIn{
-    from{ opacity:0; transform:translateY(12px) scale(.97); }
-    to{ opacity:1; transform:translateY(0) scale(1); }
-}
-.modal-icon{
-    width:60px; height:60px; margin:0 auto 18px;
-    display:flex; align-items:center; justify-content:center;
-    border-radius:50%; background:rgba(184,224,202,.1); color:var(--mint);
-}
+@keyframes modalIn{ from{ opacity:0; transform:translateY(12px) scale(.97); } to{ opacity:1; transform:translateY(0) scale(1); } }
+.modal-icon{ width:60px; height:60px; margin:0 auto 18px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:rgba(184,224,202,.1); color:var(--mint); }
 .modal-icon svg{ width:26px; height:26px; }
 .modal h3{ font-family:"Manrope",sans-serif; font-size:19px; font-weight:700; margin-bottom:6px; }
 .modal p{ font-size:13px; color:#8ba09a; line-height:1.6; margin-bottom:20px; }
 .modal p strong{ color:#fff; }
-
 .otp-input{
-    width:100%; height:60px; text-align:center; font-size:28px;
-    letter-spacing:12px; font-family:"Manrope",sans-serif; font-weight:700;
+    width:100%; height:60px; text-align:center; font-size:28px; letter-spacing:12px;
+    font-family:"Manrope",sans-serif; font-weight:700;
     border:1px solid rgba(184,224,202,.25); border-radius:14px;
     background:rgba(255,255,255,.05); color:#fff; outline:none;
     padding-left:12px; margin-bottom:10px;
 }
 .otp-input:focus{ border-color:var(--mint); box-shadow:0 0 0 3px rgba(184,224,202,.1); }
 
-/* SUCCESS STATE */
-.success-icon{
-    width:80px; height:80px; margin:0 auto 20px;
-    background:rgba(184,224,202,.14); border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    color:var(--mint); font-size:36px;
-    box-shadow:0 0 40px rgba(184,224,202,.2);
+/* ✨ PREMIUM SUCCESS MODAL ✨ */
+#successOverlay {
+    background: rgba(7, 21, 27, 0.85);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
 }
+.success-modal {
+    width: min(340px, 95%);
+    background: linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+    border: 1px solid rgba(184, 224, 202, 0.3);
+    border-radius: 24px;
+    padding: 30px 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+    text-align: center;
+    animation: successIn .4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes successIn { 0% { opacity: 0; transform: scale(0.9) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+.success-glow {
+    position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(184, 224, 202, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+.success-exit-btn {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,.05); border: none; color: var(--muted);
+    width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background .2s;
+}
+.success-exit-btn:hover { background: rgba(255,255,255,.15); color: #fff; }
+
+.premium-check-wrapper {
+    width: 64px; height: 64px; margin: 0 auto 16px;
+    border-radius: 50%; background: rgba(184, 224, 202, 0.1);
+    border: 2px solid rgba(184, 224, 202, 0.4);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 30px rgba(184, 224, 202, 0.2), inset 0 0 20px rgba(184, 224, 202, 0.1);
+    position: relative;
+}
+.premium-check-wrapper::before {
+    content: ""; position: absolute; inset: -8px;
+    border-radius: 50%; border: 1px dashed rgba(184, 224, 202, 0.2);
+    animation: spinSlow 10s linear infinite;
+}
+@keyframes spinSlow { to { transform: rotate(360deg); } }
+.premium-check-wrapper svg {
+    width: 28px; height: 28px; color: #b8e0ca;
+    stroke-dasharray: 50; stroke-dashoffset: 50; animation: drawCheck 0.6s ease forwards 0.2s;
+}
+@keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+.success-modal h2 { font-family: "Manrope", sans-serif; font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+.success-modal p { font-size: 12px; color: #8fa39d; line-height: 1.5; margin-bottom: 20px; }
+
+.receipt-box {
+    background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 14px; padding: 14px; margin-bottom: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.receipt-row { display: flex; justify-content: space-between; align-items: center; }
+.receipt-row span { font-size: 10px; color: #718780; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.receipt-row strong { font-size: 13px; color: #fff; font-family: "Manrope", sans-serif; }
+.receipt-row strong.amount-highlight { font-size: 18px; color: var(--mint); font-weight: 800; }
+
+.btn-premium {
+    width: 100%; height: 46px; border: 0; border-radius: 12px;
+    background: linear-gradient(145deg, #b8e0ca, #75b79d);
+    color: #09201d; font-weight: 800; font-size: 14px;
+    cursor: pointer; transition: all 0.2s ease;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 20px rgba(117, 183, 157, 0.2);
+}
+.btn-premium:active { transform: scale(0.98); }
+.btn-secondary {
+    width: 100%; height: 46px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+    background: rgba(255,255,255,0.05); color: #fff; font-weight: 700; font-size: 14px;
+    cursor: pointer; transition: all 0.2s ease; margin-top: 8px;
+    display: flex; align-items: center; justify-content: center;
+}
+.btn-secondary:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
+
+/* 🧾 RECEIPT MODAL (MATCHING DASHBOARD) */
+#receiptBackdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.7);
+    backdrop-filter: blur(8px); z-index: 9998;
+    opacity: 0; visibility: hidden; transition: opacity .22s ease, visibility .22s ease;
+}
+#receiptBackdrop.show { opacity: 1; visibility: visible; }
+
+#receiptModal {
+    position: fixed; left: 50%; top: 50%; transform: translate(-50%, -46%) scale(.97);
+    width: min(92%, 420px); max-height: 90vh; overflow-y: auto;
+    background: #0a1c30; border: 1px solid rgba(184,224,202,.16);
+    border-radius: 20px; padding: 26px 22px; z-index: 9999; color: #fff;
+    box-shadow: 0 30px 80px rgba(0,0,0,.45);
+    opacity: 0; visibility: hidden; transition: transform .25s ease, opacity .25s ease, visibility .25s ease;
+}
+#receiptModal.show { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
 
 @media(max-width:480px){
     .topbar{ height:58px; padding:0 16px; }
@@ -214,26 +373,25 @@ button{ cursor:pointer; }
 </head>
 <body>
 
-<!-- FULL PAGE LOADER -->
+<!-- 🌟 THE LOADER 🌟 -->
 <div id="pageLoader">
     <div class="loader-content">
         <div class="loader-ring"></div>
-        <div class="loader-title">Loading transfer</div>
-        <div class="loader-subtitle">Securely connecting to Crest United</div>
+        <div class="loader-title" id="loaderTitle">Loading transfer</div>
+        <div class="loader-subtitle" id="loaderSubtitle">Securely connecting to Crest United</div>
     </div>
 </div>
 
 <div class="dashboard">
 
-<!-- TOPBAR -->
 <header class="topbar">
     <div class="profile-section">
         <button class="avatar" id="topAvatar" type="button" onclick="window.location.href='dashboard.html'" aria-label="Back to Dashboard">PO</button>
     </div>
     <div class="topbar-right">
-        <a href="notifications.html" class="icon-button" aria-label="Notifications">
+        <button class="icon-button" id="openNotificationsBtn" aria-label="Notifications">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M18 9a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>
-        </a>
+        </button>
     </div>
 </header>
 
@@ -253,17 +411,21 @@ button{ cursor:pointer; }
 
         <div class="form-group">
             <label>Bank Name</label>
-            <input type="text" id="recipientBank" placeholder="e.g. Chase Bank, GTBank" autocomplete="off">
+            <div class="bank-select-trigger" id="bankSelectTrigger" tabindex="0">
+                <span id="selectedBankText">Select recipient bank...</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <input type="hidden" id="recipientBank" value="">
         </div>
 
         <div class="form-group">
             <label>Account Number</label>
-            <input type="text" id="recipientAccount" placeholder="Recipient account number" inputmode="numeric" autocomplete="off">
+            <input type="text" id="recipientAccount" placeholder="Recipient account number" inputmode="numeric" maxlength="17" autocomplete="off">
         </div>
 
         <div class="form-group">
             <label>SWIFT / Routing Code</label>
-            <input type="text" id="recipientSwift" placeholder="e.g. CHASUS33XXX" autocomplete="off">
+            <input type="text" id="recipientSwift" placeholder="e.g. CHASUS33XXX" maxlength="11" autocomplete="off">
         </div>
 
         <div class="form-group">
@@ -295,7 +457,33 @@ button{ cursor:pointer; }
 
 </main>
 
-<!-- OTP MODAL -->
+<!-- 🔍 BANK SEARCH MODAL 🔍 -->
+<div id="bankSearchOverlay">
+    <div class="bank-search-header">
+        <input type="text" id="bankSearchInput" placeholder="Search for a bank..." autocomplete="off">
+        <button class="bank-search-close" id="closeBankSearchBtn">✕</button>
+    </div>
+    <div class="bank-search-list" id="bankSearchList"></div>
+</div>
+
+<!-- 📩 NOTIFICATIONS BOTTOM SHEET 📩 -->
+<div class="bottom-sheet-backdrop" id="notificationBackdrop"></div>
+<div class="bottom-sheet" id="notificationModal">
+    <div class="modal-drag-handle"></div>
+    <div class="modal-header">
+        <h2>Notifications</h2>
+        <button class="modal-close-btn" id="closeNotificationBtn" aria-label="Close notifications">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+    </div>
+    <div class="modal-body" id="notificationList">
+        <div style="text-align:center;padding:40px 20px;color:#81958f;">
+            <p style="font-size:14px;">Loading notifications...</p>
+        </div>
+    </div>
+</div>
+
+<!-- 🛡️ OTP MODAL -->
 <div class="modal-overlay" id="otpOverlay">
     <div class="modal">
         <div class="modal-icon">
@@ -313,17 +501,84 @@ button{ cursor:pointer; }
     </div>
 </div>
 
-<!-- SUCCESS MODAL -->
+<!-- ✨ PREMIUM SUCCESS MODAL ✨ -->
 <div class="modal-overlay" id="successOverlay">
-    <div class="modal">
-        <div class="success-icon">✓</div>
-        <h3>Transfer Successful</h3>
-        <p id="successSummary"></p>
-        <button class="action-btn" onclick="window.location.href='dashboard.html'">Return to Dashboard</button>
+    <div class="success-modal">
+        <div class="success-glow"></div>
+        
+        <button class="success-exit-btn" id="exitSuccessBtn" aria-label="Close">✕</button>
+
+        <div class="premium-check-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        
+        <h2>Transfer Successful</h2>
+        <p>Your funds have been securely processed.</p>
+        
+        <div class="receipt-box">
+            <div class="receipt-row">
+                <span>Amount</span>
+                <strong class="amount-highlight" id="successAmount">$0.00</strong>
+            </div>
+            <div style="height: 1px; background: rgba(255,255,255,0.05); margin: 2px 0;"></div>
+            <div class="receipt-row">
+                <span>Recipient</span>
+                <strong id="successRecipient">—</strong>
+            </div>
+            <div class="receipt-row">
+                <span>Reference</span>
+                <strong style="font-size: 10px; font-family: monospace; color: #b8e0ca;" id="successRef">—</strong>
+            </div>
+        </div>
+
+        <button class="btn-premium" id="viewReceiptBtn">View Receipt</button>
+        <button class="btn-secondary" id="newTransferBtn">Make a New Transfer</button>
     </div>
 </div>
 
-<!-- BOTTOM NAVIGATION -->
+<!-- 🧾 RECEIPT MODAL (MATCHING DASHBOARD) -->
+<div id="receiptBackdrop"></div>
+<div id="receiptModal">
+    <div id="receiptContent" style="background:#fff; color:#000; padding:24px; border-radius:12px; font-family:'DM Sans',sans-serif; width:100%; max-width:360px; margin:0 auto; box-shadow:0 10px 30px rgba(0,0,0,.2);">
+        
+        <div style="text-align:center; border-bottom:2px dashed #e5e5e5; padding-bottom:20px; margin-bottom:20px;">
+            <div style="font-size:20px; font-weight:800; color:#0a2223; letter-spacing:1px; margin-bottom:4px;">CREST UNITED</div>
+            <div style="font-size:10px; font-weight:600; color:#c9a96b; letter-spacing:3px;">BANK</div>
+            <div style="margin-top:15px; display:inline-block; background:rgba(30,98,86,.1); color:#1e6256; padding:6px 14px; border-radius:20px; font-size:11px; font-weight:700;">TRANSFER RECEIPT</div>
+        </div>
+        
+        <div style="text-align:center; margin-bottom:25px;">
+            <div style="font-size:10px; color:#666; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">Amount Transferred</div>
+            <div id="receiptAmount" style="font-size:32px; font-weight:800; color:#07151b;">$0.00</div>
+            <div id="receiptStatus" style="display:inline-block; margin-top:8px; background:#e8f5e9; color:#2e7d32; padding:4px 10px; border-radius:6px; font-size:10px; font-weight:700;">Successful</div>
+        </div>
+
+        <div style="border-top:1px solid #eee; border-bottom:1px solid #eee; padding:15px 0; margin-bottom:15px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="font-size:11px; color:#666;">Date</span><span id="receiptDate" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="font-size:11px; color:#666;">Reference</span><span id="receiptRef" style="font-size:11px; font-weight:600;">—</span></div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+            <div style="font-size:9px; color:#999; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; font-weight:700;">Recipient Details</div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">Account Name</span><span id="receiptAccountName" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">Bank Name</span><span id="receiptBank" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">Account Number</span><span id="receiptTo" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">SWIFT Code</span><span id="receiptSwift" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span style="font-size:11px; color:#666;">Routing Number</span><span id="receiptRouting" style="font-size:11px; font-weight:600;">—</span></div>
+            <div style="display:flex; justify-content:space-between;"><span style="font-size:11px; color:#666;">Description</span><span id="receiptDesc" style="font-size:11px; font-weight:600;">—</span></div>
+        </div>
+
+        <div style="text-align:center; font-size:9px; color:#999; line-height:1.5;">This is an official electronic receipt for your transfer.<br>Thank you for banking with Crest United.</div>
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:20px;">
+        <button id="downloadReceiptBtn" style="flex:1; height:48px; border:0; border-radius:12px; background:linear-gradient(145deg,#b8e0ca,#75b79d); color:#09201d; font-weight:800; font-size:14px; cursor:pointer;">Download Receipt</button>
+        <button id="closeReceiptBtn" style="width:48px; height:48px; border:0; border-radius:12px; background:rgba(255,255,255,.1); color:#fff; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+</div>
+
 <nav class="bottom-nav" aria-label="Main navigation">
     <a href="dashboard.html" data-page="dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -360,16 +615,307 @@ button{ cursor:pointer; }
     const API_BASE = "https://capital-crest.onrender.com";
 
     const pageLoader = document.getElementById("pageLoader");
+    const loaderTitle = document.getElementById("loaderTitle");
+    const loaderSubtitle = document.getElementById("loaderSubtitle");
+
     const otpOverlay = document.getElementById("otpOverlay");
     const successOverlay = document.getElementById("successOverlay");
     const errorEl = document.getElementById("error-msg");
     const otpError = document.getElementById("otpError");
 
     let pendingTransfer = null;
-    let currentUserName = "";
+    let finalTransferData = null;
+
+    // ==========================================
+    // 1. BANK SEARCH LOGIC
+    // ==========================================
+    const banksData = [
+        { group: "🇺🇸 Top US Banks", name: "JPMorgan Chase" },
+        { group: "🇺🇸 Top US Banks", name: "Bank of America" },
+        { group: "🇺🇸 Top US Banks", name: "Citibank" },
+        { group: "🇺🇸 Top US Banks", name: "Wells Fargo" },
+        { group: "🇺🇸 Top US Banks", name: "Goldman Sachs" },
+        { group: "🇺🇸 Top US Banks", name: "Morgan Stanley" },
+        { group: "🇺🇸 Top US Banks", name: "U.S. Bank" },
+        { group: "🇺🇸 Top US Banks", name: "PNC Bank" },
+        { group: "🇺🇸 Top US Banks", name: "Truist Bank" },
+        { group: "🇺🇸 Top US Banks", name: "Capital One" },
+        { group: "🇺🇸 Top US Banks", name: "TD Bank" },
+        { group: "🇺🇸 Top US Banks", name: "BNY Mellon" },
+        { group: "🇺🇸 Top US Banks", name: "State Street" },
+        { group: "🇺🇸 Top US Banks", name: "Charles Schwab Bank" },
+        { group: "🇺🇸 Top US Banks", name: "Ally Bank" },
+        { group: "🇺🇸 Top US Banks", name: "Fifth Third Bank" },
+        { group: "🇺🇸 Top US Banks", name: "Citizens Bank" },
+        { group: "🇺🇸 Top US Banks", name: "KeyBank" },
+        { group: "🇺🇸 Top US Banks", name: "Huntington Bank" },
+        { group: "🇺🇸 Top US Banks", name: "Regions Bank" },
+        { group: "🇺🇸 Top US Banks", name: "M&T Bank" },
+        { group: "🇺🇸 Top US Banks", name: "Discover Bank" },
+        { group: "🇺🇸 Top US Banks", name: "Synchrony Bank" },
+        { group: "🇺🇸 Top US Banks", name: "American Express Bank" },
+        { group: "🇺🇸 Top US Banks", name: "First Republic Bank" },
+        
+        { group: "🇬🇧 Top UK (England) Banks", name: "HSBC UK" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Barclays" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Lloyds Bank" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "NatWest" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Santander UK" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Halifax" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Nationwide" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Standard Chartered" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Monzo" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Revolut" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Starling Bank" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "TSB Bank" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Metro Bank" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Virgin Money" },
+        { group: "🇬🇧 Top UK (England) Banks", name: "Co-operative Bank" },
+
+        { group: "🇨🇦 Top Canada Banks", name: "Royal Bank of Canada (RBC)" },
+        { group: "🇨🇦 Top Canada Banks", name: "Toronto-Dominion Bank (TD)" },
+        { group: "🇨🇦 Top Canada Banks", name: "Scotiabank" },
+        { group: "🇨🇦 Top Canada Banks", name: "Bank of Montreal (BMO)" },
+        { group: "🇨🇦 Top Canada Banks", name: "CIBC" },
+        { group: "🇨🇦 Top Canada Banks", name: "National Bank of Canada" },
+        { group: "🇨🇦 Top Canada Banks", name: "Desjardins Group" },
+        { group: "🇨🇦 Top Canada Banks", name: "Laurentian Bank" },
+
+        { group: "🌍 Top Global Banks", name: "ICBC (China)" },
+        { group: "🌍 Top Global Banks", name: "China Construction Bank" },
+        { group: "🌍 Top Global Banks", name: "Agricultural Bank of China" },
+        { group: "🌍 Top Global Banks", name: "Bank of China" },
+        { group: "🌍 Top Global Banks", name: "Mitsubishi UFJ Financial (Japan)" },
+        { group: "🌍 Top Global Banks", name: "BNP Paribas (France)" },
+        { group: "🌍 Top Global Banks", name: "Mizuho Financial (Japan)" },
+        { group: "🌍 Top Global Banks", name: "Sumitomo Mitsui Financial (Japan)" },
+        { group: "🌍 Top Global Banks", name: "UBS Group (Switzerland)" },
+        { group: "🌍 Top Global Banks", name: "Credit Agricole (France)" },
+        { group: "🌍 Top Global Banks", name: "Societe Generale (France)" },
+        { group: "🌍 Top Global Banks", name: "Deutsche Bank (Germany)" },
+        { group: "🌍 Top Global Banks", name: "ING Group (Netherlands)" },
+        { group: "🌍 Top Global Banks", name: "Intesa Sanpaolo (Italy)" },
+        { group: "🌍 Top Global Banks", name: "UniCredit (Italy)" },
+        { group: "🌍 Top Global Banks", name: "BBVA (Spain)" },
+        { group: "🌍 Top Global Banks", name: "Nordea (Finland)" },
+        { group: "🌍 Top Global Banks", name: "Commonwealth Bank (Australia)" },
+        { group: "🌍 Top Global Banks", name: "Westpac (Australia)" },
+        { group: "🌍 Top Global Banks", name: "ANZ (Australia)" },
+        { group: "🌍 Top Global Banks", name: "National Australia Bank (NAB)" },
+        { group: "🌍 Top Global Banks", name: "DBS Bank (Singapore)" },
+        { group: "🌍 Top Global Banks", name: "OCBC Bank (Singapore)" },
+        { group: "🌍 Top Global Banks", name: "UOB (Singapore)" },
+        { group: "🌍 Top Global Banks", name: "Standard Bank (South Africa)" },
+        { group: "🌍 Top Global Banks", name: "FirstRand Bank (South Africa)" },
+        { group: "🌍 Top Global Banks", name: "Absa Group (South Africa)" },
+        { group: "🌍 Top Global Banks", name: "Nedbank (South Africa)" },
+        { group: "🌍 Top Global Banks", name: "QNB (Qatar)" },
+        { group: "🌍 Top Global Banks", name: "Emirates NBD (UAE)" },
+        { group: "🌍 Top Global Banks", name: "First Abu Dhabi Bank (UAE)" },
+        { group: "🌍 Top Global Banks", name: "Saudi National Bank" },
+        { group: "🌍 Top Global Banks", name: "Al Rajhi Bank" },
+        { group: "🌍 Top Global Banks", name: "Zenith Bank (Nigeria)" },
+        { group: "🌍 Top Global Banks", name: "GTBank (Nigeria)" },
+        { group: "🌍 Top Global Banks", name: "Access Bank (Nigeria)" },
+        { group: "🌍 Top Global Banks", name: "Equity Bank (Kenya)" },
+        { group: "🌍 Top Global Banks", name: "KCB Bank (Kenya)" }
+    ];
+
+    const bankSelectTrigger = document.getElementById("bankSelectTrigger");
+    const selectedBankText = document.getElementById("selectedBankText");
+    const hiddenBankInput = document.getElementById("recipientBank");
+    
+    const bankSearchOverlay = document.getElementById("bankSearchOverlay");
+    const bankSearchInput = document.getElementById("bankSearchInput");
+    const bankSearchList = document.getElementById("bankSearchList");
+    const closeBankSearchBtn = document.getElementById("closeBankSearchBtn");
+
+    function renderBankList(query = "") {
+        bankSearchList.innerHTML = "";
+        const lowerQuery = query.toLowerCase();
+        
+        let lastGroup = "";
+        const filtered = banksData.filter(b => b.name.toLowerCase().includes(lowerQuery));
+
+        if (filtered.length === 0) {
+            bankSearchList.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--muted);">No banks found matching "${query}"</div>`;
+            return;
+        }
+
+        filtered.forEach(bank => {
+            if (bank.group !== lastGroup && !query) {
+                const groupHeader = document.createElement("div");
+                groupHeader.className = "bank-item-group";
+                groupHeader.textContent = bank.group;
+                bankSearchList.appendChild(groupHeader);
+                lastGroup = bank.group;
+            }
+            
+            const item = document.createElement("div");
+            item.className = "bank-item";
+            item.textContent = bank.name;
+            item.onclick = () => {
+                hiddenBankInput.value = bank.name;
+                selectedBankText.textContent = bank.name;
+                bankSelectTrigger.classList.add("has-value");
+                bankSearchOverlay.classList.remove("show");
+                bankSearchInput.value = ""; // Reset search
+            };
+            bankSearchList.appendChild(item);
+        });
+    }
+
+    bankSelectTrigger.addEventListener("click", () => {
+        bankSearchOverlay.classList.add("show");
+        renderBankList();
+        bankSearchInput.focus();
+    });
+
+    closeBankSearchBtn.addEventListener("click", () => {
+        bankSearchOverlay.classList.remove("show");
+    });
+
+    bankSearchInput.addEventListener("input", (e) => {
+        renderBankList(e.target.value);
+    });
+
+
+    // ==========================================
+    // 2. NOTIFICATIONS LOGIC
+    // ==========================================
+    const READ_NOTIFS_KEY = "capitalCrestReadNotifications";
+    const notifBtn = document.getElementById("openNotificationsBtn");
+    const notifModal = document.getElementById("notificationModal");
+    const notifBackdrop = document.getElementById("notificationBackdrop");
+    const closeNotifBtn = document.getElementById("closeNotificationBtn");
+    const notificationListEl = document.getElementById("notificationList");
+
+    function openNotifModal() {
+        notifModal.classList.add("show");
+        notifBackdrop.classList.add("show");
+        document.body.style.overflow = "hidden";
+        loadNotifications(); // Fetch fresh data on open
+    }
+    function closeNotifModal() {
+        notifModal.classList.remove("show");
+        notifBackdrop.classList.remove("show");
+        document.body.style.overflow = "";
+    }
+
+    notifBtn.addEventListener("click", openNotifModal);
+    closeNotifBtn.addEventListener("click", closeNotifModal);
+    notifBackdrop.addEventListener("click", closeNotifModal);
+
+    function getReadNotifications(){
+        try {
+            const saved = localStorage.getItem(READ_NOTIFS_KEY);
+            return saved ? JSON.parse(saved) : [];
+        } catch { return []; }
+    }
+
+    function markNotificationAsRead(id) {
+        const read = getReadNotifications();
+        if(!read.includes(String(id))) {
+            read.push(String(id));
+            localStorage.setItem(READ_NOTIFS_KEY, JSON.stringify(read));
+        }
+    }
+
+    function formatNotifTime(dateString) {
+        if(!dateString) return "";
+        const date = new Date(dateString);
+        if(isNaN(date.getTime())) return "";
+        const now = new Date();
+        const isToday = date.toDateString() === now.toDateString();
+        const yesterday = new Date(now);
+        yesterday.setDate(now.getDate() - 1);
+        const isYesterday = date.toDateString() === yesterday.toDateString();
+        const time = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        if(isToday) return `Today · ${time}`;
+        if(isYesterday) return `Yesterday · ${time}`;
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ` · ${time}`;
+    }
+
+    function getNotifIcon(type) {
+        const t = String(type || "").toLowerCase();
+        if(t.includes("login") || t.includes("security") || t.includes("password")) {
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>`;
+        }
+        if(t.includes("transfer") || t.includes("deposit") || t.includes("received")) {
+            return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>`;
+        }
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 9a6 6 0 00-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>`;
+    }
+
+    function renderNotifications(notifications) {
+        if(!notificationListEl) return;
+
+        if(!notifications || notifications.length === 0) {
+            notificationListEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:#81958f;">
+                <p style="font-size:14px;">You're all caught up!</p>
+                <p style="font-size:11px;margin-top:5px;">No new notifications.</p>
+            </div>`;
+            return;
+        }
+
+        const readIds = getReadNotifications();
+
+        notificationListEl.innerHTML = notifications.map(n => {
+            const isUnread = !readIds.includes(String(n.id));
+            const isSecurity = String(n.type || "").toLowerCase().includes("security");
+            
+            return `
+                <div class="notification-item" onclick="handleNotifClick(${n.id}, this)">
+                    <div class="notification-icon" style="${isSecurity ? 'color:#c9a96b;background:rgba(201,169,107,.06);' : ''}">
+                        ${getNotifIcon(n.type)}
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-top">
+                            <strong class="notification-title">${escapeHTML(n.title || "Notification")}</strong>
+                            <span class="notification-time">${formatNotifTime(n.created_at)}</span>
+                        </div>
+                        <p class="notification-message">${escapeHTML(n.message || n.body || "")}</p>
+                    </div>
+                    ${isUnread ? '<span class="unread-dot" style="width:6px;height:6px;border-radius:50%;background:var(--mint);flex-shrink:0;margin-top:5px;box-shadow:0 0 10px rgba(184,224,202,.65);"></span>' : ''}
+                </div>
+            `;
+        }).join("");
+    }
+
+    window.handleNotifClick = function(id, element) {
+        markNotificationAsRead(id);
+        const dot = element.querySelector('.unread-dot');
+        if(dot) dot.remove();
+    };
+
+    async function loadNotifications() {
+        try {
+            const res = await apiRequest("/api/notifications");
+            let list = [];
+            if(Array.isArray(res)) list = res;
+            else if(res?.notifications) list = res.notifications;
+            else if(res?.data) list = res.data;
+
+            list.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+            renderNotifications(list);
+        } catch (err) {
+            console.warn("Could not load notifications", err);
+            renderNotifications([]);
+        }
+    }
+
+
+    // ==========================================
+    // 3. API & HELPERS
+    // ==========================================
+    function showLoader(title, subtitle) {
+        loaderTitle.textContent = title;
+        loaderSubtitle.textContent = subtitle;
+        pageLoader.classList.remove("hidden");
+    }
 
     function hideLoader() {
-        setTimeout(() => pageLoader.classList.add("hidden"), 500);
+        pageLoader.classList.add("hidden");
     }
 
     function formatMoney(amount) {
@@ -410,6 +956,10 @@ button{ cursor:pointer; }
         return data;
     }
 
+    function escapeHTML(v){
+        return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+    }
+
     async function loadProfile() {
         try {
             const res = await apiRequest("/api/auth/me");
@@ -417,67 +967,95 @@ button{ cursor:pointer; }
             const user = res.user || {};
             const first = profile.first_name || user.first_name || "P";
             const last = profile.surname || user.last_name || "O";
-            currentUserName = `${first} ${last}`;
             
             const avatar = document.getElementById("topAvatar");
             if (avatar) avatar.textContent = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
         } catch (err) {
             console.warn("Could not load profile", err);
         }
-        hideLoader();
+        setTimeout(hideLoader, 1200);
     }
 
-    // Submit Transfer Form
+    // ==========================================
+    // 4. TRANSFER SUBMISSION & VALIDATION
+    // ==========================================
+    let formData = null;
+
     document.getElementById("submitBtn").addEventListener("click", async () => {
         const name = document.getElementById("recipientName").value.trim();
-        const bank = document.getElementById("recipientBank").value.trim();
+        const bank = document.getElementById("recipientBank").value;
         const account = document.getElementById("recipientAccount").value.trim();
         const swift = document.getElementById("recipientSwift").value.trim();
         const amount = Number(document.getElementById("transferAmount").value);
         const description = document.getElementById("transferDescription").value.trim();
+        
         const btn = document.getElementById("submitBtn");
-
         errorEl.textContent = "";
 
+        // Strict Validation
         if (!name) return errorEl.textContent = "Enter the recipient name.";
-        if (!bank) return errorEl.textContent = "Enter the bank name.";
-        if (!account) return errorEl.textContent = "Enter the account number.";
-        if (!swift) return errorEl.textContent = "Enter the SWIFT code.";
+        if (!bank || bank === "") return errorEl.textContent = "Select the bank name.";
+        
+        // Account Number Validation (8-17 digits)
+        if (!account || !/^\d{8,17}$/.test(account)) {
+            return errorEl.textContent = "Account number must be 8 to 17 digits (numbers only).";
+        }
+
+        // SWIFT/Routing Validation (8-11 alphanumeric)
+        if (!swift || !/^[A-Za-z0-9]{8,11}$/.test(swift)) {
+            return errorEl.textContent = "SWIFT/Routing must be 8 to 11 characters (letters and numbers only).";
+        }
+
         if (!amount || amount <= 0) return errorEl.textContent = "Enter a valid amount.";
 
+        formData = {
+            recipient_name: name,
+            recipient_bank_name: bank,
+            recipient_account_number: account,
+            recipient_swift_code: swift,
+            recipient_routing_number: swift,
+            amount: amount,
+            description: description
+        };
+
+        showLoader("Processing transfer", "Securely communicating with the bank...");
         btn.disabled = true;
-        btn.textContent = "Processing...";
 
         try {
             const res = await apiRequest("/api/transfers", {
                 method: "POST",
-                body: JSON.stringify({
-                    recipient_name: name,
-                    recipient_bank_name: bank,
-                    recipient_account_number: account,
-                    recipient_swift_code: swift,
-                    recipient_routing_number: swift,
-                    amount: amount,
-                    description: description
-                })
+                body: JSON.stringify(formData)
             });
 
             if (res.success) {
-                pendingTransfer = res.transfer;
+                pendingTransfer = {
+                    ...formData,
+                    ...res.transfer,
+                    recipient_name: res.transfer?.recipient_name || formData.recipient_name,
+                    recipient_bank_name: res.transfer?.recipient_bank_name || formData.recipient_bank_name,
+                    recipient_account_number: res.transfer?.recipient_account_number || formData.recipient_account_number,
+                    recipient_swift_code: res.transfer?.recipient_swift_code || formData.recipient_swift_code,
+                    recipient_routing_number: res.transfer?.recipient_routing_number || formData.recipient_routing_number,
+                    description: res.transfer?.description || formData.description
+                };
+
+                hideLoader();
+                
                 document.getElementById("otpSummary").innerHTML = `Enter the 6-digit code sent to your email to send <strong>${formatMoney(amount)}</strong> to <strong>${name}</strong>.`;
                 otpOverlay.classList.add("show");
                 document.getElementById("otpInput").value = "";
                 document.getElementById("otpInput").focus();
             }
         } catch (err) {
+            hideLoader();
             errorEl.textContent = err.message || "Unable to process transfer.";
-        } finally {
             btn.disabled = false;
-            btn.textContent = "Continue Transfer";
         }
     });
 
-    // Verify OTP
+    // ==========================================
+    // 5. OTP VERIFICATION
+    // ==========================================
     document.getElementById("verifyBtn").addEventListener("click", async () => {
         const code = document.getElementById("otpInput").value.trim();
         const btn = document.getElementById("verifyBtn");
@@ -489,8 +1067,8 @@ button{ cursor:pointer; }
             return;
         }
 
+        showLoader("Verifying transfer", "Executing secure transaction...");
         btn.disabled = true;
-        btn.textContent = "Verifying...";
 
         try {
             const res = await apiRequest("/api/transfers/verify", {
@@ -502,27 +1080,129 @@ button{ cursor:pointer; }
             });
 
             if (res.success) {
+                hideLoader();
                 otpOverlay.classList.remove("show");
-                document.getElementById("successSummary").innerHTML = `You have successfully sent <strong>${formatMoney(pendingTransfer.amount)}</strong> to <strong>${pendingTransfer.recipient_name || pendingTransfer.recipient?.name}</strong>.<br><br>Reference: ${pendingTransfer.reference || "—"}`;
+                
+                finalTransferData = {
+                    ...formData,
+                    ...pendingTransfer,
+                    ...res.transfer
+                };
+
+                const safeName = finalTransferData.recipient_name || finalTransferData.recipient_bank_name || "the recipient";
+                const safeAmount = formatMoney(finalTransferData.amount);
+                const safeRef = finalTransferData.reference || finalTransferData.id || "—";
+
+                document.getElementById("successAmount").textContent = safeAmount;
+                document.getElementById("successRecipient").textContent = safeName;
+                document.getElementById("successRef").textContent = safeRef;
+                
                 successOverlay.classList.add("show");
             }
         } catch (err) {
+            hideLoader();
             otpError.textContent = err.message || "Invalid code. Please try again.";
-        } finally {
             btn.disabled = false;
-            btn.textContent = "Confirm Transfer";
         }
     });
 
     document.getElementById("cancelOtpBtn").addEventListener("click", () => {
         otpOverlay.classList.remove("show");
+        document.getElementById("submitBtn").disabled = false; 
     });
 
-    // Auto format OTP input (only numbers)
+    // ==========================================
+    // 6. SUCCESS SCREEN ACTIONS & RECEIPT
+    // ==========================================
+    
+    // Close success modal (X button)
+    document.getElementById("exitSuccessBtn").addEventListener("click", () => {
+        successOverlay.classList.remove("show");
+        window.location.reload(); // Exit flow
+    });
+
+    // Make a new transfer
+    document.getElementById("newTransferBtn").addEventListener("click", () => {
+        successOverlay.classList.remove("show");
+        window.location.reload();
+    });
+
+    // View Receipt
+    document.getElementById("viewReceiptBtn").addEventListener("click", () => {
+        successOverlay.classList.remove("show");
+        
+        // Populate receipt
+        document.getElementById("receiptAmount").textContent = formatMoney(finalTransferData.amount);
+        document.getElementById("receiptDate").textContent = new Date().toLocaleString("en-US", { month:"long", day:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" });
+        document.getElementById("receiptRef").textContent = finalTransferData.reference || finalTransferData.id || "—";
+        
+        document.getElementById("receiptAccountName").textContent = finalTransferData.recipient_name || "—";
+        document.getElementById("receiptBank").textContent = finalTransferData.recipient_bank_name || "—";
+        document.getElementById("receiptTo").textContent = finalTransferData.recipient_account_number || "—";
+        document.getElementById("receiptSwift").textContent = finalTransferData.recipient_swift_code || "—";
+        document.getElementById("receiptRouting").textContent = finalTransferData.recipient_routing_number || "—";
+        document.getElementById("receiptDesc").textContent = finalTransferData.description || "Bank Transfer";
+
+        document.getElementById("receiptBackdrop").classList.add("show");
+        document.getElementById("receiptModal").classList.add("show");
+    });
+
+    // Close Receipt
+    document.getElementById("closeReceiptBtn").addEventListener("click", () => {
+        document.getElementById("receiptBackdrop").classList.remove("show");
+        document.getElementById("receiptModal").classList.remove("show");
+        window.location.reload(); // Reload when closing receipt to start fresh
+    });
+    
+    document.getElementById("receiptBackdrop").addEventListener("click", () => {
+        document.getElementById("receiptBackdrop").classList.remove("show");
+        document.getElementById("receiptModal").classList.remove("show");
+        window.location.reload();
+    });
+
+    // Download Receipt Logic (html2canvas)
+    document.getElementById("downloadReceiptBtn").addEventListener("click", () => {
+        const btn = document.getElementById("downloadReceiptBtn");
+        const originalText = btn.textContent;
+        btn.textContent = "Downloading...";
+        btn.disabled = true;
+
+        const receiptEl = document.getElementById("receiptContent");
+
+        html2canvas(receiptEl, { scale: 2, backgroundColor: "#ffffff", useCORS: true }).then(canvas => {
+            const link = document.createElement("a");
+            link.download = `CrestUnited_Receipt_${Date.now()}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+
+            btn.textContent = "Downloaded ✓";
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }, 2000);
+        }).catch(err => {
+            alert("Failed to download receipt. Please try again.");
+            btn.textContent = originalText;
+            btn.disabled = false;
+        });
+    });
+
+    // Prevent non-numeric input for account number
+    document.getElementById("recipientAccount").addEventListener("input", function() {
+        this.value = this.value.replace(/[^0-9]/g, "");
+    });
+
+    // Prevent non-alphanumeric for SWIFT
+    document.getElementById("recipientSwift").addEventListener("input", function() {
+        this.value = this.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+    });
+
+    // OTP auto format
     document.getElementById("otpInput").addEventListener("input", function () {
         this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
     });
 
+    // Initial Load
     loadProfile();
 </script>
 </body>

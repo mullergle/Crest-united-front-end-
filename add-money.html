@@ -7,7 +7,7 @@
                initial-scale=1.0,
                maximum-scale=1.0,
                user-scalable=no">
-<title>Capital Crest | Add Money</title>
+<title>Crest United Bank | Add Money</title>
 <link rel="preconnect"
       href="https://fonts.googleapis.com">
 <link rel="preconnect"
@@ -26,6 +26,7 @@
     --white:#fff;
     --text:#eef5f1;
     --muted:#8fa39d;
+    --gold:#c9a96b;
     --line:rgba(255,255,255,.08);
     --card:rgba(255,255,255,.045);
 }
@@ -55,6 +56,85 @@ body{
             #0b2929
         );
 }
+
+/* =========================================================
+   FULL PAGE LOADER (matches login page)
+========================================================= */
+#pageLoader{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(16,53,54,.96),
+            rgba(7,21,27,.99)
+        );
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+}
+#pageLoader.active{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+.loader-content{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+.loader-ring{
+    width:58px;
+    height:58px;
+    position:relative;
+    border-radius:50%;
+    border:3px solid rgba(184,224,202,.12);
+    border-top-color:var(--mint);
+    border-right-color:rgba(184,224,202,.65);
+    animation:loaderSpin .85s linear infinite;
+    box-shadow:0 0 30px rgba(184,224,202,.10);
+}
+.loader-ring::after{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border-radius:50%;
+    border:1px solid rgba(201,169,107,.28);
+    animation:loaderPulse 1.4s ease-in-out infinite;
+}
+.loader-title{
+    margin-top:20px;
+    color:#eef5f1;
+    font-family:"Manrope",sans-serif;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.3px;
+}
+.loader-subtitle{
+    margin-top:6px;
+    color:#8fa29d;
+    font-size:9px;
+    letter-spacing:.5px;
+}
+@keyframes loaderSpin{
+    to{ transform:rotate(360deg); }
+}
+@keyframes loaderPulse{
+    0%, 100%{ transform:scale(.85); opacity:.35; }
+    50%{ transform:scale(1); opacity:1; }
+}
+
 /* =========================
    PAGE
 ========================= */
@@ -63,16 +143,23 @@ body{
     margin:auto;
     padding:35px 0 60px;
 }
+
 /* =========================
-   HEADER
+   HEADER — CENTERED TITLE
 ========================= */
 .header{
+    position:relative;
     display:flex;
     align-items:center;
-    gap:14px;
+    justify-content:center;
     margin-bottom:30px;
+    min-height:40px;
 }
 .back-button{
+    position:absolute;
+    left:0;
+    top:50%;
+    transform:translateY(-50%);
     width:40px;
     height:40px;
     display:flex;
@@ -84,6 +171,7 @@ body{
     color:#b7c9c3;
     text-decoration:none;
     transition:.2s ease;
+    flex-shrink:0;
 }
 .back-button:hover{
     color:var(--mint);
@@ -93,16 +181,26 @@ body{
 .back-button svg{
     width:18px;
 }
+
+.header-text{
+    text-align:center;
+}
 .header-text h1{
     font-family:"Manrope",sans-serif;
-    font-size:24px;
-    font-weight:800;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:-0.2px;
+    color:#fff;
+    line-height:1.1;
+    white-space:nowrap;
 }
 .header-text p{
-    margin-top:5px;
-    color:#718780;
-    font-size:10px;
+    margin-top:3px;
+    color:#687e77;
+    font-size:9px;
+    white-space:nowrap;
 }
+
 /* =========================
    MAIN CARD
 ========================= */
@@ -243,7 +341,14 @@ body{
         margin-bottom:22px;
     }
     .header-text h1{
-        font-size:21px;
+        font-size:16px;
+    }
+    .header-text p{
+        font-size:8px;
+    }
+    .back-button{
+        width:36px;
+        height:36px;
     }
     .card{
         padding:21px;
@@ -264,9 +369,25 @@ body{
 </style>
 </head>
 <body>
+
+<!-- =========================================================
+     FULL PAGE LOADER
+========================================================= -->
+<div id="pageLoader">
+    <div class="loader-content">
+        <div class="loader-ring"></div>
+        <div class="loader-title">
+            Loading bank details
+        </div>
+        <div class="loader-subtitle">
+            Securely connecting to Crest United
+        </div>
+    </div>
+</div>
+
 <main class="page">
     <!-- =========================
-         HEADER
+         HEADER — CENTERED
     ========================= -->
     <header class="header">
         <a href="dashboard.html?sidebar=open&active=payments"
@@ -366,7 +487,7 @@ body{
                 <strong
                     class="detail-value"
                     id="bankName">
-                    Capital Crest Bank
+                    Crest United Bank
                 </strong>
             </div>
         </div>
@@ -388,7 +509,7 @@ body{
             <p>
                 Transfer funds using the bank information
                 shown above. Your account details are
-                securely loaded from your Capital Crest
+                securely loaded from your Crest United
                 account.
             </p>
         </div>
@@ -396,10 +517,29 @@ body{
 </main>
 <script>
 /* =====================================================
-   CAPITAL CREST CONFIG
+   CREST UNITED BANK CONFIG
 ===================================================== */
 const API_BASE_URL =
     "https://capital-crest.onrender.com";
+
+/* =====================================================
+   PAGE LOADER
+===================================================== */
+const pageLoader =
+    document.getElementById("pageLoader");
+
+function showLoader(){
+    if(pageLoader){
+        pageLoader.classList.add("active");
+    }
+}
+
+function hideLoader(){
+    if(pageLoader){
+        pageLoader.classList.remove("active");
+    }
+}
+
 /* =====================================================
    AUTH TOKEN
 ===================================================== */
@@ -407,7 +547,7 @@ function getAccessToken(){
     const keys = [
         "access_token",
         "accessToken",
-        "capitalCrestToken",
+        "crestUnitedToken",
         "supabase_access_token",
         "supabaseAccessToken",
         "token",
@@ -417,20 +557,12 @@ function getAccessToken(){
         const value =
             localStorage.getItem(key);
         if(!value) continue;
-        /*
-         * Some versions of the login page
-         * store the actual token directly.
-         */
         if(
             typeof value === "string" &&
             value.split(".").length === 3
         ){
             return value;
         }
-        /*
-         * Some versions store the session
-         * or response as JSON.
-         */
         try{
             const parsed =
                 JSON.parse(value);
@@ -455,12 +587,7 @@ function getAccessToken(){
                     return parsed.data.session.access_token;
                 }
             }
-        }catch(error){
-            /*
-             * Ignore invalid JSON and continue
-             * checking other token keys.
-             */
-        }
+        }catch(error){}
     }
     return null;
 }
@@ -471,12 +598,12 @@ function clearAuth(){
     const keys = [
         "access_token",
         "accessToken",
-        "capitalCrestToken",
+        "crestUnitedToken",
         "supabase_access_token",
         "supabaseAccessToken",
         "token",
         "session",
-        "capitalCrestRefreshToken"
+        "crestUnitedRefreshToken"
     ];
     keys.forEach(key => {
         localStorage.removeItem(key);
@@ -506,9 +633,6 @@ async function apiRequest(endpoint){
                 }
             }
         );
-    /*
-     * Invalid or expired session.
-     */
     if(
         response.status === 401 ||
         response.status === 403
@@ -594,9 +718,6 @@ function getCheckingAccount(accounts){
     if(!Array.isArray(accounts)){
         return null;
     }
-    /*
-     * Prefer an explicitly checking account.
-     */
     const checking =
         accounts.find(account => {
             const type =
@@ -613,10 +734,6 @@ function getCheckingAccount(accounts){
     if(checking){
         return checking;
     }
-    /*
-     * If the backend marks the account
-     * as primary, use it.
-     */
     const primary =
         accounts.find(account =>
             account?.is_primary === true ||
@@ -626,9 +743,6 @@ function getCheckingAccount(accounts){
     if(primary){
         return primary;
     }
-    /*
-     * Otherwise use the first account.
-     */
     return accounts[0] || null;
 }
 /* =====================================================
@@ -647,6 +761,9 @@ async function loadAccountDetails(){
         document.getElementById(
             "routingNumber"
         );
+
+    showLoader();
+
     try{
         const data =
             await apiRequest(
@@ -663,14 +780,9 @@ async function loadAccountDetails(){
             Array.isArray(data.accounts)
                 ? data.accounts
                 : [];
-        /*
-         * Find checking account.
-         */
         const checkingAccount =
             getCheckingAccount(accounts);
-        /* =========================
-           ACCOUNT NAME
-        ========================= */
+        /* ACCOUNT NAME */
         const name =
             getProfileName(
                 profile,
@@ -678,9 +790,7 @@ async function loadAccountDetails(){
             );
         accountName.textContent =
             name || "Account Holder";
-        /* =========================
-           ACCOUNT NUMBER
-        ========================= */
+        /* ACCOUNT NUMBER */
         const number =
             firstValid(
                 checkingAccount?.account_number,
@@ -693,9 +803,7 @@ async function loadAccountDetails(){
             );
         accountNumber.textContent =
             number || "Not available";
-        /* =========================
-           ROUTING NUMBER
-        ========================= */
+        /* ROUTING NUMBER */
         const routing =
             firstValid(
                 checkingAccount?.routing_number,
@@ -704,11 +812,6 @@ async function loadAccountDetails(){
                 profile?.routing_number,
                 profile?.routingNumber
             );
-        /*
-         * Do NOT display a fake routing
-         * number if the backend doesn't
-         * provide one.
-         */
         routingNumber.textContent =
             routing || "Not available";
     }catch(error){
@@ -722,6 +825,8 @@ async function loadAccountDetails(){
             '<span class="error">Unable to load</span>';
         routingNumber.innerHTML =
             '<span class="error">Unable to load</span>';
+    }finally{
+        hideLoader();
     }
 }
 /* =====================================================

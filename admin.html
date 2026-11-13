@@ -11,7 +11,7 @@
                user-scalable=no,
                viewport-fit=cover">
 
-<title>Capital Crest Bank | Admin Dashboard</title>
+<title>Crest United Bank | Admin Dashboard</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -184,7 +184,7 @@ a{
 }
 
 /* =====================================================
-   BRAND
+   BRAND — ANIMATED HEXAGON RIBBON LOGO
 ===================================================== */
 
 .brand{
@@ -192,124 +192,228 @@ a{
 
     align-items:center;
 
-    gap:13px;
+    gap:12px;
 }
 
-.crest-logo{
-    width:38px;
-    height:43px;
-
-    display:flex;
-
-    justify-content:center;
-    align-items:center;
+/* Hexagon logo container */
+.logo-hex-admin{
+    width:50px;
+    height:50px;
 
     flex-shrink:0;
-}
-
-.crest-shield{
-    width:27px;
-    height:34px;
 
     position:relative;
 
-    background:
-        linear-gradient(
-            145deg,
-            var(--mint),
-            var(--green2)
-        );
+    display:flex;
 
-    clip-path:polygon(
-        50% 0%,
-        91% 14%,
-        87% 61%,
-        72% 82%,
-        50% 100%,
-        28% 82%,
-        13% 61%,
-        9% 14%
+    align-items:center;
+    justify-content:center;
+
+    filter:drop-shadow(0 0 16px rgba(44,128,108,.55));
+
+    transition:filter .45s cubic-bezier(.2,.75,.25,1);
+}
+
+.brand:hover .logo-hex-admin{
+    filter:drop-shadow(0 0 26px rgba(184,224,202,.75));
+}
+
+.logo-hex-admin svg{
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    overflow:visible;
+}
+
+/* Rotating gradient aura behind */
+.hex-aura{
+    position:absolute;
+
+    inset:-6px;
+
+    border-radius:50%;
+
+    background:conic-gradient(
+        from 0deg,
+        transparent,
+        rgba(201,169,107,.35),
+        transparent 30%,
+        rgba(184,224,202,.35),
+        transparent 60%,
+        transparent
     );
 
-    box-shadow:
-        0 8px 25px
-        rgba(44,128,108,.22);
+    animation:hexSpin 7s linear infinite;
+
+    filter:blur(5px);
+
+    opacity:.7;
 }
 
-.crest-shield::before{
-    content:"";
-
-    position:absolute;
-
-    width:14px;
-    height:14px;
-
-    left:50%;
-    top:8px;
-
-    transform:
-        translateX(-50%)
-        rotate(45deg);
-
-    border:
-        1.5px solid
-        rgba(7,21,27,.72);
+@keyframes hexSpin{
+    to{ transform:rotate(360deg); }
 }
 
-.crest-shield::after{
-    content:"C";
+/* Rotating hexagon outline */
+.hex-outline{
+    transform-origin:32px 32px;
 
-    position:absolute;
-
-    left:50%;
-    top:12px;
-
-    transform:
-        translateX(-50%);
-
-    font-family:Georgia,serif;
-
-    font-size:10px;
-
-    font-weight:bold;
-
-    color:var(--ink);
+    animation:hexRotate 12s linear infinite;
 }
 
-/* =====================================================
-   BRAND NAME
-===================================================== */
+@keyframes hexRotate{
+    to{ transform:rotate(360deg); }
+}
 
+/* Interlocking ribbons */
+.ribbon-a{
+    stroke-dasharray:120;
+    stroke-dashoffset:120;
+
+    animation:
+        ribbonDrawA 3s cubic-bezier(.4,0,.2,1) forwards,
+        ribbonFloat 4s ease-in-out 3s infinite;
+}
+
+.ribbon-b{
+    stroke-dasharray:100;
+    stroke-dashoffset:100;
+
+    animation:
+        ribbonDrawB 3s cubic-bezier(.4,0,.2,1) .5s forwards,
+        ribbonFloat 4s ease-in-out 3.5s infinite reverse;
+}
+
+@keyframes ribbonDrawA{
+    to{ stroke-dashoffset:0; }
+}
+
+@keyframes ribbonDrawB{
+    to{ stroke-dashoffset:0; }
+}
+
+@keyframes ribbonFloat{
+    0%,100%{ transform:translate(0,0); }
+    50%    { transform:translate(1px,-1px); }
+}
+
+/* Orbiting particles */
+.orbit{
+    transform-origin:32px 32px;
+
+    animation:orbitSpin 8s linear infinite;
+}
+
+.orbit-2{
+    transform-origin:32px 32px;
+
+    animation:orbitSpin 8s linear infinite reverse;
+
+    animation-delay:-4s;
+}
+
+@keyframes orbitSpin{
+    to{ transform:rotate(360deg); }
+}
+
+/* Pulsing core */
+.hex-core{
+    transform-origin:32px 32px;
+
+    animation:corePulse 2.8s ease-in-out infinite;
+}
+
+@keyframes corePulse{
+    0%,100%{ transform:scale(1); opacity:.85; }
+    50%    { transform:scale(1.15); opacity:1; }
+}
+
+/* Shimmering diamond */
+.hex-diamond{
+    transform-origin:32px 32px;
+
+    animation:diamondShimmer 4s ease-in-out infinite;
+}
+
+@keyframes diamondShimmer{
+    0%,100%{ opacity:.5; transform:scale(.9) rotate(0deg); }
+    50%    { opacity:1; transform:scale(1.1) rotate(45deg); }
+}
+
+/* Twinkling sparkles */
+.spark-1{ animation:sparkleFloat 3s ease-in-out infinite; }
+.spark-2{ animation:sparkleFloat 3s ease-in-out 1s infinite; }
+.spark-3{ animation:sparkleFloat 3s ease-in-out 2s infinite; }
+
+@keyframes sparkleFloat{
+    0%,100%{ opacity:0; transform:translateY(0) scale(.5); }
+    50%    { opacity:1; transform:translateY(-3px) scale(1); }
+}
+
+/* Brand text */
 .brand-text{
     display:flex;
 
     flex-direction:column;
 
     justify-content:center;
+
+    line-height:1;
 }
 
 .brand-name{
     font-family:"Manrope",sans-serif;
 
-    font-size:14px;
+    font-size:15px;
 
     font-weight:800;
 
-    letter-spacing:1.7px;
+    letter-spacing:2.4px;
 
-    line-height:1;
+    color:#fff;
+
+    line-height:1.1;
+
+    white-space:nowrap;
 }
 
 .brand-bank{
-    margin-top:5px;
+    display:flex;
 
-    font-size:6px;
+    align-items:center;
 
-    letter-spacing:3px;
+    gap:7px;
 
-    color:#9fb2ad;
+    margin-top:6px;
 
-    font-weight:700;
+    color:#c9a96b;
+
+    font-size:8px;
+
+    font-weight:800;
+
+    letter-spacing:4px;
+
+    line-height:1;
+
+    white-space:nowrap;
+}
+
+.brand-bank::before,
+.brand-bank::after{
+    content:"";
+
+    flex:1;
+
+    height:1px;
+
+    background:linear-gradient(90deg,rgba(201,169,107,.15),rgba(201,169,107,.7));
+}
+
+.brand-bank::after{
+    background:linear-gradient(90deg,rgba(201,169,107,.7),rgba(201,169,107,.15));
 }
 
 /* =====================================================
@@ -691,24 +795,20 @@ a{
         gap:9px;
     }
 
-    .crest-logo{
-        width:32px;
-        height:38px;
-    }
-
-    .crest-shield{
-        width:24px;
-        height:31px;
+    .logo-hex-admin{
+        width:42px;
+        height:42px;
     }
 
     .brand-name{
-        font-size:12px;
-        letter-spacing:1.4px;
+        font-size:13px;
+        letter-spacing:2px;
     }
 
     .brand-bank{
-        font-size:5px;
-        letter-spacing:2.6px;
+        font-size:7px;
+        letter-spacing:3.2px;
+        margin-top:5px;
     }
 
     .admin-badge{
@@ -769,6 +869,21 @@ a{
     .admin-card{
         padding:20px;
     }
+
+    .brand-name{
+        font-size:12px;
+        letter-spacing:1.8px;
+    }
+
+    .brand-bank{
+        font-size:6px;
+        letter-spacing:2.8px;
+    }
+
+    .logo-hex-admin{
+        width:38px;
+        height:38px;
+    }
 }
 
 /* =====================================================
@@ -801,16 +916,84 @@ a{
 
         <a href="dashboard.html"
            class="brand"
-           aria-label="Capital Crest Bank">
+           aria-label="Crest United Bank">
 
-            <div class="crest-logo">
-                <div class="crest-shield"></div>
+            <div class="logo-hex-admin">
+                <!-- Rotating aura glow behind -->
+                <div class="hex-aura"></div>
+
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+
+                    <!-- Glow base -->
+                    <circle cx="32" cy="32" r="26" fill="url(#hexGlow)" filter="url(#hexBlur)"/>
+
+                    <!-- Outer hexagon — rotating gradient stroke -->
+                    <polygon class="hex-outline"
+                             points="32,6 54.5,19 54.5,45 32,58 9.5,45 9.5,19"
+                             fill="none"
+                             stroke="url(#hexGradA)"
+                             stroke-width="1.8"
+                             stroke-linejoin="round"
+                             opacity=".85"/>
+
+                    <!-- Inner hexagon ring -->
+                    <polygon points="32,14 47,23 47,41 32,50 17,41 17,23"
+                             fill="none"
+                             stroke="url(#hexGradB)"
+                             stroke-width=".8"
+                             stroke-linejoin="round"
+                             opacity=".5"/>
+
+                    <!-- Interlocking ribbon A -->
+                    <path class="ribbon-a"
+                          d="M18 22 Q26 18 32 24 T46 30 Q48 38 40 42 T24 40"
+                          fill="none"
+                          stroke="url(#hexGradA)"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                          opacity=".9"/>
+
+                    <!-- Interlocking ribbon B -->
+                    <path class="ribbon-b"
+                          d="M46 22 Q38 18 32 24 T18 30 Q16 38 24 42 T40 40"
+                          fill="none"
+                          stroke="url(#hexGradB)"
+                          stroke-width="2.4"
+                          stroke-linecap="round"
+                          opacity=".85"/>
+
+                    <!-- Center diamond core -->
+                    <path class="hex-diamond"
+                          d="M32 24 L38 32 L32 40 L26 32 Z"
+                          fill="url(#hexCore)"
+                          opacity=".9"/>
+
+                    <!-- Pulsing center dot -->
+                    <circle class="hex-core"
+                            cx="32" cy="32" r="3"
+                            fill="#eafaf0"
+                            opacity=".95"/>
+
+                    <!-- Orbiting particles -->
+                    <g class="orbit">
+                        <circle cx="32" cy="8" r="1.6" fill="#eafaf0" opacity=".9"/>
+                    </g>
+                    <g class="orbit-2">
+                        <circle cx="32" cy="56" r="1.3" fill="#e3c98f" opacity=".85"/>
+                    </g>
+
+                    <!-- Tiny sparkles -->
+                    <circle class="spark-1" cx="52" cy="16" r="1" fill="#b8e0ca" opacity=".8"/>
+                    <circle class="spark-2" cx="12" cy="48" r="1.1" fill="#e3c98f" opacity=".7"/>
+                    <circle class="spark-3" cx="50" cy="50" r="0.9" fill="#eafaf0" opacity=".75"/>
+
+                </svg>
             </div>
 
             <div class="brand-text">
 
                 <div class="brand-name">
-                    CAPITAL CREST
+                    CREST UNITED
                 </div>
 
                 <div class="brand-bank">
@@ -899,7 +1082,7 @@ a{
             </div>
 
             <div class="card-description">
-                View and manage registered Capital Crest
+                View and manage registered Crest United
                 customers and their account information.
             </div>
 
@@ -1058,7 +1241,7 @@ a{
             </div>
 
             <div class="card-description">
-                Exit the Capital Crest administration
+                Exit the Crest United administration
                 environment securely.
             </div>
 
@@ -1081,10 +1264,37 @@ a{
     ================================================= -->
 
     <footer class="footer">
-        CAPITAL CREST BANK • ADMINISTRATION
+        CREST UNITED BANK • ADMINISTRATION
     </footer>
 
 </main>
+
+<!-- SVG gradient definitions for the hexagon ribbon logo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="hexGradA" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eafaf0"/>
+      <stop offset="50%" stop-color="#9fd2b4"/>
+      <stop offset="100%" stop-color="#2c806c"/>
+    </linearGradient>
+    <linearGradient id="hexGradB" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff1c1"/>
+      <stop offset="50%" stop-color="#e3c98f"/>
+      <stop offset="100%" stop-color="#9c7328"/>
+    </linearGradient>
+    <linearGradient id="hexCore" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b8e0ca"/>
+      <stop offset="100%" stop-color="#1e6256"/>
+    </linearGradient>
+    <radialGradient id="hexGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#b8e0ca" stop-opacity=".4"/>
+      <stop offset="100%" stop-color="#b8e0ca" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="hexBlur">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>
+</svg>
 
 </body>
 </html>
