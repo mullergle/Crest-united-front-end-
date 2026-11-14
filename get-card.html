@@ -27,7 +27,7 @@ button{ cursor:pointer; }
 /* TOPBAR */
 .topbar{ height:64px; position:sticky; top:0; z-index:500; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid var(--line); background:rgba(7,21,27,.85); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
 .profile-section{ display:flex; align-items:center; }
-.profile-section .avatar{ width:42px; height:42px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:50%; background:linear-gradient(145deg, var(--mint), var(--green2)); color:#09201d; font-size:13px; font-weight:800; border:none; box-shadow:0 0 0 2px rgba(184,224,202,.12); transition:box-shadow .2s; }
+.profile-section .avatar{ width:42px; height:42px; flex-shrink:0; display:flex; align-items:center; justify-content:center; border-radius:50%; overflow:hidden; background:linear-gradient(145deg, var(--mint), var(--green2)); color:#09201d; font-size:13px; font-weight:800; border:none; box-shadow:0 0 0 2px rgba(184,224,202,.12); transition:box-shadow .2s; }
 .profile-section .avatar:hover{ box-shadow:0 0 0 3px rgba(184,224,202,.25); }
 
 .topbar-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
@@ -586,9 +586,22 @@ button{ cursor:pointer; }
             const last = me.profile?.surname || me.user?.last_name || "NAME";
             currentUserName = `${first} ${last}`.toUpperCase();
             
+            // Top-left avatar: show initials first, then swap to the profile photo once it loads
             const avatarBtn = document.querySelector('.profile-section .avatar');
             if(avatarBtn) {
-                avatarBtn.textContent = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+                const initials = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+                const avatarUrl = me.profile?.avatar_url || null;
+
+                avatarBtn.textContent = initials;
+
+                if(avatarUrl) {
+                    const img = document.createElement("img");
+                    img.alt = "Profile photo";
+                    img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;";
+                    img.onload = () => { avatarBtn.textContent = ""; avatarBtn.appendChild(img); };
+                    img.onerror = () => { avatarBtn.textContent = initials; };
+                    img.src = avatarUrl;
+                }
             }
 
             renderCarousel(); 
