@@ -65,6 +65,10 @@ button{ cursor:pointer; }
     border-radius:50%; background:linear-gradient(145deg, var(--mint), var(--green2));
     color:#09201d; font-size:13px; font-weight:800; border:none;
     box-shadow:0 0 0 2px rgba(184,224,202,.12); transition:box-shadow .2s;
+    overflow: hidden;
+}
+.avatar-placeholder{
+    color: transparent !important;
 }
 .topbar-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
 
@@ -394,7 +398,8 @@ button{ cursor:pointer; }
 
 <header class="topbar">
     <div class="profile-section">
-        <button class="avatar" id="topAvatar" type="button" onclick="window.location.href='dashboard.html'" aria-label="Back to Dashboard">PO</button>
+        <!-- Empty initially — avatar injected after profile fetch -->
+        <button class="avatar avatar-placeholder" id="topAvatar" type="button" onclick="window.location.href='dashboard.html'" aria-label="Back to Dashboard"></button>
     </div>
     <div class="topbar-right">
         <button class="icon-button" id="openNotificationsBtn" aria-label="Notifications">
@@ -609,6 +614,70 @@ button{ cursor:pointer; }
 
     let pendingTransfer = null;
     let finalTransferData = null;
+    let loaderSafetyTimeout = null;
+
+    // ==========================================
+    // 0. AVATAR HELPERS (no-flash loading)
+    // ==========================================
+    function getInitials(firstName, surname, fullName){
+        let first = String(firstName || "").trim();
+        let last = String(surname || "").trim();
+        if (!first && !last && fullName){
+            const parts = String(fullName).trim().split(/\s+/).filter(Boolean);
+            if (parts.length > 1){
+                first = parts[0];
+                last = parts[parts.length - 1];
+            } else {
+                first = parts[0] || "";
+            }
+        }
+        const initials = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+        if (initials) return initials;
+        if (first) return first.slice(0, 2).toUpperCase();
+        return "--";
+    }
+
+    function preloadImage(url, timeoutMs = 8000){
+        return new Promise((resolve) => {
+            if (!url){ resolve(null); return; }
+            const img = new Image();
+            img.alt = "Profile photo";
+            img.style.cssText = "width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;";
+
+            let settled = false;
+            const timer = setTimeout(() => {
+                if (settled) return;
+                settled = true;
+                resolve(null);
+            }, timeoutMs);
+
+            img.onload = () => {
+                if (settled) return;
+                settled = true;
+                clearTimeout(timer);
+                resolve(img);
+            };
+            img.onerror = () => {
+                if (settled) return;
+                settled = true;
+                clearTimeout(timer);
+                resolve(null);
+            };
+
+            img.src = url;
+        });
+    }
+
+    function applyAvatar(el, initials, loadedImg){
+        if (!el) return;
+        el.textContent = "";
+        el.classList.remove("avatar-placeholder");
+        if (loadedImg){
+            el.appendChild(loadedImg);
+        } else {
+            el.textContent = initials;
+        }
+    }
 
     // ==========================================
     // 1. BANK SEARCH LOGIC
@@ -743,7 +812,7 @@ button{ cursor:pointer; }
                 selectedBankText.textContent = bank.name;
                 bankSelectTrigger.classList.add("has-value");
                 bankSearchOverlay.classList.remove("show");
-                bankSearchInput.value = ""; // Reset search
+                bankSearchInput.value = "";
             };
             bankSearchList.appendChild(item);
         });
@@ -778,7 +847,7 @@ button{ cursor:pointer; }
         notifModal.classList.add("show");
         notifBackdrop.classList.add("show");
         document.body.style.overflow = "hidden";
-        loadNotifications(); // Fetch fresh data on open
+        loadNotifications();
     }
     function closeNotifModal() {
         notifModal.classList.remove("show");
@@ -900,6 +969,10 @@ button{ cursor:pointer; }
 
     function hideLoader() {
         pageLoader.classList.add("hidden");
+        if (loaderSafetyTimeout) {
+            clearTimeout(loaderSafetyTimeout);
+            loaderSafetyTimeout = null;
+        }
     }
 
     function formatMoney(amount) {
@@ -944,24 +1017,43 @@ button{ cursor:pointer; }
         return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
     }
 
+    // ==========================================
+    // 4. LOAD PROFILE + AVATAR (no flash)
+    // ==========================================
     async function loadProfile() {
+        const topAvatarEl = document.getElementById("topAvatar");
+        if (!topAvatarEl) return;
+
         try {
             const res = await apiRequest("/api/auth/me");
             const profile = res.profile || {};
             const user = res.user || {};
-            const first = profile.first_name || user.first_name || "P";
-            const last = profile.surname || user.last_name || "O";
-            
-            const avatar = document.getElementById("topAvatar");
-            if (avatar) avatar.textContent = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+
+            const firstName = profile.first_name || profile.firstName || user.first_name || user.firstName || "";
+            const surname = profile.surname || profile.last_name || profile.lastName || user.surname || "";
+            const fullName = [firstName, surname].filter(Boolean).join(" ")
+                || profile.full_name || profile.name || user.name || "";
+
+            const avatarUrl = profile.avatar_url || profile.avatarUrl
+                || user.avatar_url || user.avatarUrl || null;
+
+            const initials = getInitials(firstName, surname, fullName);
+
+            // Preload image in memory BEFORE touching DOM
+            const loadedImg = await preloadImage(avatarUrl);
+
+            // Apply — photo or initials, never both in sequence
+            applyAvatar(topAvatarEl, initials, loadedImg);
+
         } catch (err) {
             console.warn("Could not load profile", err);
+            // Fallback: show "--" only if we can't determine anything
+            applyAvatar(topAvatarEl, "--", null);
         }
-        setTimeout(hideLoader, 1200);
     }
 
     // ==========================================
-    // 4. TRANSFER SUBMISSION & VALIDATION
+    // 5. TRANSFER SUBMISSION & VALIDATION
     // ==========================================
     let formData = null;
 
@@ -980,12 +1072,10 @@ button{ cursor:pointer; }
         if (!name) return errorEl.textContent = "Enter the recipient name.";
         if (!bank || bank === "") return errorEl.textContent = "Select the bank name.";
         
-        // Account Number Validation (8-17 digits)
         if (!account || !/^\d{8,17}$/.test(account)) {
             return errorEl.textContent = "Account number must be 8 to 17 digits (numbers only).";
         }
 
-        // SWIFT/Routing Validation (8-11 alphanumeric)
         if (!swift || !/^[A-Za-z0-9]{8,11}$/.test(swift)) {
             return errorEl.textContent = "SWIFT/Routing must be 8 to 11 characters (letters and numbers only).";
         }
@@ -1038,7 +1128,7 @@ button{ cursor:pointer; }
     });
 
     // ==========================================
-    // 5. OTP VERIFICATION
+    // 6. OTP VERIFICATION
     // ==========================================
     document.getElementById("verifyBtn").addEventListener("click", async () => {
         const code = document.getElementById("otpInput").value.trim();
@@ -1096,26 +1186,22 @@ button{ cursor:pointer; }
     });
 
     // ==========================================
-    // 6. SUCCESS SCREEN ACTIONS & RECEIPT
+    // 7. SUCCESS SCREEN ACTIONS & RECEIPT
     // ==========================================
     
-    // Close success modal (X button)
     document.getElementById("exitSuccessBtn").addEventListener("click", () => {
         successOverlay.classList.remove("show");
-        window.location.href = 'dashboard.html'; // Exit to dashboard
+        window.location.href = 'dashboard.html';
     });
 
-    // Make a new transfer
     document.getElementById("newTransferBtn").addEventListener("click", () => {
         successOverlay.classList.remove("show");
         window.location.reload();
     });
 
-    // View Receipt
     document.getElementById("viewReceiptBtn").addEventListener("click", () => {
         successOverlay.classList.remove("show");
         
-        // Populate receipt
         document.getElementById("receiptAmount").textContent = formatMoney(finalTransferData.amount);
         document.getElementById("receiptDate").textContent = new Date().toLocaleString("en-US", { month:"long", day:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" });
         document.getElementById("receiptRef").textContent = finalTransferData.reference || finalTransferData.id || "—";
@@ -1131,11 +1217,10 @@ button{ cursor:pointer; }
         document.getElementById("receiptModal").classList.add("show");
     });
 
-    // Close Receipt
     document.getElementById("closeReceiptBtn").addEventListener("click", () => {
         document.getElementById("receiptBackdrop").classList.remove("show");
         document.getElementById("receiptModal").classList.remove("show");
-        window.location.href = 'dashboard.html'; // Reload to dashboard when closing
+        window.location.href = 'dashboard.html';
     });
     
     document.getElementById("receiptBackdrop").addEventListener("click", () => {
@@ -1144,7 +1229,6 @@ button{ cursor:pointer; }
         window.location.href = 'dashboard.html';
     });
 
-    // Download Receipt Logic (html2canvas)
     document.getElementById("downloadReceiptBtn").addEventListener("click", () => {
         const btn = document.getElementById("downloadReceiptBtn");
         const originalText = btn.textContent;
@@ -1186,8 +1270,24 @@ button{ cursor:pointer; }
         this.value = this.value.replace(/[^0-9]/g, "").slice(0, 6);
     });
 
-    // Initial Load
-    loadProfile();
+    // ==========================================
+    // 8. BOOTSTRAP — wait for profile + avatar before hiding loader
+    // ==========================================
+    (async function init() {
+        // Safety net: never leave the loader stuck
+        loaderSafetyTimeout = setTimeout(hideLoader, 15000);
+
+        // Load profile (includes avatar preload)
+        await loadProfile();
+
+        // Small intentional pause so the loader animation doesn't "blink"
+        setTimeout(hideLoader, 300);
+    })();
+
+    // Handle bfcache — don't leave loader stuck on back navigation
+    window.addEventListener("pageshow", (event) => {
+        if (event.persisted) hideLoader();
+    });
 </script>
 </body>
 </html>
